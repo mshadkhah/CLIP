@@ -1,0 +1,35 @@
+# Ignore build directory
+/build
+/CMakeFiles
+/CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Compiled object files and executables
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.so
+*.dll
+*.dylib
+
+# CUDA cache
+*.ptx
+*.cubin
+
+# Visual Studio Code
+.vscode/
+
+# Backup / temp files
+*~
+*.swp
+.DS_Store
+
+# Logs
+*.log
+
+# Ignore config/IDE
+.idea/
+*.user
