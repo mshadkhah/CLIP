@@ -13,9 +13,9 @@ namespace clip {
             CLIP_REAL tFinal;
             CLIP_UINT finalStep;
             CLIP_UINT noOutFiles;
-            CLIP_REAL Nx;
-            CLIP_REAL Ny;
-            CLIP_REAL Nz;
+            CLIP_UINT Nx;
+            CLIP_UINT Ny;
+            CLIP_UINT Nz;
             CLIP_REAL X0;
             CLIP_REAL Y0;
             CLIP_REAL Z0;

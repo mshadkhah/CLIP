@@ -5,6 +5,18 @@
 #include <DataArray.cuh>
 
 
+static constexpr CLIP_UINT MAX_Q = 32;
+__constant__ CLIP_UINT domainExtent[DIM];
+__constant__ CLIP_INT ex[MAX_Q];
+__constant__ CLIP_INT ey[MAX_Q];
+#ifdef ENABLE_3D
+__constant__ CLIP_UINT ez[MAX_Q];
+#endif
+__constant__ CLIP_REAL wa[MAX_Q];
+
+
+
+
 
 
 
@@ -20,49 +32,33 @@ namespace clip {
 
 
 
+            
+
+
+
+            __device__ __forceinline__ void convertD2Q9Weighted(const double in[9], double out[9]);
+            __device__ __forceinline__ void reconvertD2Q9Weighted(const double in[9], double out[9]);
+            
+
+
+
+
+
+
+
+
+
         private:
             InputData m_idata;
-            CLIP_INT m_nVelocity;
-            CLIP_INT* m_ex;
-            CLIP_INT* m_ey;
-            CLIP_INT* m_ez;
-            CLIP_REAL* m_wa;
+            size_t m_nVelocity;
+            CLIP_UINT* m_domainExtent;
 
+            
 
-
-        
 
         };
 
 
-        Equation::Equation(InputData idata)
-        : m_idata(idata), DataArray(idata){
-
-            m_nVelocity = m_idata.nVelocity;
-
-#ifdef ENABLE_2D
-            m_ex = new CLIP_INT[m_nVelocity]{0, 1, 0, -1, 0, 1, -1, -1, 1};
-            m_ey = new CLIP_INT[m_nVelocity]{0, 0, 1, 0, -1, 1, 1, -1, -1};
-            m_wa = new CLIP_REAL[m_nVelocity]{4.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
-#elif defined(ENABLE_3D)
-            m_ex = new CLIP_INT[m_nVelocity]{0, 1, 0, -1, 0, 1, -1, -1, 1};
-            m_ey = new CLIP_INT[m_nVelocity]{0, 0, 1, 0, -1, 1, 1, -1, -1};
-            m_ez = new CLIP_INT[m_nVelocity]{0, 0, 1, 0, -1, 1, 1, -1, -1};
-            m_wa = new CLIP_REAL[m_nVelocity]{4.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
-#endif
-
-        }
-
-        
-
-        Equation::~Equation() {
-            if (m_ex) delete[] m_ex;
-            if (m_ey) delete[] m_ey;
-            if (m_ez) delete[] m_ez;
-            if (m_wa) delete[] m_wa;
-
-        }
-        
     
 }
 

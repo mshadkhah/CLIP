@@ -2,13 +2,8 @@
 #include <includes.h>
 #include <InputData.cuh>
 
-const double pi = 3.14159265358979L;
 
-__constant__ int ex[9];
-__constant__ int ey[9];
-__constant__ int N[2];
-__constant__ int M[2];
-__constant__ double wa[9];
+const CLIP_REAL pi = 3.14159265358979L;
 
 
 #define cudaCheckErrors(msg)                                   \
@@ -27,6 +22,20 @@ __constant__ double wa[9];
 
 
 
+
+
+    
+
+#define THREAD_IDX_X_GHOSTED (threadIdx.x + blockIdx.x * blockDim.x)
+#define THREAD_IDX_Y_GHOSTED (threadIdx.y + blockIdx.y * blockDim.y)
+#define THREAD_IDX_Z_GHOSTED (threadIdx.z + blockIdx.z * blockDim.z)
+#define THREAD_IDX_X (threadIdx.x + blockIdx.x * blockDim.x + 1)
+#define THREAD_IDX_Y (threadIdx.y + blockIdx.y * blockDim.y + 1)
+#define THREAD_IDX_Z (threadIdx.z + blockIdx.z * blockDim.z + 1)
+
+
+
+
 namespace clip {
 
     class DataArray {
@@ -34,8 +43,33 @@ namespace clip {
 
         public:
             explicit DataArray(InputData idata);
-            void allocateOnDevice(CLIP_REAL* devPtr, const char* name, bool isMacro = false);
-            void symbolOnDevice(CLIP_REAL hostVar, CLIP_REAL* devPtr, const char* name, size_t size = 1);
+
+
+            template<typename T>
+            void allocateOnDevice(T*& devPtr, const char* name, bool isMacro = false) {
+                CLIP_UINT size = isMacro ? domainDimension : latticeDimension;
+                cudaMalloc((void**)&devPtr, size * sizeof(T));
+                cudaCheckErrors(("cudaMalloc '" + std::string(name) + "' fail").c_str());
+            }
+        
+            template <typename T, size_t N>
+            void symbolOnDevice(const T (&symbol)[N], const T* hostPtr, const char* name) {
+                cudaMemcpyToSymbol(symbol, hostPtr, sizeof(T) * N);
+                cudaCheckErrors((std::string("cudaMemcpyToSymbol '") + name + "' failed").c_str());
+            }
+
+            template <typename T>
+            void symbolOnDevice(const T& symbol, const T* hostPtr, const char* name) {
+            cudaMemcpyToSymbol(symbol, hostPtr, sizeof(T));
+            cudaCheckErrors((std::string("cudaMemcpyToSymbol '") + name + "' failed").c_str());
+            }
+
+            
+            template <size_t N, size_t M = 1>
+            __device__ __forceinline__ int getIndex(int i, int j, int k = 0) {
+                return (i * N + j) * M + k;
+            }
+
 
 
         private:

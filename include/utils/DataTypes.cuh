@@ -11,3 +11,10 @@ typedef float CLIP_REAL;
 #else
 typedef double CLIP_REAL;
 #endif
+
+
+#ifdef ENABLE_2D
+#define DIM 2
+#elif defined(ENABLE_3D)
+#define DIM 3
+#endif

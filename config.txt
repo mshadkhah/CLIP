@@ -1,0 +1,20 @@
+L0 = 128
+finalStep = 10
+NoOutFiles = 10
+
+Nx = 128
+Ny = 256
+
+r0 = 64
+X0 = 128
+Y0 = 128
+
+
+Bo = 17
+Mo = 711
+rhoRatio = 1000
+muRatio = 100
+gravity = 1e-7
+interfaceWidth = 5
+mobility = 0.05
+
