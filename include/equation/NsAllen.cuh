@@ -16,11 +16,16 @@ namespace NSAllen
     // device variables:
     __constant__ CLIP_REAL s_rhoL;
     __constant__ CLIP_REAL s_rhoH;
+    __constant__ CLIP_REAL s_drho3;
+    __constant__ CLIP_REAL s_tauL;
+    __constant__ CLIP_REAL s_tauH;
+    __constant__ CLIP_REAL s_gravity;
     __constant__ CLIP_REAL s_sigma;
     __constant__ CLIP_REAL s_radius;
     __constant__ CLIP_REAL s_interfaceWidth;
     __constant__ CLIP_REAL s_betaConstant;
     __constant__ CLIP_REAL s_kConstant;
+    __constant__ CLIP_REAL s_mobility;
     __constant__ CaseType s_caseType;
 }
 
@@ -64,13 +69,17 @@ namespace clip
     public:
         explicit NSAllen(InputData idata);
         ~NSAllen();
+
         __device__ __forceinline__ static CLIP_REAL Equilibrium_new(int q, CLIP_REAL Ux, CLIP_REAL Uy, CLIP_REAL Uz);
+
+        template <CLIP_UINT q, size_t dim>
+        __device__ __forceinline__ static void calculateVF(CLIP_REAL gneq[q], CLIP_REAL fv[dim], CLIP_REAL tau, CLIP_REAL dcdx, CLIP_REAL dcdy, CLIP_REAL dcdz = 0);
         
 
 #ifdef ENABLE_2D
-static constexpr CLIP_UINT Q = 9;
+        static constexpr CLIP_UINT Q = 9;
 #elif defined(ENABLE_3D)
-static constexpr CLIP_UINT Q = 19;
+        static constexpr CLIP_UINT Q = 19;
 #endif
 
 

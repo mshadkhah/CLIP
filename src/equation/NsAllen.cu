@@ -1,4 +1,5 @@
 #include <NsAllen.cuh>
+#include <equation.cuh>
 
 namespace clip
 {
@@ -127,6 +128,39 @@ namespace clip
         return waq * (3.0 * eU + 4.5 * eU * eU - 1.5 * U2);
     }
 
+    template <CLIP_UINT q, size_t dim>
+    __device__ __forceinline__ void NSAllen::calculateVF(CLIP_REAL gneq[q], CLIP_REAL fv[dim], CLIP_REAL tau, CLIP_REAL dcdx, CLIP_REAL dcdy, CLIP_REAL dcdz)
+    {
+        using namespace NSAllen;
+        CLIP_REAL sxx = 0;
+        CLIP_REAL sxy = 0;
+        CLIP_REAL syy = 0;
+        CLIP_REAL szy = 0;
+        CLIP_REAL szx = 0;
+#ifdef ENABLE_3D
+        CLIP_REAL szz = 0;
+#endif
+        const CLIP_REAL rhoDiff = s_rhoH - s_rhoL;
+
+#pragma unroll
+        for (int i = 0; i < q; i++)
+        {
+            sxx += ex[i] * ex[i] * gneq[i];
+            sxy += ex[i] * ey[i] * gneq[i];
+            syy += ey[i] * ey[i] * gneq[i];
+#ifdef ENABLE_3D
+            szy += ez[i] * ey[i] * gneq[i];
+            szx += ez[i] * ex[i] * gneq[i];
+            szz += ez[i] * ez[i] * gneq[i];
+#endif
+        }
+        fv[IDX_X] = -tau * (sxx * dcdx + sxy * dcdy + szx * dcdz) * rhoDiff;
+        fv[IDX_Y] = -tau * (sxy * dcdx + syy * dcdy + szy * dcdz) * rhoDiff;
+#ifdef ENABLE_3D
+        fv[IDX_Z] = -tau * (szz * dcdz + szx * dcdx + szy * dcdy) * rhoDiff;
+#endif
+    }
+
     __global__ void KernelInitializeDistributions(double *dev_f, double *dev_g, double *dev_f_post, double *dev_g_post,
                                                   double *dev_c, double *dev_rho, double *dev_p, double *dev_vel, double *dev_normal)
     {
@@ -226,7 +260,6 @@ namespace clip
         }
     }
 
-
     __global__ void normal_FD(double *dev_dc, double *dev_normal)
     {
         using namespace NSAllen;
@@ -292,68 +325,450 @@ namespace clip
 #elif defined(ENABLE_3D)
 
             dev_dc[idx_X] = (0.50) * ((4.0 / 9.0) * (dev_c[NSAllen::getIndex(i + 1, j, k)] - dev_c[NSAllen::getIndex(i - 1, j, k)]) + (1.0 / 9.0) * ((dev_c[NSAllen::getIndex(i + 1, j, k + 1)] + dev_c[NSAllen::getIndex(i + 1, j, k - 1)] + dev_c[NSAllen::getIndex(i + 1, j + 1, k)] + dev_c[NSAllen::getIndex(i + 1, j - 1, k)]) - (dev_c[NSAllen::getIndex(i - 1, j, k + 1)] + dev_c[NSAllen::getIndex(i - 1, j, k - 1)] + dev_c[NSAllen::getIndex(i - 1, j + 1, k)] + dev_c[NSAllen::getIndex(i - 1, j - 1, k)])) +
-                                        (1.0 / 36.0) * ((dev_c[NSAllen::getIndex(i + 1, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i + 1, j - 1, k + 1)] + dev_c[getIndex(i + 1, j + 1, k - 1)] + dev_c[getIndex(i + 1, j - 1, k - 1)]) -
-                                                        (dev_c[NSAllen::getIndex(i - 1, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i - 1, j - 1, k + 1)] + dev_c[getIndex(i - 1, j + 1, k - 1)] + dev_c[getIndex(i - 1, j - 1, k - 1)])));
+                                      (1.0 / 36.0) * ((dev_c[NSAllen::getIndex(i + 1, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i + 1, j - 1, k + 1)] + dev_c[getIndex(i + 1, j + 1, k - 1)] + dev_c[getIndex(i + 1, j - 1, k - 1)]) -
+                                                      (dev_c[NSAllen::getIndex(i - 1, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i - 1, j - 1, k + 1)] + dev_c[getIndex(i - 1, j + 1, k - 1)] + dev_c[getIndex(i - 1, j - 1, k - 1)])));
 
             dev_dc[idx_Y] = (0.50) * ((4.0 / 9.0) * (dev_c[NSAllen::getIndex(i, j + 1, k)] - dev_c[NSAllen::getIndex(i, j - 1, k)]) + (1.0 / 9.0) * ((dev_c[NSAllen::getIndex(i + 1, j + 1, k)] + dev_c[NSAllen::getIndex(i - 1, j + 1, k)] + dev_c[NSAllen::getIndex(i, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i, j + 1, k - 1)]) - (dev_c[NSAllen::getIndex(i, j - 1, k + 1)] + dev_c[NSAllen::getIndex(i, j - 1, k - 1)] + dev_c[NSAllen::getIndex(i + 1, j - 1, k)] + dev_c[NSAllen::getIndex(i - 1, j - 1, k)])) +
-                                        (1.0 / 36.0) * ((dev_c[NSAllen::getIndex(i + 1, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i - 1, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i + 1, j + 1, k - 1)] + dev_c[NSAllen::getIndex(i - 1, j + 1, k - 1)]) -
-                                                        (dev_c[NSAllen::getIndex(i + 1, j - 1, k + 1)] + dev_c[NSAllen::getIndex(i - 1, j - 1, k + 1)] + dev_c[NSAllen::getIndex(i + 1, j - 1, k - 1)] + dev_c[NSAllen::getIndex(i - 1, j - 1, k - 1)])));
+                                      (1.0 / 36.0) * ((dev_c[NSAllen::getIndex(i + 1, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i - 1, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i + 1, j + 1, k - 1)] + dev_c[NSAllen::getIndex(i - 1, j + 1, k - 1)]) -
+                                                      (dev_c[NSAllen::getIndex(i + 1, j - 1, k + 1)] + dev_c[NSAllen::getIndex(i - 1, j - 1, k + 1)] + dev_c[NSAllen::getIndex(i + 1, j - 1, k - 1)] + dev_c[NSAllen::getIndex(i - 1, j - 1, k - 1)])));
 
             dev_dc[idx_Z] = (0.50) * ((4.0 / 9.0) * (dev_c[NSAllen::getIndex(i, j, k + 1)] - dev_c[NSAllen::getIndex(i, j, k - 1)]) + (1.0 / 9.0) * ((dev_c[NSAllen::getIndex(i + 1, j, k + 1)] + dev_c[NSAllen::getIndex(i - 1, j, k + 1)] + dev_c[NSAllen::getIndex(i, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i, j - 1, k + 1)]) - (dev_c[NSAllen::getIndex(i + 1, j, k - 1)] + dev_c[NSAllen::getIndex(i - 1, j, k - 1)] + dev_c[NSAllen::getIndex(i, j + 1, k - 1)] + dev_c[NSAllen::getIndex(i, j - 1, k - 1)])) +
-                                        (1.0 / 36.0) * ((dev_c[NSAllen::getIndex(i + 1, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i + 1, j - 1, k + 1)] + dev_c[NSAllen::getIndex(i - 1, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i - 1, j - 1, k + 1)]) -
-                                                        (dev_c[NSAllen::getIndex(i + 1, j + 1, k - 1)] + dev_c[NSAllen::getIndex(i - 1, j + 1, k - 1)] + dev_c[NSAllen::getIndex(i + 1, j - 1, k - 1)] + dev_c[NSAllen::getIndex(i - 1, j - 1, k - 1)])));
+                                      (1.0 / 36.0) * ((dev_c[NSAllen::getIndex(i + 1, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i + 1, j - 1, k + 1)] + dev_c[NSAllen::getIndex(i - 1, j + 1, k + 1)] + dev_c[NSAllen::getIndex(i - 1, j - 1, k + 1)]) -
+                                                      (dev_c[NSAllen::getIndex(i + 1, j + 1, k - 1)] + dev_c[NSAllen::getIndex(i - 1, j + 1, k - 1)] + dev_c[NSAllen::getIndex(i + 1, j - 1, k - 1)] + dev_c[NSAllen::getIndex(i - 1, j - 1, k - 1)])));
 
 #endif
         }
     }
 
+    __global__ void kernelStreaming(double *f, double *f_post)
+    {
 
+        using namespace NSAllen;
+        constexpr CLIP_UINT Q = NSAllen::Q;
+        const CLIP_UINT i = THREAD_IDX_X;
+        const CLIP_UINT j = THREAD_IDX_Y;
+        const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
 
-    
-__global__ void kernelStreaming(double *f, double *f_post)
-{
-
-    using namespace NSAllen;
-    constexpr CLIP_UINT Q = NSAllen::Q;
-    const CLIP_UINT i = THREAD_IDX_X;
-    const CLIP_UINT j = THREAD_IDX_Y;
-    const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
-
-    const CLIP_UINT idx_SCALAR = NSAllen::getIndex(i, j, k);
-    const CLIP_UINT idx_X = NSAllen::getIndex<DIM>(i, j, k, IDX_X);
-    const CLIP_UINT idx_Y = NSAllen::getIndex<DIM>(i, j, k, IDX_Y);
+        const CLIP_UINT idx_SCALAR = NSAllen::getIndex(i, j, k);
+        const CLIP_UINT idx_X = NSAllen::getIndex<DIM>(i, j, k, IDX_X);
+        const CLIP_UINT idx_Y = NSAllen::getIndex<DIM>(i, j, k, IDX_Y);
 
 #ifdef ENABLE_3D
-    const CLIP_UINT idx_Z = NSAllen::getIndex<DIM>(i, j, k, IDX_Z);
+        const CLIP_UINT idx_Z = NSAllen::getIndex<DIM>(i, j, k, IDX_Z);
 #endif
 
-    if (NSAllen::isInside<DIM, true>(i, j, k))
-    {
+        if (NSAllen::isInside<DIM, true>(i, j, k))
+        {
 #pragma unroll
-		for (int q = 0; q < Q; q++)
-		{
+            for (int q = 0; q < Q; q++)
+            {
 
 #ifdef ENABLE_3D
 
 #endif
 
 #ifdef ENABLE_2D
-			const CLIP_UINT id = i - ex[q];
-			const CLIP_UINT jd = j - ey[q];
-            const CLIP_UINT kd = 0;
+                const CLIP_UINT id = i - ex[q];
+                const CLIP_UINT jd = j - ey[q];
+                const CLIP_UINT kd = 0;
 #elif defined(ENABLE_3D)
-            const CLIP_UINT id = i - ex[q];
-            const CLIP_UINT jd = j - ey[q];
-            const CLIP_UINT kd = k - ez[q];
+                const CLIP_UINT id = i - ex[q];
+                const CLIP_UINT jd = j - ey[q];
+                const CLIP_UINT kd = k - ez[q];
 #endif
 
-			// if (id >= 0 && jd >= 0 && kd >= 0 && id < N[0] && jd < N[1] && kd < N[2])
-			{
-				f_post[NSAllen::getIndex<Q>(i, j, k, q)] = f[NSAllen::getIndex<Q>(id, jd, kd, q)];
-			}
-		}
-	}
+                // if (id >= 0 && jd >= 0 && kd >= 0 && id < N[0] && jd < N[1] && kd < N[2])
+                {
+                    f_post[NSAllen::getIndex<Q>(i, j, k, q)] = f[NSAllen::getIndex<Q>(id, jd, kd, q)];
+                }
+            }
+        }
+    }
+
+    __global__ void kernelMacroscopicg(double *dev_p, double *dev_rho, double *dev_c, double *dev_f_post, double *dev_dc, double *dev_vel, double *dev_mu)
+    {
+
+        using namespace NSAllen;
+        constexpr CLIP_UINT Q = NSAllen::Q;
+
+        CLIP_REAL gneq[Q], tmp[Q], fv[DIM], tau;
+
+        const CLIP_UINT i = THREAD_IDX_X;
+        const CLIP_UINT j = THREAD_IDX_Y;
+        const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
+
+        const CLIP_UINT idx_SCALAR = NSAllen::getIndex(i, j, k);
+        const CLIP_UINT idx_X = NSAllen::getIndex<DIM>(i, j, k, IDX_X);
+        const CLIP_UINT idx_Y = NSAllen::getIndex<DIM>(i, j, k, IDX_Y);
+
+#ifdef ENABLE_3D
+        const CLIP_UINT idx_Z = NSAllen::getIndex<DIM>(i, j, k, IDX_Z);
+#endif
+
+        if (NSAllen::isInside<DIM, true>(i, j, k))
+        {
+
+            dev_p[idx_SCALAR] = 0;
+#pragma unroll
+            for (int q = 0; q < Q; q++)
+            {
+                dev_p[idx_SCALAR] += dev_f_post[NSAllen::getIndex<Q>(i, j, k, q)];
+            }
+
+#pragma unroll
+
+            for (int q = 0; q < Q; q++)
+            {
+#ifdef ENABLE_2D
+                const CLIP_REAL ga_wa = NSAllen::Equilibrium_new(q, dev_vel[idx_X], dev_vel[idx_Y]);
+
+#elif defined(ENABLE_3D)
+                const CLIP_REAL ga_wa = NSAllen::Equilibrium_new(q, dev_vel[idx_X], dev_vel[idx_Y], dev_vel[idx_Z]);
+#endif
+
+                const CLIP_REAL geq = dev_p[idx_SCALAR] * wa[q] + ga_wa;
+                gneq[q] = dev_f_post[NSAllen::getIndex<Q>(i, j, k, q)] - geq;
+            }
+
+#ifdef ENABLE_2D
+
+            Equation::convertD2Q9Weighted(gneq, tmp);
+
+            if (dev_c[idx_SCALAR] < 0.0)
+                tau = s_tauL;
+            else if (dev_c[idx_SCALAR] > 1.0)
+                tau = s_tauH;
+            else
+            {
+                tau = s_tauL + dev_c[idx_SCALAR] * (s_tauH - s_tauL);
+            }
+            const CLIP_REAL s9 = 1.0 / (tau + 0.50);
+
+            tmp[7] = tmp[7] * s9;
+            tmp[8] = tmp[8] * s9;
+
+            Equation::reconvertD2Q9Weighted(tmp, gneq);
+
+            NSAllen::calculateVF<Q, DIM>(gneq, fv, tau, dev_dc[idx_X], dev_dc[idx_Y]);
+#elif defined(ENABLE_3D)
+            Equation::convertD3Q19Weighted(gneq, tmp);
+
+            if (dev_c[idx_SCALAR] < 0.0)
+                tau = s_tauL;
+            else if (dev_c[idx_SCALAR] > 1.0)
+                tau = s_tauH;
+            else
+            {
+                tau = s_tauL + dev_c[idx_SCALAR] * (s_tauH - s_tauL);
+            }
+
+            const CLIP_REAL s9 = 1.0 / (tau + 0.50);
+
+            tmp[4] = tmp[4] * s9;
+            tmp[5] = tmp[5] * s9;
+            tmp[6] = tmp[6] * s9;
+            tmp[7] = tmp[7] * s9;
+            tmp[8] = tmp[8] * s9;
+
+            Equation::reconvertD3Q19Weighted(tmp, gneq);
+
+            NSAllen::calculateVF<Q, DIM>(gneq, fv, tau, dev_dc[idx_X], dev_dc[idx_Y], dev_dc[idx_Z]);
+
+#endif
+
+            CLIP_REAL Fgy = 0;
+            if (s_caseType == CaseType::Bubble)
+            {
+                Fgy = -(dev_rho[idx_SCALAR] - s_rhoH) * s_gravity;
+            }
+            else if (s_caseType == CaseType::Drop)
+            {
+                Fgy = -(dev_rho[idx_SCALAR] - s_rhoL) * s_gravity;
+            }
+
+            // double Fgy = (*dev_rhol - dev_rho[index]) * *dev_gy;
+            //  double Fgy = (-dev_rho[index]) * *dev_gy;
+
+            const CLIP_REAL Fpx = -dev_p[idx_SCALAR] * s_drho3 * dev_dc[idx_X];
+            const CLIP_REAL Fpy = -dev_p[idx_SCALAR] * s_drho3 * dev_dc[idx_Y];
+
+            const CLIP_REAL Fx = dev_mu[idx_SCALAR] * dev_dc[idx_X] + Fpx + fv[0];
+            const CLIP_REAL Fy = dev_mu[idx_SCALAR] * dev_dc[idx_Y] + Fpy + Fgy + fv[1];
+
+#ifdef ENABLE_3D
+            const CLIP_REAL Fpz = -dev_p[idx_SCALAR] * s_drho3 * dev_dc[idx_Z];
+            const CLIP_REAL Fz = dev_mu[idx_SCALAR] * dev_dc[idx_Z] + Fpz + fv[2];
+#endif
+
+            dev_vel[idx_X] = 0;
+            dev_vel[idx_Y] = 0;
+#ifdef ENABLE_3D
+            dev_vel[idx_Z] = 0;
+#endif
+
+#pragma unroll
+            for (int q = 0; q < Q; q++)
+            {
+                dev_vel[idx_X] += ex[q] * dev_f_post[NSAllen::getIndex<Q>(i, j, k, q)];
+                dev_vel[idx_Y] += ey[q] * dev_f_post[NSAllen::getIndex<Q>(i, j, k, q)];
+#ifdef ENABLE_3D
+                dev_vel[idx_Z] += ez[q] * dev_f_post[NSAllen::getIndex<Q>(i, j, k, q)];
+#endif
+            }
+
+            dev_vel[idx_X] = dev_vel[idx_X] + 0.50 * Fx / dev_rho[idx_SCALAR];
+            dev_vel[idx_Y] = dev_vel[idx_Y] + 0.50 * Fy / dev_rho[idx_SCALAR];
+#ifdef ENABLE_3D
+            dev_vel[idx_Z] = dev_vel[idx_Z] + 0.50 * Fz / dev_rho[idx_SCALAR];
+#endif
+        }
+    }
+
+    __global__ void kernelMacroscopich(double *dev_p, double *dev_g_post, double *dev_rho, double *dev_c, double *dev_rhoh, double *dev_rhol, double *dev_r0, double *dev_x0, double *dev_y0)
+    {
+        using namespace NSAllen;
+        constexpr CLIP_UINT Q = NSAllen::Q;
+
+        const CLIP_UINT i = THREAD_IDX_X;
+        const CLIP_UINT j = THREAD_IDX_Y;
+        const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
+
+        const CLIP_UINT idx_SCALAR = NSAllen::getIndex(i, j, k);
+
+        if (NSAllen::isInside<DIM, true>(i, j, k))
+        {
+
+            dev_c[idx_SCALAR] = 0;
+#pragma unroll
+            for (CLIP_UINT q = 0; q < Q; q++)
+            {
+                dev_c[idx_SCALAR] += dev_g_post[NSAllen::getIndex<Q>(i, j, k, q)];
+            }
+
+            dev_rho[idx_SCALAR] = (s_rhoL + (dev_c[idx_SCALAR] * (s_rhoH - s_rhoL)));
+        }
+    }
+
+    __global__ void kernelCollisionMRTh(CLIP_REAL *dev_g, CLIP_REAL *dev_g_post, CLIP_REAL *dev_c, CLIP_REAL *dev_rho, CLIP_REAL *dev_vel, CLIP_REAL *dev_normal)
+    {
+
+        using namespace NSAllen;
+        constexpr CLIP_UINT Q = NSAllen::Q;
+
+        const CLIP_REAL wc = 1.0 / (0.50 + 3.0 * s_interfaceWidth);
+
+        const CLIP_UINT i = THREAD_IDX_X;
+        const CLIP_UINT j = THREAD_IDX_Y;
+        const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
+
+        const CLIP_UINT idx_SCALAR = NSAllen::getIndex(i, j, k);
+        const CLIP_UINT idx_X = NSAllen::getIndex<DIM>(i, j, k, IDX_X);
+        const CLIP_UINT idx_Y = NSAllen::getIndex<DIM>(i, j, k, IDX_Y);
+
+#ifdef ENABLE_3D
+        const CLIP_UINT idx_Z = NSAllen::getIndex<DIM>(i, j, k, IDX_Z);
+#endif
+
+        if (NSAllen::isInside<DIM, true>(i, j, k))
+        {
+
+#pragma unroll
+            for (CLIP_UINT q = 0; q < Q; q++)
+            {
+
+#ifdef ENABLE_2D
+                const CLIP_REAL ga_wa = NSAllen::Equilibrium_new(q, dev_vel[idx_X], dev_vel[idx_Y]);
+                const CLIP_REAL e_normal = (ex[q] * dev_normal[idx_X] + ey[q] * dev_normal[idx_Y]);
+#elif defined(ENABLE_3D)
+                const CLIP_REAL ga_wa = NSAllen::Equilibrium_new(q, dev_vel[idx_X], dev_vel[idx_Y], dev_vel[idx_Z]);
+                const CLIP_REAL e_normal = (ex[q] * dev_normal[idx_X] + ey[q] * dev_normal[idx_Y] + ez[q] * dev_normal[idx_Z]);
+#endif
+
+                const CLIP_REAL eF = ((3.0 * (s_mobility) * (1.0 - 4.0 * ((dev_c[idx_SCALAR] - 0.50) * (dev_c[idx_SCALAR] - 0.50)))) / (s_interfaceWidth)) * e_normal;
+                const CLIP_REAL hlp = wa[q] * eF;
+                const CLIP_REAL heq = dev_c[idx_SCALAR] * (ga_wa + wa[q]) + hlp;
+                dev_g[NSAllen::getIndex<Q>(i, j, k, q)] = dev_g_post[NSAllen::getIndex<Q>(i, j, k, q)] * (1.0 - (wc)) + heq * (wc);
+            }
+        }
+    }
+
+    __global__ void kernelCollisionMRTg(CLIP_REAL *dev_f, CLIP_REAL *dev_f_post, CLIP_REAL *dev_p, CLIP_REAL *dev_c, CLIP_REAL *dev_dc, 
+        CLIP_REAL *dev_mu, CLIP_REAL *dev_rho, CLIP_REAL *dev_vel, CLIP_REAL *dev_normal)
+    {
+
+        
+
+        using namespace NSAllen;
+        constexpr CLIP_UINT Q = NSAllen::Q;
+        CLIP_REAL gneq[Q], tmp[Q], ga_wa[Q], hlp[Q], fv[DIM], tau, s9;
+
+        const CLIP_UINT i = THREAD_IDX_X;
+        const CLIP_UINT j = THREAD_IDX_Y;
+        const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
+
+        const CLIP_UINT idx_SCALAR = NSAllen::getIndex(i, j, k);
+        const CLIP_UINT idx_X = NSAllen::getIndex<DIM>(i, j, k, IDX_X);
+        const CLIP_UINT idx_Y = NSAllen::getIndex<DIM>(i, j, k, IDX_Y);
+
+#ifdef ENABLE_3D
+        const CLIP_UINT idx_Z = NSAllen::getIndex<DIM>(i, j, k, IDX_Z);
+#endif
+
+        if (NSAllen::isInside<DIM, true>(i, j, k))
+        {
+
+#pragma unroll
+
+            for (CLIP_UINT q = 0; q < Q; q++)
+            {
+#ifdef ENABLE_2D
+                ga_wa[q] = NSAllen::Equilibrium_new(q, dev_vel[idx_X], dev_vel[idx_Y]);
+
+#elif defined(ENABLE_3D)
+                ga_wa[q] = NSAllen::Equilibrium_new(q, dev_vel[idx_X], dev_vel[idx_Y], dev_vel[idx_Z]);
+#endif
+                const CLIP_REAL geq = dev_p[idx_SCALAR] * wa[q] + ga_wa[q];
+                gneq[q] = dev_f_post[NSAllen::getIndex<Q>(i, j, k, q)] - geq;
+            }
+
+#ifdef ENABLE_2D
+
+            Equation::convertD2Q9Weighted(gneq, tmp);
+
+            if (dev_c[idx_SCALAR] < 0.0)
+                tau = s_tauL;
+            else if (dev_c[idx_SCALAR] > 1.0)
+                tau = s_tauH;
+            else
+            {
+                tau = s_tauL + dev_c[idx_SCALAR] * (s_tauH - s_tauL);
+            }
+            s9 = 1.0 / (tau + 0.50);
+
+            tmp[7] = tmp[7] * s9;
+            tmp[8] = tmp[8] * s9;
+
+            Equation::reconvertD2Q9Weighted(tmp, gneq);
+
+            NSAllen::calculateVF<Q, DIM>(gneq, fv, tau, dev_dc[idx_X], dev_dc[idx_Y]);
+#elif defined(ENABLE_3D)
+            Equation::convertD3Q19Weighted(gneq, tmp);
+
+            if (dev_c[idx_SCALAR] < 0.0)
+                tau = s_tauL;
+            else if (dev_c[idx_SCALAR] > 1.0)
+                tau = s_tauH;
+            else
+            {
+                tau = s_tauL + dev_c[idx_SCALAR] * (s_tauH - s_tauL);
+            }
+
+            s9 = 1.0 / (tau + 0.50);
+
+            tmp[4] = tmp[4] * s9;
+            tmp[5] = tmp[5] * s9;
+            tmp[6] = tmp[6] * s9;
+            tmp[7] = tmp[7] * s9;
+            tmp[8] = tmp[8] * s9;
+
+            Equation::reconvertD3Q19Weighted(tmp, gneq);
+
+            NSAllen::calculateVF<Q, DIM>(gneq, fv, tau, dev_dc[idx_X], dev_dc[idx_Y], dev_dc[idx_Z]);
+
+#endif
+
+
+CLIP_REAL Fgy = 0;
+if (s_caseType == CaseType::Bubble)
+{
+    Fgy = -(dev_rho[idx_SCALAR] - s_rhoH) * s_gravity;
 }
+else if (s_caseType == CaseType::Drop)
+{
+    Fgy = -(dev_rho[idx_SCALAR] - s_rhoL) * s_gravity;
+}
+
+// double Fgy = (*dev_rhol - dev_rho[index]) * *dev_gy;
+//  double Fgy = (-dev_rho[index]) * *dev_gy;
+
+const CLIP_REAL Fpx = -dev_p[idx_SCALAR] * s_drho3 * dev_dc[idx_X];
+const CLIP_REAL Fpy = -dev_p[idx_SCALAR] * s_drho3 * dev_dc[idx_Y];
+
+const CLIP_REAL Fx = dev_mu[idx_SCALAR] * dev_dc[idx_X] + Fpx + fv[0];
+const CLIP_REAL Fy = dev_mu[idx_SCALAR] * dev_dc[idx_Y] + Fpy + Fgy + fv[1];
+
+#ifdef ENABLE_3D
+const CLIP_REAL Fpz = -dev_p[idx_SCALAR] * s_drho3 * dev_dc[idx_Z];
+const CLIP_REAL Fz = dev_mu[idx_SCALAR] * dev_dc[idx_Z] + Fpz + fv[2];
+#endif
+
+
+#pragma unroll
+            for (CLIP_UINT q = 0; q < Q; q++)
+            {
+#ifdef ENABLE_2D
+                const CLIP_REAL eF = ex[q] * Fx + ey[q] * Fy;
+
+#elif defined(ENABLE_3D)
+                const CLIP_REAL eF = ex[q] * Fx + ey[q] * Fy + ez[q] * Fz;
+#endif
+                hlp[q] = 3.0 * wa[q] * eF / dev_rho[idx_SCALAR];
+                const CLIP_REAL feq = dev_p[idx_SCALAR] * wa[q] + ga_wa[q] - 0.50 * hlp[q];
+                gneq[q] = dev_f_post[NSAllen::getIndex<Q>(i, j, k, q)] - feq;
+            }
+
+            #ifdef ENABLE_2D
+
+            Equation::convertD2Q9Weighted(gneq, tmp);
+
+            if (dev_c[idx_SCALAR] < 0.0)
+                tau = s_tauL;
+            else if (dev_c[idx_SCALAR] > 1.0)
+                tau = s_tauH;
+            else
+            {
+                tau = s_tauL + dev_c[idx_SCALAR] * (s_tauH - s_tauL);
+            }
+            s9 = 1.0 / (tau + 0.50);
+
+            tmp[7] = tmp[7] * s9;
+            tmp[8] = tmp[8] * s9;
+
+            Equation::reconvertD2Q9Weighted(tmp, gneq);
+
+#elif defined(ENABLE_3D)
+            Equation::convertD3Q19Weighted(gneq, tmp);
+
+            if (dev_c[idx_SCALAR] < 0.0)
+                tau = s_tauL;
+            else if (dev_c[idx_SCALAR] > 1.0)
+                tau = s_tauH;
+            else
+            {
+                tau = s_tauL + dev_c[idx_SCALAR] * (s_tauH - s_tauL);
+            }
+
+            s9 = 1.0 / (tau + 0.50);
+
+            tmp[4] = tmp[4] * s9;
+            tmp[5] = tmp[5] * s9;
+            tmp[6] = tmp[6] * s9;
+            tmp[7] = tmp[7] * s9;
+            tmp[8] = tmp[8] * s9;
+
+            Equation::reconvertD3Q19Weighted(tmp, gneq);
+
+#endif
+
+
+
+#pragma unroll
+            for (int q = 0; q < Q; q++)
+            {
+                dev_f[NSAllen::getIndex<Q>(i, j, k, q)] = dev_f_post[NSAllen::getIndex<Q>(i, j, k, q)] - gneq[q] + hlp[q];
+            }
+        }
+    }
 
 
 

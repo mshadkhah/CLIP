@@ -1,6 +1,7 @@
 #pragma once
 #include <includes.h>
 #include <InputData.cuh>
+#include <DataTypes.cuh>
 
 
 const CLIP_REAL pi = 3.14159265358979L;
