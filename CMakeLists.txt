@@ -39,6 +39,7 @@ set(CLIP_INC
   include/data/DataArray.cuh
   include/utils/TimeInfo.cuh
   include/input/InputData.cuh
+  include/input/Boundary.cuh
   include/equation/equation.cuh
   include/equation/NsAllen.cuh
 )

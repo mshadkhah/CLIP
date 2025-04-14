@@ -1,7 +1,7 @@
 L0 = 128
 finalStep = 10
-NoOutFiles = 10
-N = [64, 32, 1]
+noOutFiles = 10
+ND = [64, 32, 1]
 Nx = 128
 Ny = 256
 
@@ -18,3 +18,20 @@ gravity = 1e-7
 interfaceWidth = 5
 mobility = 0.05
 
+
+
+
+boundary = [
+  {
+    side = "x-"
+    temperature_type = "sbm"
+    temperature = 0.01
+    ifRefine = true
+  },
+  {
+    side = "x+"
+    temperature_type = "sbm"
+    temperature = 0.01
+    ifRefine = true
+  }
+]

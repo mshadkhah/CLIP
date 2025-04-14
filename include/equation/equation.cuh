@@ -18,8 +18,14 @@ namespace clip {
             explicit Equation(InputData idata);
             virtual ~Equation();
 
-
-
+            template <int Q>
+            void launchPeriodicBoundaryF(
+                double *dev_h,
+                double *dev_g,
+                CLIP_UINT Nx,
+                CLIP_UINT Ny,
+                CLIP_UINT Nz = 1  // Default for 2D
+            );
 
 
         

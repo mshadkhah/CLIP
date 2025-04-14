@@ -7,6 +7,8 @@ namespace clip
         : m_filename(filename)
     {
         read_config();
+        readBoundaries();
+        clip::printBoundaryConditions(boundaries);
     }
 
     void InputData::read_config()
@@ -16,7 +18,7 @@ namespace clip
         read("tFinal", tFinal);
         read("finalStep", finalStep);
         read("noOutFiles", noOutFiles);
-        read("N", N);
+        read("ND", ND);
         read("Nx", Nx);
         read("Ny", Ny);
         read("Nz", Nz);
@@ -55,51 +57,55 @@ namespace clip
             std::cerr << "Error opening config file: " << m_filename << std::endl;
             return false;
         }
-
+    
         std::string line;
         while (std::getline(inputFile, line))
         {
             if (line.empty() || line[0] == '#')
                 continue;
-
+    
             std::size_t pos = line.find('=');
             if (pos != std::string::npos)
             {
                 std::string key = line.substr(0, pos);
                 std::string value = line.substr(pos + 1);
-
+    
                 trim(key);
                 trim(value);
-
+    
                 if (key == varName)
                 {
                     arr.clear();
                     // Remove square brackets
                     value.erase(std::remove(value.begin(), value.end(), '['), value.end());
                     value.erase(std::remove(value.begin(), value.end(), ']'), value.end());
-
+    
                     std::stringstream ss(value);
                     std::string token;
                     while (std::getline(ss, token, ','))
                     {
                         trim(token);
-                        arr.push_back(static_cast<CLIP_UINT>(std::stoul(token)));
+                        if constexpr (std::is_same<T, CLIP_UINT>::value)
+                            arr.push_back(static_cast<T>(std::stoul(token)));
+                        else if constexpr (std::is_same<T, CLIP_REAL>::value)
+                            arr.push_back(static_cast<T>(std::stod(token)));
+                        else
+                            static_assert(sizeof(T) == 0, "Unsupported type for read_array");
                     }
-
+    
                     std::cout << varName << " = [";
                     for (size_t i = 0; i < arr.size(); ++i)
-                    {
                         std::cout << arr[i] << (i < arr.size() - 1 ? ", " : "");
-                    }
                     std::cout << "]" << std::endl;
-
+    
                     return true;
                 }
             }
         }
-
+    
         return false;
     }
+    
 
     template <typename T>
     bool InputData::read_value(const std::string &varName, T &var) const
@@ -192,6 +198,9 @@ namespace clip
         return read_array(varName, var);
     }
 
+
+
+
     bool InputData::read(const std::string &varName, CaseType &caseType) const
     {
         std::string str;
@@ -208,6 +217,86 @@ namespace clip
         }
     }
     
+
+
+
+
+
+    bool InputData::readBoundaries() {
+        std::ifstream inputFile(m_filename);
+        if (!inputFile.is_open()) {
+            std::cerr << "Error opening config file: " << m_filename << std::endl;
+            return false;
+        }
+    
+        std::string line;
+        bool inBoundaryList = false;
+        bool inBlock = false;
+        clip::BoundaryCondition current;
+    
+        while (std::getline(inputFile, line)) {
+            trim(line);
+            if (line.empty() || line[0] == '#') continue;
+    
+            if (line.find("boundary") != std::string::npos && line.find('=') != std::string::npos) {
+                inBoundaryList = true;
+                continue;
+            }
+    
+            if (inBoundaryList) {
+                if (line == "[") continue;
+                if (line == "{") {
+                    inBlock = true;
+                    current = clip::BoundaryCondition{};
+                    continue;
+                }
+                if (line == "}" || line == "},") {
+                    inBlock = false;
+                    boundaries.push_back(current);
+                    continue;
+                }
+    
+                if (inBlock) {
+                    std::size_t pos = line.find('=');
+                    if (pos != std::string::npos) {
+                        std::string key = line.substr(0, pos);
+                        std::string value = line.substr(pos + 1);
+                        trim(key);
+                        trim(value);
+                        value.erase(std::remove(value.begin(), value.end(), '"'), value.end()); // remove quotes
+    
+                        if (key == "side") current.side = clip::sideFromString(value);
+                        else if (key == "temperature_type") current.temperatureType = clip::typeFromString(value);
+                        else if (key == "temperature") current.temperature = std::stod(value);
+                        else if (key == "ifRefine") current.ifRefine = (value == "true" || value == "1");
+                    }
+                }
+            }
+        }
+    
+        return !boundaries.empty();
+    }
+    
+
+
+    // inline BoundarySide InputData::sideFromString(const std::string& str) {
+    //     if (str == "x-") return BoundarySide::XMinus;
+    //     if (str == "x+") return BoundarySide::XPlus;
+    //     if (str == "y-") return BoundarySide::YMinus;
+    //     if (str == "y+") return BoundarySide::YPlus;
+    //     if (str == "z-") return BoundarySide::ZMinus;
+    //     if (str == "z+") return BoundarySide::ZPlus;
+    //     return BoundarySide::Unknown;
+    // }
+    
+    // inline BoundaryType InputData::typeFromString(const std::string& str) {
+    //     if (str == "weak") return BoundaryType::Weak;
+    //     if (str == "sbm") return BoundaryType::SBM;
+    //     if (str == "dirichlet") return BoundaryType::Dirichlet;
+    //     return BoundaryType::Unknown;
+    // }
+    
+
 
 
     

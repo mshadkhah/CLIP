@@ -1,5 +1,6 @@
 #pragma once
 #include <includes.h>
+#include <Boundary.cuh>
 
 
 namespace clip {
@@ -13,7 +14,7 @@ namespace clip {
             CLIP_REAL tFinal;
             CLIP_UINT finalStep;
             CLIP_UINT noOutFiles;
-            std::vector<CLIP_UINT> N;
+            std::vector<CLIP_UINT> ND;
             CLIP_UINT Nx;
             CLIP_UINT Ny;
             CLIP_UINT Nz;
@@ -35,6 +36,8 @@ namespace clip {
             CLIP_REAL mobility;
 
             CLIP_UINT nVelocity = 9;
+        
+            std::vector<BoundaryCondition> boundaries;
 
         
         private:
@@ -50,8 +53,13 @@ namespace clip {
             bool read(const std::string& varName, std::vector<CLIP_UINT>& var) const;
             bool read(const std::string& varName, CaseType& caseType) const;
 
+            bool readBoundaries();
+
             static CaseType caseTypeFromString(const std::string& s);
-            
+
+
+            // inline BoundarySide sideFromString(const std::string& str);
+            // inline BoundaryType typeFromString(const std::string& str);
         };
 
     
