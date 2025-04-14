@@ -9,10 +9,21 @@ namespace clip
         m_nVelocity = m_idata.nVelocity;
 
 #ifdef ENABLE_2D
-        domainDimension = (m_idata.Nx + 2) * (m_idata.Ny + 2);
+        m_domainExtent = new CLIP_UINT[DIM]{m_idata.Nx + 2, m_idata.Ny + 2};
+        symbolOnDevice(domainExtent, m_domainExtent, "wdomainExtenta");
+        // m_domainExtentGhosted = new CLIP_UINT[DIM]{m_idata.Nx + 2, m_idata.Ny + 2};
+        // symbolOnDevice(domainExtentGhosted, m_domainExtentGhosted, "wdomainExtenta");
+
+        domainSize = (m_idata.Nx + 2) * (m_idata.Ny + 2);
 #elif defined(ENABLE_3D)
-        domainDimension = (m_idata.Nx + 2) * (m_idata.Ny + 2) * (m_idata.Nz + 2);
+
+        m_domainExtent = new CLIP_UINT[DIM]{m_idata.Nx + 2, m_idata.Ny + 2, m_idata.Nz + 2};
+        symbolOnDevice(domainExtent, m_domainExtent, "wdomainExtenta");
+        // m_domainExtentGhosted = new CLIP_UINT[DIM]{m_idata.Nx + 2, m_idata.Ny + 2, m_idata.Nz + 2};
+        // symbolOnDevice(domainExtentGhosted, m_domainExtentGhosted, "wdomainExtenta");
+
+        domainSize = (m_idata.Nx + 2) * (m_idata.Ny + 2) * (m_idata.Nz + 2);
 #endif
-        latticeDimension = domainDimension * m_nVelocity;
+        latticeSize = domainSize * m_nVelocity;
     };
 }

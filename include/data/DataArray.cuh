@@ -22,17 +22,16 @@ const CLIP_REAL pi = 3.14159265358979L;
 
 
 
+#define THREAD_IDX_X (threadIdx.x + blockIdx.x * blockDim.x)
+#define THREAD_IDX_Y (threadIdx.y + blockIdx.y * blockDim.y)
+#define THREAD_IDX_Z (threadIdx.z + blockIdx.z * blockDim.z)
+// #define THREAD_IDX_X (threadIdx.x + blockIdx.x * blockDim.x + 1)
+// #define THREAD_IDX_Y (threadIdx.y + blockIdx.y * blockDim.y + 1)
+// #define THREAD_IDX_Z (threadIdx.z + blockIdx.z * blockDim.z + 1)
 
 
-    
-
-#define THREAD_IDX_X_GHOSTED (threadIdx.x + blockIdx.x * blockDim.x)
-#define THREAD_IDX_Y_GHOSTED (threadIdx.y + blockIdx.y * blockDim.y)
-#define THREAD_IDX_Z_GHOSTED (threadIdx.z + blockIdx.z * blockDim.z)
-#define THREAD_IDX_X (threadIdx.x + blockIdx.x * blockDim.x + 1)
-#define THREAD_IDX_Y (threadIdx.y + blockIdx.y * blockDim.y + 1)
-#define THREAD_IDX_Z (threadIdx.z + blockIdx.z * blockDim.z + 1)
-
+__constant__ CLIP_UINT domainExtent[DIM];
+// __constant__ CLIP_UINT domainExtentGhosted[DIM];
 
 
 
@@ -46,9 +45,8 @@ namespace clip {
 
 
             template<typename T>
-            void allocateOnDevice(T*& devPtr, const char* name, bool isMacro = false) {
-                CLIP_UINT size = isMacro ? domainDimension : latticeDimension;
-                cudaMalloc((void**)&devPtr, size * sizeof(T));
+            void allocateOnDevice(T*& devPtr, const char* name, CLIP_UINT ndof = SCALAR) {
+                cudaMalloc((void**)&devPtr, ndof * domainSize * sizeof(T));
                 cudaCheckErrors(("cudaMalloc '" + std::string(name) + "' fail").c_str());
             }
         
@@ -65,18 +63,39 @@ namespace clip {
             }
 
             
-            template <size_t N, size_t M = 1>
-            __device__ __forceinline__ int getIndex(int i, int j, int k = 0) {
-                return (i * N + j) * M + k;
+            template <CLIP_UINT ndof = SCALAR>
+            __device__ __forceinline__ static CLIP_UINT getIndex(CLIP_UINT i, CLIP_UINT j, CLIP_UINT k, CLIP_UINT dof = SCALAR) {
+                
+                return ((i * domainExtent[IDX_Y] + j) * domainExtent[IDX_Z] + k) * ndof + dof;
             }
+
+
+            template <CLIP_UINT dim, bool ghosted = false>
+            __device__ __forceinline__ static bool isInside(CLIP_INT i, CLIP_INT j, CLIP_INT k = 0) {
+                constexpr CLIP_UINT offset = ghosted ? 1 : 0;
+            
+                if constexpr (dim == 2) {
+                    return (i >= offset && i < domainExtent[0] - offset) &&
+                           (j >= offset && j < domainExtent[1] - offset);
+                } else if constexpr (dim == 3) {
+                    return (i >= offset && i < domainExtent[0] - offset) &&
+                           (j >= offset && j < domainExtent[1] - offset) &&
+                           (k >= offset && k < domainExtent[2] - offset);
+                } else {
+                    return false;
+                }
+            }
+            
 
 
 
         private:
 
         CLIP_UINT m_nVelocity;
-        CLIP_UINT latticeDimension;
-        CLIP_UINT domainDimension;
+        CLIP_UINT latticeSize;
+        CLIP_UINT domainSize;
+        CLIP_UINT* m_domainExtent;
+        CLIP_UINT* m_domainExtentGhosted;
 
         protected:
 

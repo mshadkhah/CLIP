@@ -38,6 +38,7 @@ set(CUFEM_SRC
   src/utils/TimeInfo.cu
   src/input/InputData.cu
   src/equation/equation.cu
+  src/equation/NsAllen.cu
 )
 
 # Executable and its sources

@@ -9,19 +9,6 @@ namespace clip {
 
         m_nVelocity = m_idata.nVelocity;
 
-    #ifdef ENABLE_2D
-
-        m_domainExtent = new CLIP_UINT[DIM]{m_idata.Nx + 2, m_idata.Ny + 2};
-        this->symbolOnDevice(domainExtent, m_domainExtent, "wdomainExtenta");
-    
-    #elif defined(ENABLE_3D)
-
-        m_domainExtent = new CLIP_UINT[DIM]{m_idata.Nx + 2, m_idata.Ny + 2, m_idata.Nz + 2};
-        this->symbolOnDevice(domainExtent, m_domainExtent, "wdomainExtenta");
-    
-    
-    #endif
-
     }
 
 
