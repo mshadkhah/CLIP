@@ -7,8 +7,6 @@ namespace clip
         : m_filename(filename)
     {
         read_config();
-        InputBoundary::readBoundaries(m_filename, boundaries);
-        InputBoundary::print(boundaries);
     }
 
     void InputData::read_config()
@@ -218,7 +216,9 @@ namespace clip
     
 
 
-    
+    std::string InputData::getConfig(){
+        return m_filename;
+    }
     
 
 

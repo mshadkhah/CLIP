@@ -1,6 +1,5 @@
 #pragma once
 #include <includes.h>
-#include <InputBoundary.cuh>
 
 
 namespace clip {
@@ -9,6 +8,7 @@ namespace clip {
         public:
             explicit InputData(const std::string& filename = "config.txt");
             void read_config();
+            std::string getConfig();
 
             CLIP_REAL D;
             CLIP_REAL tFinal;
@@ -37,7 +37,7 @@ namespace clip {
 
             CLIP_UINT nVelocity = 9;
         
-            std::vector<InputBoundary::Entry> boundaries;
+            
 
         
         private:
@@ -53,13 +53,8 @@ namespace clip {
             bool read(const std::string& varName, std::vector<CLIP_UINT>& var) const;
             bool read(const std::string& varName, CaseType& caseType) const;
 
-            bool readBoundaries();
-
             static CaseType caseTypeFromString(const std::string& s);
-
-
-            // inline BoundarySide sideFromString(const std::string& str);
-            // inline BoundaryType typeFromString(const std::string& str);
+       
         };
 
     

@@ -10,7 +10,7 @@ namespace clip
 
 #ifdef ENABLE_2D
         m_domainExtent = new CLIP_UINT[DIM]{m_idata.Nx + 2, m_idata.Ny + 2};
-        symbolOnDevice(domainExtent, m_domainExtent, "wdomainExtenta");
+        symbolOnDevice(domainExtent, m_domainExtent, "domainExtent");
         // m_domainExtentGhosted = new CLIP_UINT[DIM]{m_idata.Nx + 2, m_idata.Ny + 2};
         // symbolOnDevice(domainExtentGhosted, m_domainExtentGhosted, "wdomainExtenta");
 
@@ -18,7 +18,7 @@ namespace clip
 #elif defined(ENABLE_3D)
 
         m_domainExtent = new CLIP_UINT[DIM]{m_idata.Nx + 2, m_idata.Ny + 2, m_idata.Nz + 2};
-        symbolOnDevice(domainExtent, m_domainExtent, "wdomainExtenta");
+        symbolOnDevice(domainExtent, m_domainExtent, "domainExtent");
         // m_domainExtentGhosted = new CLIP_UINT[DIM]{m_idata.Nx + 2, m_idata.Ny + 2, m_idata.Nz + 2};
         // symbolOnDevice(domainExtentGhosted, m_domainExtentGhosted, "wdomainExtenta");
 

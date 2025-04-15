@@ -3,26 +3,10 @@
 #include <InputData.cuh>
 #include <equation.cuh>
 #include <DataArray.cuh>
-#include <InputBoundary.cuh>
+#include <Boundary.cuh>
 
 
-namespace boundary{
-constexpr int MAX_BOUNDARIES = 6;
-__constant__ clip::InputBoundary::Entry s_boundaries[MAX_BOUNDARIES];
-__constant__ CLIP_UINT s_XMinus;
-__constant__ CLIP_UINT s_XPlus;
-__constant__ CLIP_UINT s_YMinus;
-__constant__ CLIP_UINT s_YPlus;
-__constant__ CLIP_UINT s_ZMinus;
-__constant__ CLIP_UINT s_ZPlus;
 
-__constant__ CLIP_UINT s_XMinus_G;
-__constant__ CLIP_UINT s_XPlus_G;
-__constant__ CLIP_UINT s_YMinus_G;
-__constant__ CLIP_UINT s_YPlus_G;
-__constant__ CLIP_UINT s_ZMinus_G;
-__constant__ CLIP_UINT s_ZPlus_G;
-}
 
 
 

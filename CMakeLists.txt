@@ -30,6 +30,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/include/input
   ${CMAKE_SOURCE_DIR}/include/equation
   ${CMAKE_SOURCE_DIR}/include/data
+  ${CMAKE_SOURCE_DIR}/include/boundary
 )
 
 
@@ -39,7 +40,7 @@ set(CLIP_INC
   include/data/DataArray.cuh
   include/utils/TimeInfo.cuh
   include/input/InputData.cuh
-  include/input/Boundary.cuh
+  include/boundary/Boundary.cuh
   include/equation/equation.cuh
   include/equation/NsAllen.cuh
 )
@@ -52,6 +53,7 @@ set(CLIP_SRC
   src/input/InputData.cu
   src/equation/equation.cu
   src/equation/NsAllen.cu
+  src/boundary/Boundary.cu
 )
 
 

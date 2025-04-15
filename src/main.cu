@@ -1,11 +1,13 @@
 #include <InputData.cuh>  
 #include <TimeInfo.cuh>  
 #include <NsAllen.cuh>
+#include <Boundary.cuh>
 
 
 int main() {
 
     clip::InputData input("../config.txt");
+    clip::Boundary boundary(input);
     clip::TimeInfo ti(input);
     clip::NSAllen eqn(input);
 
