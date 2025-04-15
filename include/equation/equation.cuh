@@ -3,9 +3,47 @@
 #include <InputData.cuh>
 #include <equation.cuh>
 #include <DataArray.cuh>
+#include <InputBoundary.cuh>
+
+
+namespace boundary{
+constexpr int MAX_BOUNDARIES = 6;
+__constant__ clip::InputBoundary::Entry s_boundaries[MAX_BOUNDARIES];
+__constant__ CLIP_UINT s_XMinus;
+__constant__ CLIP_UINT s_XPlus;
+__constant__ CLIP_UINT s_YMinus;
+__constant__ CLIP_UINT s_YPlus;
+__constant__ CLIP_UINT s_ZMinus;
+__constant__ CLIP_UINT s_ZPlus;
+
+__constant__ CLIP_UINT s_XMinus_G;
+__constant__ CLIP_UINT s_XPlus_G;
+__constant__ CLIP_UINT s_YMinus_G;
+__constant__ CLIP_UINT s_YPlus_G;
+__constant__ CLIP_UINT s_ZMinus_G;
+__constant__ CLIP_UINT s_ZPlus_G;
+}
 
 
 
+
+namespace WMRT {
+
+    static constexpr CLIP_UINT MAX_Q = 32;
+    __constant__ CLIP_REAL wa[MAX_Q];
+    __constant__ CLIP_INT ex[MAX_Q];
+    __constant__ CLIP_INT ey[MAX_Q];
+    #ifdef ENABLE_3D
+    __constant__ CLIP_UINT ez[MAX_Q];
+    #endif
+    
+    #ifdef ENABLE_2D
+    static constexpr CLIP_UINT Q = 9;
+    #elif defined(ENABLE_3D)
+    static constexpr CLIP_UINT Q = 19;
+    #endif
+    
+    }
 
 
 
@@ -37,21 +75,13 @@ namespace clip {
                 const CLIP_REAL in6 = in[6], in7 = in[7], in8 = in[8];
             
                 out[0] = in0 + in1 + in2 + in3 + in4 + in5 + in6 + in7 + in8;
-            
                 out[1] = -4.0 * in0 - in1 - in2 - in3 - in4 + 2.0 * in5 + 2.0 * in6 + 2.0 * in7 + 2.0 * in8;
-            
                 out[2] =  4.0 * in0 - 2.0 * in1 - 2.0 * in2 - 2.0 * in3 - 2.0 * in4 + in5 + in6 + in7 + in8;
-            
                 out[3] =  in1 - in3 + in5 - in6 - in7 + in8;
-            
                 out[4] = -2.0 * in1 + 2.0 * in3 + in5 - in6 - in7 + in8;
-            
                 out[5] =  in2 - in4 + in5 + in6 - in7 - in8;
-            
                 out[6] = -2.0 * in2 + 2.0 * in4 + in5 + in6 - in7 - in8;
-            
                 out[7] =  in1 - in2 + in3 - in4;
-            
                 out[8] =  in5 - in6 + in7 - in8;
             }
         
@@ -153,17 +183,16 @@ namespace clip {
 
 
 
-
-
-
-
-
-
-
-
         private:
             InputData m_idata;
             size_t m_nVelocity;
+
+            CLIP_INT *m_ex;
+            CLIP_INT *m_ey;
+            CLIP_INT *m_ez;
+            CLIP_REAL *m_wa;
+
+            
 
 
             
@@ -175,131 +204,6 @@ namespace clip {
 
 
 
-
-
-
-        // Equation::Equation(InputData idata)
-        // : m_idata(idata), DataArray(idata){
-    
-        //     m_nVelocity = m_idata.nVelocity;
-    
-        // }
-    
-    
-    
-        // Equation::~Equation() {
-        // }
-    
-    
-    
-        // __device__ __forceinline__ void Equation::convertD2Q9Weighted(const CLIP_REAL in[9], CLIP_REAL out[9]) {
-        //     const CLIP_REAL in0 = in[0], in1 = in[1], in2 = in[2];
-        //     const CLIP_REAL in3 = in[3], in4 = in[4], in5 = in[5];
-        //     const CLIP_REAL in6 = in[6], in7 = in[7], in8 = in[8];
-        
-        //     out[0] = in0 + in1 + in2 + in3 + in4 + in5 + in6 + in7 + in8;
-        
-        //     out[1] = -4.0 * in0 - in1 - in2 - in3 - in4 + 2.0 * in5 + 2.0 * in6 + 2.0 * in7 + 2.0 * in8;
-        
-        //     out[2] =  4.0 * in0 - 2.0 * in1 - 2.0 * in2 - 2.0 * in3 - 2.0 * in4 + in5 + in6 + in7 + in8;
-        
-        //     out[3] =  in1 - in3 + in5 - in6 - in7 + in8;
-        
-        //     out[4] = -2.0 * in1 + 2.0 * in3 + in5 - in6 - in7 + in8;
-        
-        //     out[5] =  in2 - in4 + in5 + in6 - in7 - in8;
-        
-        //     out[6] = -2.0 * in2 + 2.0 * in4 + in5 + in6 - in7 - in8;
-        
-        //     out[7] =  in1 - in2 + in3 - in4;
-        
-        //     out[8] =  in5 - in6 + in7 - in8;
-        // }
-    
-    
-        // __device__ __forceinline__ void Equation::reconvertD2Q9Weighted(const CLIP_REAL in[9], CLIP_REAL out[9]) {
-        //     const CLIP_REAL in0 = in[0], in1 = in[1], in2 = in[2];
-        //     const CLIP_REAL in3 = in[3], in4 = in[4], in5 = in[5];
-        //     const CLIP_REAL in6 = in[6], in7 = in[7], in8 = in[8];
-        
-        //     out[0] = (4.0 * in0 - 4.0 * in1 + 4.0 * in2) / 36.0;
-        
-        //     out[1] = (4.0 * in0 - in1 - 2.0 * in2 + 6.0 * in3 - 6.0 * in4 + 9.0 * in7) / 36.0;
-        
-        //     out[2] = (4.0 * in0 - in1 - 2.0 * in2 + 6.0 * in5 - 6.0 * in6 - 9.0 * in7) / 36.0;
-        
-        //     out[3] = (4.0 * in0 - in1 - 2.0 * in2 - 6.0 * in3 + 6.0 * in4 + 9.0 * in7) / 36.0;
-        
-        //     out[4] = (4.0 * in0 - in1 - 2.0 * in2 - 6.0 * in5 + 6.0 * in6 - 9.0 * in7) / 36.0;
-        
-        //     out[5] = (4.0 * in0 + 2.0 * in1 + in2 + 6.0 * in3 + 3.0 * in4 + 6.0 * in5 + 3.0 * in6 + 9.0 * in8) / 36.0;
-        
-        //     out[6] = (4.0 * in0 + 2.0 * in1 + in2 - 6.0 * in3 - 3.0 * in4 + 6.0 * in5 + 3.0 * in6 - 9.0 * in8) / 36.0;
-        
-        //     out[7] = (4.0 * in0 + 2.0 * in1 + in2 - 6.0 * in3 - 3.0 * in4 - 6.0 * in5 - 3.0 * in6 + 9.0 * in8) / 36.0;
-        
-        //     out[8] = (4.0 * in0 + 2.0 * in1 + in2 + 6.0 * in3 + 3.0 * in4 - 6.0 * in5 - 3.0 * in6 - 9.0 * in8) / 36.0;
-        // }
-        
-
-
-    
-}
-
-
-
-namespace equation {
-
-    __device__ __forceinline__ void convertD2Q9Weighted(const CLIP_REAL in[9], CLIP_REAL out[9]) {
-        const CLIP_REAL in0 = in[0], in1 = in[1], in2 = in[2];
-        const CLIP_REAL in3 = in[3], in4 = in[4], in5 = in[5];
-        const CLIP_REAL in6 = in[6], in7 = in[7], in8 = in[8];
-    
-        out[0] = in0 + in1 + in2 + in3 + in4 + in5 + in6 + in7 + in8;
-    
-        out[1] = -4.0 * in0 - in1 - in2 - in3 - in4 + 2.0 * in5 + 2.0 * in6 + 2.0 * in7 + 2.0 * in8;
-    
-        out[2] =  4.0 * in0 - 2.0 * in1 - 2.0 * in2 - 2.0 * in3 - 2.0 * in4 + in5 + in6 + in7 + in8;
-    
-        out[3] =  in1 - in3 + in5 - in6 - in7 + in8;
-    
-        out[4] = -2.0 * in1 + 2.0 * in3 + in5 - in6 - in7 + in8;
-    
-        out[5] =  in2 - in4 + in5 + in6 - in7 - in8;
-    
-        out[6] = -2.0 * in2 + 2.0 * in4 + in5 + in6 - in7 - in8;
-    
-        out[7] =  in1 - in2 + in3 - in4;
-    
-        out[8] =  in5 - in6 + in7 - in8;
-    }
-
-
-
-    __device__ __forceinline__ void reconvertD2Q9Weighted(const CLIP_REAL in[9], CLIP_REAL out[9]) {
-        const CLIP_REAL in0 = in[0], in1 = in[1], in2 = in[2];
-        const CLIP_REAL in3 = in[3], in4 = in[4], in5 = in[5];
-        const CLIP_REAL in6 = in[6], in7 = in[7], in8 = in[8];
-    
-        out[0] = (4.0 * in0 - 4.0 * in1 + 4.0 * in2) / 36.0;
-    
-        out[1] = (4.0 * in0 - in1 - 2.0 * in2 + 6.0 * in3 - 6.0 * in4 + 9.0 * in7) / 36.0;
-    
-        out[2] = (4.0 * in0 - in1 - 2.0 * in2 + 6.0 * in5 - 6.0 * in6 - 9.0 * in7) / 36.0;
-    
-        out[3] = (4.0 * in0 - in1 - 2.0 * in2 - 6.0 * in3 + 6.0 * in4 + 9.0 * in7) / 36.0;
-    
-        out[4] = (4.0 * in0 - in1 - 2.0 * in2 - 6.0 * in5 + 6.0 * in6 - 9.0 * in7) / 36.0;
-    
-        out[5] = (4.0 * in0 + 2.0 * in1 + in2 + 6.0 * in3 + 3.0 * in4 + 6.0 * in5 + 3.0 * in6 + 9.0 * in8) / 36.0;
-    
-        out[6] = (4.0 * in0 + 2.0 * in1 + in2 - 6.0 * in3 - 3.0 * in4 + 6.0 * in5 + 3.0 * in6 - 9.0 * in8) / 36.0;
-    
-        out[7] = (4.0 * in0 + 2.0 * in1 + in2 - 6.0 * in3 - 3.0 * in4 - 6.0 * in5 - 3.0 * in6 + 9.0 * in8) / 36.0;
-    
-        out[8] = (4.0 * in0 + 2.0 * in1 + in2 + 6.0 * in3 + 3.0 * in4 - 6.0 * in5 - 3.0 * in6 - 9.0 * in8) / 36.0;
-    }
-    
 
 }
 

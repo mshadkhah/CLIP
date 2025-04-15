@@ -3,15 +3,9 @@
 #include <InputData.cuh>
 #include <equation.cuh>
 
-namespace NSAllen
+namespace nsAllen
 {
-    static constexpr CLIP_UINT MAX_Q = 32;
-    __constant__ CLIP_REAL wa[MAX_Q];
-    __constant__ CLIP_INT ex[MAX_Q];
-    __constant__ CLIP_INT ey[MAX_Q];
-#ifdef ENABLE_3D
-    __constant__ CLIP_UINT ez[MAX_Q];
-#endif
+
 
     // device variables:
     __constant__ CLIP_REAL s_rhoL;
@@ -59,10 +53,7 @@ namespace clip
         double *dev_x0, *dev_y0, *dev_u0;
 
         size_t m_nVelocity;
-        CLIP_INT *m_ex;
-        CLIP_INT *m_ey;
-        CLIP_INT *m_ez;
-        CLIP_REAL *m_wa;
+
 
         /// funtions
 

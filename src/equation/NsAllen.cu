@@ -12,31 +12,10 @@ namespace clip
 
     void NSAllen::initialization()
     {
-        using namespace NSAllen;
+        using namespace nsAllen;
 
         m_nVelocity = m_idata.nVelocity;
 
-#ifdef ENABLE_2D
-        m_ex = new CLIP_INT[m_nVelocity]{0, 1, 0, -1, 0, 1, -1, -1, 1};
-        m_ey = new CLIP_INT[m_nVelocity]{0, 0, 1, 0, -1, 1, 1, -1, -1};
-        m_wa = new CLIP_REAL[m_nVelocity]{4.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
-
-        this->symbolOnDevice(ex, m_ex, "ex");
-        this->symbolOnDevice(ey, m_ey, "ey");
-        this->symbolOnDevice(wa, m_wa, "wa");
-
-#elif defined(ENABLE_3D)
-        m_ex = new CLIP_INT[m_nVelocity]{0, 1, 0, -1, 0, 1, -1, -1, 1};
-        m_ey = new CLIP_INT[m_nVelocity]{0, 0, 1, 0, -1, 1, 1, -1, -1};
-        m_ez = new CLIP_INT[m_nVelocity]{0, 0, 1, 0, -1, 1, 1, -1, -1};
-        m_wa = new CLIP_REAL[m_nVelocity]{4.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
-
-        this->symbolOnDevice(ex, m_ex, "ex");
-        this->symbolOnDevice(ey, m_ey, "ey");
-        this->symbolOnDevice(ez, m_ez, "ez");
-        this->symbolOnDevice(wa, m_wa, "wa");
-
-#endif
 
         this->allocateOnDevice(dev_f, "dev_f"); // hydrodynamics
         this->allocateOnDevice(dev_g, "dev_g"); // nterface
@@ -99,19 +78,13 @@ namespace clip
 
 #undef SAFE_CUDA_FREE
 
-        if (m_ex)
-            delete[] m_ex;
-        if (m_ey)
-            delete[] m_ey;
-        if (m_ez)
-            delete[] m_ez;
-        if (m_wa)
-            delete[] m_wa;
+
     }
 
     __device__ __forceinline__ CLIP_REAL NSAllen::Equilibrium_new(int q, CLIP_REAL Ux, CLIP_REAL Uy, CLIP_REAL Uz = 0)
     {
-        using namespace NSAllen;
+        using namespace nsAllen;
+        using namespace WMRT;
         const CLIP_REAL exq = ex[q];
         const CLIP_REAL eyq = ey[q];
         const CLIP_REAL waq = wa[q];
@@ -131,7 +104,8 @@ namespace clip
     template <CLIP_UINT q, size_t dim>
     __device__ __forceinline__ void NSAllen::calculateVF(CLIP_REAL gneq[q], CLIP_REAL fv[dim], CLIP_REAL tau, CLIP_REAL dcdx, CLIP_REAL dcdy, CLIP_REAL dcdz)
     {
-        using namespace NSAllen;
+        using namespace nsAllen;
+        using namespace WMRT;
         CLIP_REAL sxx = 0;
         CLIP_REAL sxy = 0;
         CLIP_REAL syy = 0;
@@ -165,8 +139,9 @@ namespace clip
                                                   double *dev_c, double *dev_rho, double *dev_p, double *dev_vel, double *dev_normal)
     {
 
-        using namespace NSAllen;
-        constexpr CLIP_UINT Q = NSAllen::Q;
+        using namespace nsAllen;
+        using namespace WMRT;
+        constexpr CLIP_UINT Q = WMRT::Q;
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
         const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
@@ -231,7 +206,8 @@ namespace clip
 
     __global__ void Chemical_Potential(double *dev_c, double *dev_mu)
     {
-        using namespace NSAllen;
+        using namespace nsAllen;
+        using namespace WMRT;
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
         const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
@@ -262,7 +238,8 @@ namespace clip
 
     __global__ void normal_FD(double *dev_dc, double *dev_normal)
     {
-        using namespace NSAllen;
+        using namespace nsAllen;
+        using namespace WMRT;
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
         const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
@@ -298,7 +275,7 @@ namespace clip
 
     __global__ void Isotropic_Gradient(double *dev_c, double *dev_dc)
     {
-        using namespace NSAllen;
+        using namespace nsAllen;
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
         const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
@@ -343,8 +320,9 @@ namespace clip
     __global__ void kernelStreaming(double *f, double *f_post)
     {
 
-        using namespace NSAllen;
-        constexpr CLIP_UINT Q = NSAllen::Q;
+        using namespace nsAllen;
+        using namespace WMRT;
+        constexpr CLIP_UINT Q = WMRT::Q;
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
         const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
@@ -388,8 +366,9 @@ namespace clip
     __global__ void kernelMacroscopicg(double *dev_p, double *dev_rho, double *dev_c, double *dev_f_post, double *dev_dc, double *dev_vel, double *dev_mu)
     {
 
-        using namespace NSAllen;
-        constexpr CLIP_UINT Q = NSAllen::Q;
+        using namespace nsAllen;
+        using namespace WMRT;
+        constexpr CLIP_UINT Q = WMRT::Q;
 
         CLIP_REAL gneq[Q], tmp[Q], fv[DIM], tau;
 
@@ -526,8 +505,9 @@ namespace clip
 
     __global__ void kernelMacroscopich(double *dev_p, double *dev_g_post, double *dev_rho, double *dev_c, double *dev_rhoh, double *dev_rhol, double *dev_r0, double *dev_x0, double *dev_y0)
     {
-        using namespace NSAllen;
-        constexpr CLIP_UINT Q = NSAllen::Q;
+        using namespace nsAllen;
+        using namespace WMRT;
+        constexpr CLIP_UINT Q = WMRT::Q;
 
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
@@ -552,8 +532,9 @@ namespace clip
     __global__ void kernelCollisionMRTh(CLIP_REAL *dev_g, CLIP_REAL *dev_g_post, CLIP_REAL *dev_c, CLIP_REAL *dev_rho, CLIP_REAL *dev_vel, CLIP_REAL *dev_normal)
     {
 
-        using namespace NSAllen;
-        constexpr CLIP_UINT Q = NSAllen::Q;
+        using namespace nsAllen;
+        using namespace WMRT;
+        constexpr CLIP_UINT Q = WMRT::Q;
 
         const CLIP_REAL wc = 1.0 / (0.50 + 3.0 * s_interfaceWidth);
 
@@ -598,8 +579,9 @@ namespace clip
 
         
 
-        using namespace NSAllen;
-        constexpr CLIP_UINT Q = NSAllen::Q;
+        using namespace nsAllen;
+        using namespace WMRT;
+        constexpr CLIP_UINT Q = WMRT::Q;
         CLIP_REAL gneq[Q], tmp[Q], ga_wa[Q], hlp[Q], fv[DIM], tau, s9;
 
         const CLIP_UINT i = THREAD_IDX_X;

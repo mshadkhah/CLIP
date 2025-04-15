@@ -1,6 +1,6 @@
 #pragma once
 #include <includes.h>
-#include <Boundary.cuh>
+#include <InputBoundary.cuh>
 
 
 namespace clip {
@@ -14,7 +14,7 @@ namespace clip {
             CLIP_REAL tFinal;
             CLIP_UINT finalStep;
             CLIP_UINT noOutFiles;
-            std::vector<CLIP_UINT> ND;
+            std::vector<CLIP_UINT> N;
             CLIP_UINT Nx;
             CLIP_UINT Ny;
             CLIP_UINT Nz;
@@ -37,7 +37,7 @@ namespace clip {
 
             CLIP_UINT nVelocity = 9;
         
-            std::vector<BoundaryCondition> boundaries;
+            std::vector<InputBoundary::Entry> boundaries;
 
         
         private:
