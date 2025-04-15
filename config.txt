@@ -25,6 +25,12 @@ boundary = [
     ifRefine = true
   },
     {
+    side = "x+"
+    temperature_type = "sbm"
+    temperature = 0.01
+    ifRefine = true
+  },
+    {
     side = "y-"
     temperature_type = "sbm"
     temperature = 0.01
