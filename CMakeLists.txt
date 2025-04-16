@@ -31,6 +31,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/include/equation
   ${CMAKE_SOURCE_DIR}/include/data
   ${CMAKE_SOURCE_DIR}/include/boundary
+  ${CMAKE_SOURCE_DIR}/include/domain
 )
 
 
@@ -43,6 +44,7 @@ set(CLIP_INC
   include/boundary/Boundary.cuh
   include/equation/equation.cuh
   include/equation/NsAllen.cuh
+  include/domain/Domain.cuh
 )
 
 
@@ -54,6 +56,8 @@ set(CLIP_SRC
   src/equation/equation.cu
   src/equation/NsAllen.cu
   src/boundary/Boundary.cu
+  src/domain/Domain.cu
+  src/test.cu
 )
 
 
@@ -82,7 +86,7 @@ if (USE_SINGLE_PRECISION)
 endif()
 
 # CUDA-specific options
-target_compile_options(clip PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--extended-lambda>)
+target_compile_options(clip_lib PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--extended-lambda>)
 set_target_properties(clip PROPERTIES CUDA_SEPARABLE_COMPILATION OFF)
 
 

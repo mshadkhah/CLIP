@@ -1,5 +1,6 @@
 #include <InputData.cuh>
 
+
 namespace clip
 {
 
@@ -12,33 +13,33 @@ namespace clip
     void InputData::read_config()
     {
         std::cerr << "Reading Parameters:" << std::endl;
-        read("D", D);
-        read("tFinal", tFinal);
-        read("finalStep", finalStep);
-        read("noOutFiles", noOutFiles);
-        read("N", N);
-        read("Nx", Nx);
-        read("Ny", Ny);
-        read("Nz", Nz);
-        read("X0", X0);
-        read("Y0", Y0);
-        read("Z0", Z0);
+        // read("D", D);
+        // read("tFinal", tFinal);
+        // read("finalStep", finalStep);
+        // read("noOutFiles", noOutFiles);
+        // read("N", N);
+        // read("Nx", Nx);
+        // read("Ny", Ny);
+        // read("Nz", Nz);
+        // read("X0", X0);
+        // read("Y0", Y0);
+        // read("Z0", Z0);
 
-        read("Bo", Bo);
-        read("Re", Re);
-        read("We", We);
-        read("Pe", Pe);
-        read("Mo", Mo);
+        // read("Bo", Bo);
+        // read("Re", Re);
+        // read("We", We);
+        // read("Pe", Pe);
+        // read("Mo", Mo);
 
-        read("rhoRatio", rhoRatio);
-        read("muRatio", muRatio);
+        // read("rhoRatio", rhoRatio);
+        // read("muRatio", muRatio);
 
-        read("gravity", gravity);
-        read("interfaceWidth", interfaceWidth);
-        read("mobility", mobility);
+        // read("gravity", gravity);
+        // read("interfaceWidth", interfaceWidth);
+        // read("mobility", mobility);
     }
 
-    CaseType InputData::caseTypeFromString(const std::string &str) {
+    InputData::CaseType InputData::caseTypeFromString(const std::string &str) {
         if (str == "drop") return CaseType::Drop;
         if (str == "bubble") return CaseType::Bubble;
         if (str == "jet") return CaseType::Jet;

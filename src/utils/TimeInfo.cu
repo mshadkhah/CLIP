@@ -27,7 +27,7 @@ namespace clip {
     }
 
     double TimeInfo::getFinalStep() const{
-        return m_idata.finalStep;
+        return m_idata.params.finalStep;
     }
 }
 

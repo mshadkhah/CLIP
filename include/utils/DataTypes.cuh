@@ -28,9 +28,3 @@ typedef double CLIP_REAL;
 
 
 
-enum CaseType {
-    Bubble = 0,
-    Drop   = 1,
-    Jet    = 2,
-    Unknown = 3
-};

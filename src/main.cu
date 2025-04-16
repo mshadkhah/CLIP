@@ -8,6 +8,7 @@ int main() {
 
     clip::InputData input("../config.txt");
     clip::Boundary boundary(input);
+    // clip::Equation eq(input);
     clip::TimeInfo ti(input);
     // clip::NSAllen eqn(input);
 

@@ -37,7 +37,66 @@ namespace clip {
     class Equation : public DataArray{
 
         public:
-            explicit Equation(InputData idata);
+            // explicit Equation(InputData idata);
+
+
+
+
+
+            Equation(InputData idata)
+            : m_idata(idata), DataArray(idata){
+        
+        
+
+        
+        
+        
+        
+        
+        #ifdef ENABLE_2D
+                m_ex = new CLIP_INT[WMRT::Q]{0, 1, 0, -1, 0, 1, -1, -1, 1};
+                m_ey = new CLIP_INT[WMRT::Q]{0, 0, 1, 0, -1, 1, 1, -1, -1};
+                m_wa = new CLIP_REAL[WMRT::Q]{4.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
+        
+                this->symbolOnDevice(WMRT::ex, m_ex, "ex");
+                this->symbolOnDevice(WMRT::ey, m_ey, "ey");
+                this->symbolOnDevice(WMRT::wa, m_wa, "wa");
+        
+        #elif defined(ENABLE_3D)
+                m_ex = new CLIP_INT[WMRT::Q]{0, 1, 0, -1, 0, 1, -1, -1, 1};
+                m_ey = new CLIP_INT[WMRT::Q]{0, 0, 1, 0, -1, 1, 1, -1, -1};
+                m_ez = new CLIP_INT[WMRT::Q]{0, 0, 1, 0, -1, 1, 1, -1, -1};
+                m_wa = new CLIP_REAL[WMRT::Q]{4.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
+        
+                this->symbolOnDevice(WMRT::ex, m_ex, "ex");
+                this->symbolOnDevice(WMRT::ey, m_ey, "ey");
+                this->symbolOnDevice(WMRT::ez, m_ez, "ez");
+                this->symbolOnDevice(WMRT::wa, m_wa, "wa");
+        
+        #endif
+        
+        
+        
+        // this->symbolOnDevice(boundary::s_boundaries, m_idata.boundaries.data(), "boundaries");
+        
+        
+        // flagGenLauncher3();
+        
+            }
+        
+        
+
+
+
+
+
+
+
+
+
+
+
+
             virtual ~Equation();
 
             template <int Q>
@@ -50,7 +109,7 @@ namespace clip {
             );
 
 
-        
+            void flagGenLauncher3();
 
 
             __device__ __forceinline__ static void convertD2Q9Weighted(const CLIP_REAL in[9], CLIP_REAL out[9]) {

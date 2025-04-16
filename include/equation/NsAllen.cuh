@@ -2,25 +2,26 @@
 #include <includes.h>
 #include <InputData.cuh>
 #include <equation.cuh>
+#include <DataArray.cuh>
 
 namespace nsAllen
 {
 
 
     // device variables:
-    __constant__ CLIP_REAL s_rhoL;
-    __constant__ CLIP_REAL s_rhoH;
-    __constant__ CLIP_REAL s_drho3;
-    __constant__ CLIP_REAL s_tauL;
-    __constant__ CLIP_REAL s_tauH;
-    __constant__ CLIP_REAL s_gravity;
-    __constant__ CLIP_REAL s_sigma;
-    __constant__ CLIP_REAL s_radius;
-    __constant__ CLIP_REAL s_interfaceWidth;
-    __constant__ CLIP_REAL s_betaConstant;
-    __constant__ CLIP_REAL s_kConstant;
-    __constant__ CLIP_REAL s_mobility;
-    __constant__ CaseType s_caseType;
+    // __constant__ CLIP_REAL s_rhoL;
+    // __constant__ CLIP_REAL s_rhoH;
+    // __constant__ CLIP_REAL s_drho3;
+    // __constant__ CLIP_REAL s_tauL;
+    // __constant__ CLIP_REAL s_tauH;
+    // __constant__ CLIP_REAL s_gravity;
+    // __constant__ CLIP_REAL s_sigma;
+    // __constant__ CLIP_REAL s_radius;
+    // __constant__ CLIP_REAL s_interfaceWidth;
+    // __constant__ CLIP_REAL s_betaConstant;
+    // __constant__ CLIP_REAL s_kConstant;
+    // __constant__ CLIP_REAL s_mobility;
+    // __constant__ CaseType s_caseType;
 }
 
 // (double *dev_h, double *dev_g, double *dev_h_post, double *dev_g_post,
@@ -55,10 +56,32 @@ namespace clip
         size_t m_nVelocity;
 
 
+        Equation m_eqn;
+
         /// funtions
 
+
+
+
+
+
     public:
-        explicit NSAllen(InputData idata);
+        // explicit NSAllen(InputData idata);
+
+
+        NSAllen(InputData idata)
+        : m_idata(idata), Equation(idata), m_eqn(idata)
+    {
+
+
+        flagGenLauncher2();
+
+        // initialization();
+    };
+
+
+
+
         ~NSAllen();
 
         __device__ __forceinline__ static CLIP_REAL Equilibrium_new(int q, CLIP_REAL Ux, CLIP_REAL Uy, CLIP_REAL Uz);
@@ -66,6 +89,10 @@ namespace clip
         template <CLIP_UINT q, size_t dim>
         __device__ __forceinline__ static void calculateVF(CLIP_REAL gneq[q], CLIP_REAL fv[dim], CLIP_REAL tau, CLIP_REAL dcdx, CLIP_REAL dcdy, CLIP_REAL dcdz = 0);
         
+
+
+
+        void flagGenLauncher2 ();
 
 #ifdef ENABLE_2D
         static constexpr CLIP_UINT Q = 9;
