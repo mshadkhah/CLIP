@@ -5,23 +5,44 @@
 #include <DataArray.cuh>
 #include <Boundary.cuh>
 
+// namespace WMRT
+// {
+
+//     static constexpr CLIP_UINT MAX_Q = 32;
+//     __constant__ CLIP_REAL wa[MAX_Q];
+//     __constant__ CLIP_INT ex[MAX_Q];
+//     __constant__ CLIP_INT ey[MAX_Q];
+// #ifdef ENABLE_3D
+//     __constant__ CLIP_UINT ez[MAX_Q];
+// #endif
+
+// #ifdef ENABLE_2D
+//     static constexpr CLIP_UINT Q = 9;
+// #elif defined(ENABLE_3D)
+//     static constexpr CLIP_UINT Q = 19;
+// #endif
+
+// }
+
+
 namespace WMRT
 {
-
-    static constexpr CLIP_UINT MAX_Q = 32;
-    __constant__ CLIP_REAL wa[MAX_Q];
-    __constant__ CLIP_INT ex[MAX_Q];
-    __constant__ CLIP_INT ey[MAX_Q];
-#ifdef ENABLE_3D
-    __constant__ CLIP_UINT ez[MAX_Q];
-#endif
+struct velSet
+{
 
 #ifdef ENABLE_2D
     static constexpr CLIP_UINT Q = 9;
+    static constexpr CLIP_INT ex[Q] = {0, 1, 0, -1, 0, 1, -1, -1, 1};
+    static constexpr CLIP_INT ey[Q] = {0, 0, 1, 0, -1, 1, 1, -1, -1};
+    static constexpr CLIP_REAL wa[Q] = {4.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
 #elif defined(ENABLE_3D)
     static constexpr CLIP_UINT Q = 19;
+    static constexpr CLIP_INT ex[Q] = {0, 1, -1, 0, 0, 0, 0, 1, -1, 1, -1, 1, -1, 1, -1, 0, 0, 0, 0};
+    static constexpr CLIP_INT ey[Q] = {0, 0, 0, 1, -1, 0, 0, 1, -1, -1, 1, 0, 0, 0, 0, 1, -1, 1, -1};
+    static constexpr CLIP_REAL wa[Q] = {1.0 / 3.0, 1.0 / 18.0, 1.0 / 18.0, 1.0 / 18.0, 1.0 / 18.0, 1.0 / 18.0, 1.0 / 18.0, 1.0 / 36.0,
+                                        1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
 #endif
-
+};
 }
 
 namespace clip
@@ -31,38 +52,9 @@ namespace clip
     {
 
     public:
-        // explicit Equation(InputData idata);
+        explicit Solver(InputData idata);
 
-        Solver(InputData idata)
-            : m_idata(idata), DataArray(idata)
-        {
-
-#ifdef ENABLE_2D
-            m_ex = new CLIP_INT[WMRT::Q]{0, 1, 0, -1, 0, 1, -1, -1, 1};
-            m_ey = new CLIP_INT[WMRT::Q]{0, 0, 1, 0, -1, 1, 1, -1, -1};
-            m_wa = new CLIP_REAL[WMRT::Q]{4.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
-
-            this->symbolOnDevice(WMRT::ex, m_ex, "ex");
-            this->symbolOnDevice(WMRT::ey, m_ey, "ey");
-            this->symbolOnDevice(WMRT::wa, m_wa, "wa");
-
-#elif defined(ENABLE_3D)
-            m_ex = new CLIP_INT[WMRT::Q]{0, 1, 0, -1, 0, 1, -1, -1, 1};
-            m_ey = new CLIP_INT[WMRT::Q]{0, 0, 1, 0, -1, 1, 1, -1, -1};
-            m_ez = new CLIP_INT[WMRT::Q]{0, 0, 1, 0, -1, 1, 1, -1, -1};
-            m_wa = new CLIP_REAL[WMRT::Q]{4.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
-
-            this->symbolOnDevice(WMRT::ex, m_ex, "ex");
-            this->symbolOnDevice(WMRT::ey, m_ey, "ey");
-            this->symbolOnDevice(WMRT::ez, m_ez, "ez");
-            this->symbolOnDevice(WMRT::wa, m_wa, "wa");
-
-#endif
-
-            // this->symbolOnDevice(boundary::s_boundaries, m_idata.boundaries.data(), "boundaries");
-
-            // flagGenLauncher3();
-        }
+     
 
         virtual ~Solver();
 
@@ -77,8 +69,7 @@ namespace clip
 
         void flagGenLauncher3();
 
-        namespace WMRT
-        {
+
 
             __device__ __forceinline__ static void convertD2Q9Weighted(const CLIP_REAL in[9], CLIP_REAL out[9])
             {
@@ -194,28 +185,13 @@ namespace clip
                           144.0L;
             }
 
-            struct velSet
-            {
 
-#ifdef ENABLE_2D
-                static constexpr CLIP_UINT Q = 9;
-                static constexpr CLIP_INT ex[Q] = {0, 1, 0, -1, 0, 1, -1, -1, 1};
-                static constexpr CLIP_INT ey[Q] = {0, 0, 1, 0, -1, 1, 1, -1, -1};
-                static constexpr CLIP_REAL wa[Q] = {4.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
-#elif defined(ENABLE_3D)
-                static constexpr CLIP_UINT Q = 19;
-                static constexpr CLIP_INT ex[Q] = {0, 1, -1, 0, 0, 0, 0, 1, -1, 1, -1, 1, -1, 1, -1, 0, 0, 0, 0};
-                static constexpr CLIP_INT ey[Q] = {0, 0, 0, 1, -1, 0, 0, 1, -1, -1, 1, 0, 0, 0, 0, 1, -1, 1, -1};
-                static constexpr CLIP_REAL wa[Q] = {1.0 / 3.0, 1.0 / 18.0, 1.0 / 18.0, 1.0 / 18.0, 1.0 / 18.0, 1.0 / 18.0, 1.0 / 18.0, 1.0 / 36.0,
-                                                    1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
-#endif
-            };
-
-        }
         
+
 
     private:
         InputData m_idata;
+        Boundary m_boundary;
         size_t m_nVelocity;
 
         CLIP_INT *m_ex;

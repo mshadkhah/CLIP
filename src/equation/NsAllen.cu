@@ -16,7 +16,6 @@ namespace clip
 
     void NSAllen::initialization()
     {
-        using namespace nsAllen;
 
 
 

@@ -3,10 +3,27 @@
 
 
 
-
-
-
 namespace clip {
+
+
+
+
+    Solver::Solver(InputData idata)
+    : m_idata(idata), DataArray(idata), m_boundary(idata)
+{
+
+#ifdef ENABLE_2D
+
+
+#elif defined(ENABLE_3D)
+
+
+#endif
+
+    // this->symbolOnDevice(boundary::s_boundaries, m_idata.boundaries.data(), "boundaries");
+
+    // flagGenLauncher3();
+}
 
 //     Equation::Equation(InputData idata)
 //     : m_idata(idata), DataArray(idata){
