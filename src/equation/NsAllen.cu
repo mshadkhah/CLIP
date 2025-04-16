@@ -1,5 +1,5 @@
 #include <NsAllen.cuh>
-#include <equation.cuh>
+#include <Solver.cuh>
 
 namespace clip
 {

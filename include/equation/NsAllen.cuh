@@ -1,7 +1,7 @@
 #pragma once
 #include <includes.h>
 #include <InputData.cuh>
-#include <equation.cuh>
+#include <Solver.cuh>
 #include <DataArray.cuh>
 
 namespace nsAllen
@@ -32,7 +32,7 @@ namespace nsAllen
 namespace clip
 {
 
-    class NSAllen : public Equation
+    class NSAllen : public Solver
     {
 
     private:
@@ -56,8 +56,6 @@ namespace clip
         size_t m_nVelocity;
 
 
-        Equation m_eqn;
-
         /// funtions
 
 
@@ -70,7 +68,7 @@ namespace clip
 
 
         NSAllen(InputData idata)
-        : m_idata(idata), Equation(idata), m_eqn(idata)
+        : m_idata(idata), Solver(idata)
     {
 
 

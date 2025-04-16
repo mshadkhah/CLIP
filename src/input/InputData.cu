@@ -13,11 +13,12 @@ namespace clip
     void InputData::read_config()
     {
         std::cerr << "Reading Parameters:" << std::endl;
-        // read("D", D);
-        // read("tFinal", tFinal);
-        // read("finalStep", finalStep);
-        // read("noOutFiles", noOutFiles);
-        // read("N", N);
+
+        read("D", params.D);
+        read("tFinal", params.tFinal);
+        read("finalStep", params.finalStep);
+        read("noOutFiles", params.noOutFiles);
+        read("N", params.N);
         // read("Nx", Nx);
         // read("Ny", Ny);
         // read("Nz", Nz);
@@ -47,8 +48,69 @@ namespace clip
     }
     
 
+
+    template <typename T, std::size_t N>
+    bool InputData::read_array(const std::string& varName, T (&arr)[N]) const {
+        std::ifstream inputFile(m_filename);
+        if (!inputFile.is_open()) {
+            std::cerr << "Error opening config file: " << m_filename << std::endl;
+            return false;
+        }
+    
+        std::string line;
+        while (std::getline(inputFile, line)) {
+            if (line.empty() || line[0] == '#') continue;
+    
+            std::size_t pos = line.find('=');
+            if (pos != std::string::npos) {
+                std::string key = line.substr(0, pos);
+                std::string value = line.substr(pos + 1);
+                trim(key);
+                trim(value);
+    
+                if (key == varName) {
+                    std::fill(std::begin(arr), std::end(arr), static_cast<T>(0));
+    
+                    value.erase(std::remove(value.begin(), value.end(), '['), value.end());
+                    value.erase(std::remove(value.begin(), value.end(), ']'), value.end());
+    
+                    std::stringstream ss(value);
+                    std::string token;
+                    std::size_t count = 0;
+    
+                    while (std::getline(ss, token, ',') && count < N) {
+                        trim(token);
+                        if constexpr (std::is_same<T, CLIP_UINT>::value)
+                            arr[count++] = static_cast<T>(std::stoul(token));
+                        else if constexpr (std::is_same<T, CLIP_REAL>::value)
+                            arr[count++] = static_cast<T>(std::stod(token));
+                    }
+    
+                    // Print the result
+                    std::cout << varName << " = [";
+                    for (std::size_t i = 0; i < N; ++i) {
+                        std::cout << arr[i];
+                        if (i < N - 1) std::cout << ", ";
+                    }
+                    std::cout << "]\n";
+    
+                    if (count < N) {
+                        std::cerr << "Warning: Only " << count << " values provided for " << varName
+                                  << "; remaining " << (N - count) << " set to 0.\n";
+                    }
+    
+                    return true;
+                }
+            }
+        }
+    
+        return false;
+    }
+    
+    
+
     template <typename T>
-    bool InputData::read_array(const std::string &varName, std::vector<T> &arr) const
+    bool InputData::read_vector(const std::string &varName, std::vector<T> &arr) const
     {
         std::ifstream inputFile(m_filename);
         if (!inputFile.is_open())
@@ -104,7 +166,7 @@ namespace clip
     
         return false;
     }
-    
+
 
     template <typename T>
     bool InputData::read_value(const std::string &varName, T &var) const
@@ -192,9 +254,10 @@ namespace clip
         return true;
     }
 
-    bool InputData::read(const std::string &varName, std::vector<CLIP_UINT> &var) const
+    template <typename T, std::size_t N>
+    bool InputData::read(const std::string &varName, T (&arr)[N]) const
     {
-        return read_array(varName, var);
+        return read_array(varName, arr);
     }
 
 

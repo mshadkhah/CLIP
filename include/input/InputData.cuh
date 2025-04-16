@@ -28,7 +28,7 @@ namespace clip
             CLIP_UINT finalStep;
             CLIP_UINT noOutFiles;
 
-            CLIP_UINT N[3];
+            CLIP_UINT N[MAX_DIM];
 
             CLIP_REAL Bo;
             CLIP_REAL Re;
@@ -52,13 +52,16 @@ namespace clip
         std::string m_filename;
         template <typename T>
         bool read_value(const std::string &varName, T &var) const;
+        template <typename T, std::size_t N>
+        bool read_array(const std::string& varName, T (&arr)[N]) const;
         template <typename T>
-        bool read_array(const std::string &varName, std::vector<T> &arr) const;
+        bool read_vector(const std::string &varName, std::vector<T> &arr) const;
         static void trim(std::string &s);
         bool read(const std::string &varName, CLIP_REAL &var) const;
         bool read(const std::string &varName, CLIP_UINT &var) const;
         bool read(const std::string &varName, bool &var) const;
-        bool read(const std::string &varName, std::vector<CLIP_UINT> &var) const;
+        template <typename T, std::size_t N>
+        bool read(const std::string &varName, T (&arr)[N]) const;
         bool read(const std::string &varName, CaseType &caseType) const;
 
         static CaseType caseTypeFromString(const std::string &s);

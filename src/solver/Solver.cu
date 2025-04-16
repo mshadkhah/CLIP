@@ -1,4 +1,4 @@
-#include <equation.cuh>
+#include <Solver.cuh>
 
 
 
@@ -86,7 +86,7 @@ namespace clip {
 
 
 
-    void Equation::flagGenLauncher3 (){
+    void Solver::flagGenLauncher3 (){
 
              flagGen3<<<dimGrid, dimBlock>>>();
              cudaDeviceSynchronize();  
@@ -97,7 +97,7 @@ namespace clip {
 
 
 
-    Equation::~Equation() {
+    Solver::~Solver() {
 
     if (m_ex)
         delete[] m_ex;
@@ -167,7 +167,7 @@ namespace clip {
     }
     
     template <int Q>
-    void Equation::launchPeriodicBoundaryF(
+    void Solver::launchPeriodicBoundaryF(
         double* dev_h,
         double* dev_g,
         CLIP_UINT Nx,

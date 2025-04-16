@@ -32,6 +32,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/include/data
   ${CMAKE_SOURCE_DIR}/include/boundary
   ${CMAKE_SOURCE_DIR}/include/domain
+  ${CMAKE_SOURCE_DIR}/include/solver
 )
 
 
@@ -42,7 +43,7 @@ set(CLIP_INC
   include/utils/TimeInfo.cuh
   include/input/InputData.cuh
   include/boundary/Boundary.cuh
-  include/equation/equation.cuh
+  include/solver/Solver.cuh
   include/equation/NsAllen.cuh
   include/domain/Domain.cuh
 )
@@ -53,7 +54,7 @@ set(CLIP_SRC
   src/data/DataArray.cu
   src/utils/TimeInfo.cu
   src/input/InputData.cu
-  src/equation/equation.cu
+  src/solver/Solver.cu
   src/equation/NsAllen.cu
   src/boundary/Boundary.cu
   src/domain/Domain.cu
