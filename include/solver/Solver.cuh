@@ -4,6 +4,7 @@
 #include <Solver.cuh>
 #include <DataArray.cuh>
 #include <Boundary.cuh>
+#include <Domain.cuh>
 
 // namespace WMRT
 // {
@@ -58,16 +59,15 @@ namespace clip
 
         virtual ~Solver();
 
-        template <int Q>
-        void launchPeriodicBoundaryF(
-            double *dev_h,
-            double *dev_g,
-            CLIP_UINT Nx,
-            CLIP_UINT Ny,
-            CLIP_UINT Nz = 1 // Default for 2D
-        );
+
 
         void flagGenLauncher3();
+
+
+
+
+        template <int Q>
+        void periodicBoundary(double *dev_a, double *dev_b = nullptr);
 
 
 
@@ -192,12 +192,11 @@ namespace clip
     private:
         InputData m_idata;
         Boundary m_boundary;
-        size_t m_nVelocity;
+        Domain m_domain;
 
-        CLIP_INT *m_ex;
-        CLIP_INT *m_ey;
-        CLIP_INT *m_ez;
-        CLIP_REAL *m_wa;
+
+
+
     };
 
 }

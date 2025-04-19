@@ -40,28 +40,28 @@ namespace clip
 
 
     public:
-        // explicit NSAllen(InputData idata);
+        explicit NSAllen(InputData idata);
 
 
-        NSAllen(InputData idata)
-        : m_idata(idata), Solver(idata)
-    {
+    //     NSAllen(InputData idata)
+    //     : m_idata(idata), Solver(idata)
+    // {
 
 
-        flagGenLauncher2();
+    //     flagGenLauncher2();
 
-        // initialization();
-    };
+    //     // initialization();
+    // };
 
 
 
 
         ~NSAllen();
 
-        __device__ __forceinline__ static CLIP_REAL Equilibrium_new(int q, CLIP_REAL Ux, CLIP_REAL Uy, CLIP_REAL Uz);
+        __device__ __forceinline__ static CLIP_REAL Equilibrium_new(const WMRT::velSet velSet, int q, CLIP_REAL Ux, CLIP_REAL Uy, CLIP_REAL Uz);
 
         template <CLIP_UINT q, size_t dim>
-        __device__ __forceinline__ static void calculateVF(CLIP_REAL gneq[q], CLIP_REAL fv[dim], CLIP_REAL tau, CLIP_REAL dcdx, CLIP_REAL dcdy, CLIP_REAL dcdz = 0);
+        __device__ __forceinline__ static void calculateVF(const WMRT::velSet velSet, const InputData::SimParams params, CLIP_REAL gneq[q], CLIP_REAL fv[dim], CLIP_REAL tau, CLIP_REAL dcdx, CLIP_REAL dcdy, CLIP_REAL dcdz = 0);
         
 
 

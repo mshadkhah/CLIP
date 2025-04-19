@@ -44,6 +44,9 @@ namespace clip
             CLIP_REAL mobility;
 
             CaseType caseType;
+
+            CLIP_REAL RhoH;
+            CLIP_REAL RhoL;
         };
 
         SimParams params;

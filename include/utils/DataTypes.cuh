@@ -28,3 +28,9 @@ typedef double CLIP_REAL;
 
 
 
+#define SAFE_CUDA_FREE(ptr) \
+    if (ptr)                \
+    {                       \
+        cudaFree(ptr);      \
+        ptr = nullptr;      \
+    }
