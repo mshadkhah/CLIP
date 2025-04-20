@@ -9,7 +9,7 @@ namespace clip
     public:
         explicit InputData(const std::string &filename = "config.txt");
         void read_config();
-        std::string getConfig();
+        std::string getConfig() const;
 
         enum CaseType
         {
@@ -29,6 +29,7 @@ namespace clip
             CLIP_UINT noOutFiles;
 
             CLIP_UINT N[MAX_DIM];
+            CLIP_REAL C[MAX_DIM];
 
             CLIP_REAL Bo;
             CLIP_REAL Re;
@@ -47,6 +48,15 @@ namespace clip
 
             CLIP_REAL RhoH;
             CLIP_REAL RhoL;
+
+            CLIP_REAL sigma;
+
+            CLIP_REAL radius;
+            CLIP_REAL betaConstant;
+            CLIP_REAL kConstant;
+
+            CLIP_REAL tauL;
+            CLIP_REAL tauH;
         };
 
         SimParams params;

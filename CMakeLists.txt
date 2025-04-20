@@ -58,12 +58,7 @@ set(CLIP_SRC
   src/equation/NsAllen.cu
   src/boundary/Boundary.cu
   src/domain/Domain.cu
-  src/test.cu
 )
-
-
-add_library(clip_lib STATIC ${CLIP_SRC} ${CLIP_INC})
-
 
 
 
@@ -72,6 +67,7 @@ add_executable(clip
   src/main.cu
 )
 
+add_library(clip_lib STATIC ${CLIP_SRC} ${CLIP_INC})
 
 # Preprocessor definitions
 if (ENABLE_2D)

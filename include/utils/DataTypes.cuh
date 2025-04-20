@@ -20,6 +20,7 @@ typedef double CLIP_REAL;
 #endif
 
 #define MAX_DIM 3
+#define SCALAR_FIELD 1
 
 #define SCALAR 0
 #define IDX_X 0

@@ -3,6 +3,7 @@
 #include <InputData.cuh>
 #include <DataTypes.cuh>
 #include <Domain.cuh>
+#include <Solver.cuh>
 
 const CLIP_REAL pi = 3.14159265358979L;
 
@@ -31,16 +32,41 @@ namespace clip
     {
 
     public:
-        explicit DataArray(InputData idata);
-
-     
+        explicit DataArray(const InputData& idata, const Domain& domain);
 
         template <typename T>
-        void allocateOnDevice(T *&devPtr, const char *name, CLIP_UINT ndof = SCALAR)
+        void allocateOnDevice(T *&devPtr, const char *name, CLIP_UINT ndof = SCALAR_FIELD)
         {
-            cudaMalloc((void **)&devPtr, ndof * m_domain.domainSize * sizeof(T));
+            cudaMalloc((void **)&devPtr, ndof * m_domain->domainSize * sizeof(T));
             cudaCheckErrors(("cudaMalloc '" + std::string(name) + "' fail").c_str());
             cudaDeviceSynchronize();
+        }
+
+        template <typename T>
+        void allocateOnHost(T *&hostPtr, const char *name, CLIP_UINT ndof = SCALAR_FIELD)
+        {
+            // Standard malloc or aligned malloc if needed
+            hostPtr = (T *)malloc(ndof * m_domain->domainSize * sizeof(T));
+            if (!hostPtr)
+            {
+                std::cerr << "Host malloc failed for: " << name << std::endl;
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        template <typename T>
+        void copyToDevice(T*& devPtr, const T* hostPtr, const char* name, CLIP_UINT ndof = SCALAR_FIELD)
+        {
+            cudaMemcpy(devPtr, hostPtr, ndof * m_domain->domainSize * sizeof(T), cudaMemcpyHostToDevice);
+            cudaCheckErrors(("copyToDevice failed for " + std::string(name)).c_str());
+        }
+        
+
+        template <typename T>
+        void copyFromDevice(T &hostStruct, const T *devPtr, const char *name, CLIP_UINT ndof = SCALAR_FIELD)
+        {
+            cudaMemcpy(&hostStruct, devPtr, ndof * m_domain->domainSize * sizeof(T), cudaMemcpyDeviceToHost);
+            cudaCheckErrors(("copyFromDevice failed for " + std::string(name)).c_str());
         }
 
         template <typename T, size_t N>
@@ -58,25 +84,48 @@ namespace clip
             cudaCheckErrors((std::string("cudaMemcpyToSymbol '") + name + "' failed").c_str());
             cudaDeviceSynchronize();
         }
-        
 
-
-        
         dim3 dimBlock, dimGrid;
-        
+
+
+        struct deviceDataArray
+        {
+        CLIP_REAL *dev_f;
+        CLIP_REAL *dev_f_post;
+        CLIP_REAL *dev_g;
+        CLIP_REAL *dev_g_post;
+        CLIP_REAL *dev_rho;
+        CLIP_REAL *dev_p;
+        CLIP_REAL *dev_c;
+        CLIP_REAL *dev_dc;
+        CLIP_REAL *dev_vel;
+        CLIP_REAL *dev_mu;
+        CLIP_REAL *dev_normal;
+        };
+
+        struct hostDataArray
+        {
+            CLIP_REAL *host_c;
+            CLIP_REAL *host_rho;
+            CLIP_REAL *host_p;
+            CLIP_REAL *host_vel;
+        };
+
+
+
+        deviceDataArray deviceDA;
+        hostDataArray hostDA;
+
+
+
+
+    void createVectors();
+
+
     private:
-        CLIP_UINT m_nVelocity;
-        CLIP_UINT latticeSize;
-        CLIP_UINT domainSize;
-        CLIP_UINT *m_domainExtent;
-        CLIP_UINT *m_domainExtentGhosted;
 
-        InputData m_idata;
-        Domain m_domain;
-
-    protected:
-
-
+        const InputData* m_idata;
+        const Domain* m_domain;
 
     };
 

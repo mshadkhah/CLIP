@@ -3,8 +3,8 @@
 namespace clip
 {
 
-    Solver::Solver(InputData idata)
-        : m_idata(idata), DataArray(idata), m_boundary(idata), m_domain(idata)
+    Solver::Solver(const InputData& idata)
+        : m_idata(&idata), DataArray(idata), m_boundary(idata), m_domain(idata)
     {
 
 #ifdef ENABLE_2D
@@ -159,9 +159,13 @@ namespace clip
     }
 
     template <int Q>
-    void Solver::periodicBoundary(double *dev_a, double *dev_b)
+    void Solver::periodicBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_b)
     {
-        if(m_boundary.isPeriodic)
-        kernelPeriodicBoundary<Q><<<DataArray::dimGrid, DataArray::dimBlock>>>(m_domain.info, m_boundary.BCMap, dev_a, dev_b);
+        if (m_boundary.isPeriodic)
+            kernelPeriodicBoundary<Q><<<DataArray::dimGrid, DataArray::dimBlock>>>(m_domain.info, m_boundary.BCMap, dev_a, dev_b);
     }
+
+    template void clip::Solver::periodicBoundary<9>(CLIP_REAL *, CLIP_REAL *);
+    template void clip::Solver::periodicBoundary<19>(CLIP_REAL *, CLIP_REAL *);
+    template void clip::Solver::periodicBoundary<1>(CLIP_REAL *, CLIP_REAL *);
 }

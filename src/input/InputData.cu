@@ -280,7 +280,7 @@ namespace clip
     
 
 
-    std::string InputData::getConfig(){
+    std::string InputData::getConfig() const {
         return m_filename;
     }
     

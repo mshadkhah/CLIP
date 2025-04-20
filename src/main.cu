@@ -2,22 +2,32 @@
 #include <TimeInfo.cuh>  
 #include <NsAllen.cuh>
 #include <Boundary.cuh>
+#include <DataArray.cuh>
 
 
 int main() {
 
     clip::InputData input("../config.txt");
-    clip::Boundary boundary(input);
-    clip::TimeInfo ti(input);
-    clip::NSAllen eqn(input);
+
+    clip::Domain domain(input);
+    clip::DataArray DA(input, domain);
+    clip::Boundary boundary(input, domain, DA);
+
+    // clip::TimeInfo ti(input);
+    // clip::NSAllen eqn(input);
+
+
+    // eqn.setVectors();
+    // eqn.initializer();
+    // eqn.collision();
 
     
-    while(ti.getCurrentStep() < ti.getFinalStep()){
+    // while(ti.getCurrentStep() < ti.getFinalStep()){
 
-        std::cout << "Testing ..." << std::endl;
+    //     std::cout << "Testing ..." << std::endl;
 
-        ti.increment();
-    }
+    //     ti.increment();
+    // }
 
 
     

@@ -8,16 +8,16 @@ namespace clip
 {
 
 
-    DataArray::DataArray(InputData idata)
-    : m_idata(idata), m_domain(m_idata)
+    DataArray::DataArray(const InputData& idata, const Domain& domain)
+    : m_idata(&idata), m_domain(&domain)
 {
 
     CLIP_INT threadsAlongX = 8, threadsAlongY = 8, threadsAlongZ = 1;
     dimBlock = dim3(threadsAlongX, threadsAlongY, threadsAlongZ);
 
 #ifdef ENABLE_2D
-    CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(m_idata.params.N[IDX_X] / threadsAlongX));
-    CLIP_INT gridY = static_cast<CLIP_INT>(std::ceil(m_idata.params.N[IDX_Y] / threadsAlongY));
+    CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(m_idata->params.N[IDX_X] / threadsAlongX)); /// need to fix
+    CLIP_INT gridY = static_cast<CLIP_INT>(std::ceil(m_idata->params.N[IDX_Y] / threadsAlongY));
     dimGrid = dim3(gridX, gridY);
 
 #elif defined(ENABLE_3D)
@@ -29,14 +29,32 @@ namespace clip
 
 #endif
 
-    latticeSize = domainSize * m_nVelocity;
-
-
-
 
 };
 
 
+
+void DataArray::createVectors()
+{
+    const CLIP_UINT Q = Solver::WMRTvelSet::Q;
+
+    this->allocateOnDevice(deviceDA.dev_f, "dev_f", Q);
+    this->allocateOnDevice(deviceDA.dev_g, "dev_g", Q);
+    this->allocateOnDevice(deviceDA.dev_f_post, "dev_f_post", Q);
+    this->allocateOnDevice(deviceDA.dev_g_post, "dev_g_post", Q);
+
+    this->allocateOnDevice(deviceDA.dev_rho, "dev_rho", SCALAR_FIELD);
+    this->allocateOnDevice(deviceDA.dev_mu, "dev_mu", SCALAR_FIELD);
+    this->allocateOnDevice(deviceDA.dev_c, "dev_c", SCALAR_FIELD);
+    this->allocateOnDevice(deviceDA.dev_p, "dev_p", SCALAR_FIELD);
+
+    this->allocateOnDevice(deviceDA.dev_vel, "dev_vel", DIM);
+    this->allocateOnDevice(deviceDA.dev_dc, "dev_dc", DIM);
+    this->allocateOnDevice(deviceDA.dev_normal, "dev_normal", DIM);
+
+    this->allocateOnHost(hostDA.host_c, "host_c", SCALAR_FIELD);
+
+}
 
 
 
