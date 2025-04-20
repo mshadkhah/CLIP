@@ -1,9 +1,12 @@
 #pragma once
-#include <includes.h>
-#include <InputData.cuh>
-#include <DataTypes.cuh>
-#include <Domain.cuh>
-#include <Solver.cuh>
+#include "includes.h"
+#include "InputData.cuh"
+#include "DataTypes.cuh"
+#include "Domain.cuh"
+#include "WMRT.cuh"
+// #include "Solver.cuh"
+
+
 
 const CLIP_REAL pi = 3.14159265358979L;
 
@@ -120,6 +123,8 @@ namespace clip
 
 
     void createVectors();
+    void updateDevice();
+    void updateHost();
 
 
     private:

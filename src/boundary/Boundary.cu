@@ -7,7 +7,7 @@
 namespace clip
 {
 
-    Boundary::Boundary(const InputData& idata, const Domain& domain, const DataArray& DA)
+    Boundary::Boundary(const InputData& idata, const Domain& domain, DataArray& DA)
         : m_idata(&idata), m_DA(&DA), m_domain(&domain)
     {
 
@@ -20,7 +20,7 @@ namespace clip
 
         std::cout << dimBlock.x << " " << dimBlock.y << "\n";
 
-        m_DA.allocateOnDevice(dev_boundaryFlags, "dev_boundaryFlags", static_cast<CLIP_UINT>(Objects::MAX));
+        m_DA->allocateOnDevice(dev_boundaryFlags, "dev_boundaryFlags", static_cast<CLIP_UINT>(Objects::MAX));
 
         // flagGenLauncher(dev_boundaryFlags, m_domain.info);
     }

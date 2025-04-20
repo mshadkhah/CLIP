@@ -1,7 +1,4 @@
-#include <DataArray.cuh>
-
-
-
+#include "DataArray.cuh"
 
 
 namespace clip
@@ -16,15 +13,15 @@ namespace clip
     dimBlock = dim3(threadsAlongX, threadsAlongY, threadsAlongZ);
 
 #ifdef ENABLE_2D
-    CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(m_idata->params.N[IDX_X] / threadsAlongX)); /// need to fix
-    CLIP_INT gridY = static_cast<CLIP_INT>(std::ceil(m_idata->params.N[IDX_Y] / threadsAlongY));
+    CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(m_domain->info.extent[IDX_X] / threadsAlongX)); /// need to fix
+    CLIP_INT gridY = static_cast<CLIP_INT>(std::ceil(m_domain->info.extent[IDX_Y] / threadsAlongY));
     dimGrid = dim3(gridX, gridY);
 
 #elif defined(ENABLE_3D)
 
-    CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(m_idata.params.N[IDX_X] / threadsAlongX));
-    CLIP_INT gridY = static_cast<CLIP_INT>(std::ceil(m_idata.params.N[IDX_Y] / threadsAlongY));
-    CLIP_INT gridZ = static_cast<CLIP_INT>(std::ceil(m_idata.params.N[IDX_Z] / threadsAlongZ));
+    CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(m_domain->info.extent[IDX_X] / threadsAlongX));
+    CLIP_INT gridY = static_cast<CLIP_INT>(std::ceil(m_domain->info.extent[IDX_Y] / threadsAlongY));
+    CLIP_INT gridZ = static_cast<CLIP_INT>(std::ceil(m_domain->info.extent[IDX_Z] / threadsAlongZ));
     dimGrid = dim3(gridX, gridY, gridZ);
 
 #endif
@@ -36,7 +33,7 @@ namespace clip
 
 void DataArray::createVectors()
 {
-    const CLIP_UINT Q = Solver::WMRTvelSet::Q;
+    const CLIP_UINT Q = WMRT::WMRTvelSet::Q;
 
     this->allocateOnDevice(deviceDA.dev_f, "dev_f", Q);
     this->allocateOnDevice(deviceDA.dev_g, "dev_g", Q);
@@ -51,10 +48,53 @@ void DataArray::createVectors()
     this->allocateOnDevice(deviceDA.dev_vel, "dev_vel", DIM);
     this->allocateOnDevice(deviceDA.dev_dc, "dev_dc", DIM);
     this->allocateOnDevice(deviceDA.dev_normal, "dev_normal", DIM);
+    
+    Logger::Success("Device vectors are allocated successfully.");
 
     this->allocateOnHost(hostDA.host_c, "host_c", SCALAR_FIELD);
+    this->allocateOnHost(hostDA.host_p, "host_p", SCALAR_FIELD);
+    this->allocateOnHost(hostDA.host_vel, "host_vel", DIM);
+    this->allocateOnHost(hostDA.host_rho, "host_rho", SCALAR_FIELD);
+
+    Logger::Success("Host vectors are allocated successfully.");
+
+
+
 
 }
+
+void DataArray::updateDevice()
+{
+    const CLIP_UINT Q = WMRT::WMRTvelSet::Q;
+
+    copyToDevice(deviceDA.dev_c, hostDA.host_c, "dev_c", SCALAR_FIELD);
+
+    // allocateOnDevice(deviceDA.dev_f, "dev_f", Q);
+    // allocateOnDevice(deviceDA.dev_g, "dev_g", Q);
+    // allocateOnDevice(deviceDA.dev_f_post, "dev_f_post", Q);
+    // allocateOnDevice(deviceDA.dev_g_post, "dev_g_post"
+    // allocateOnDevice(deviceDA.dev_rho, "dev_rho", SCALAR_FIELD);
+    // allocateOnDevice(deviceDA.dev_mu, "dev_mu", SCALAR_FIELD);
+    // allocateOnDevice(deviceDA.dev_c, "dev_c", SCALAR_FIELD);
+    // allocateOnDevice(deviceDA.dev_p, "dev_p", SCALAR_FI
+    // allocateOnDevice(deviceDA.dev_vel, "dev_vel", DIM);
+    // allocateOnDevice(deviceDA.dev_dc, "dev_dc", DIM);
+    // allocateOnDevice(deviceDA.dev_normal, "dev_normal", DIM);
+    
+    // Logger::Success("Device vectors are allocated successfully.");
+
+    // allocateOnHost(hostDA.host_c, "host_c", SCALAR_FIELD);
+    // allocateOnHost(hostDA.host_p, "host_p", SCALAR_FIELD);
+    // allocateOnHost(hostDA.host_vel, "host_vel", DIM);
+    // allocateOnHost(hostDA.host_rho, "host_rho", SCALAR_FIELD);
+
+    // Logger::Success("Host vectors are allocated successfully.");
+
+
+
+
+}
+
 
 
 

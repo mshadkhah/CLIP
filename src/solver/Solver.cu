@@ -3,8 +3,8 @@
 namespace clip
 {
 
-    Solver::Solver(const InputData& idata)
-        : m_idata(&idata), DataArray(idata), m_boundary(idata), m_domain(idata)
+    Solver::Solver(const InputData& idata, const Domain& domain, DataArray& DA, const Boundary& boundary)
+        : m_idata(&idata), m_domain(&domain), m_DA(&DA), m_boundary(&boundary)
     {
 
 #ifdef ENABLE_2D
@@ -18,38 +18,7 @@ namespace clip
         // flagGenLauncher3();
     }
 
-    //     Equation::Equation(InputData idata)
-    //     : m_idata(idata), DataArray(idata){
 
-    //         m_nVelocity = m_idata.nVelocity;
-
-    // #ifdef ENABLE_2D
-    //         m_ex = new CLIP_INT[WMRT::Q]{0, 1, 0, -1, 0, 1, -1, -1, 1};
-    //         m_ey = new CLIP_INT[WMRT::Q]{0, 0, 1, 0, -1, 1, 1, -1, -1};
-    //         m_wa = new CLIP_REAL[WMRT::Q]{4.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
-
-    //         this->symbolOnDevice(WMRT::ex, m_ex, "ex");
-    //         this->symbolOnDevice(WMRT::ey, m_ey, "ey");
-    //         this->symbolOnDevice(WMRT::wa, m_wa, "wa");
-
-    // #elif defined(ENABLE_3D)
-    //         m_ex = new CLIP_INT[WMRT::Q]{0, 1, 0, -1, 0, 1, -1, -1, 1};
-    //         m_ey = new CLIP_INT[WMRT::Q]{0, 0, 1, 0, -1, 1, 1, -1, -1};
-    //         m_ez = new CLIP_INT[WMRT::Q]{0, 0, 1, 0, -1, 1, 1, -1, -1};
-    //         m_wa = new CLIP_REAL[WMRT::Q]{4.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0};
-
-    //         this->symbolOnDevice(WMRT::ex, m_ex, "ex");
-    //         this->symbolOnDevice(WMRT::ey, m_ey, "ey");
-    //         this->symbolOnDevice(WMRT::ez, m_ez, "ez");
-    //         this->symbolOnDevice(WMRT::wa, m_wa, "wa");
-
-    // #endif
-
-    // // this->symbolOnDevice(boundary::s_boundaries, m_idata.boundaries.data(), "boundaries");
-
-    // flagGenLauncher3();
-
-    //     }
 
     __global__ void flagGen3()
     {
@@ -80,7 +49,7 @@ namespace clip
     void Solver::flagGenLauncher3()
     {
 
-        flagGen3<<<dimGrid, dimBlock>>>();
+        // flagGen3<<<dimGrid, dimBlock>>>();
         cudaDeviceSynchronize();
     }
 
@@ -92,7 +61,6 @@ namespace clip
     __global__ void kernelPeriodicBoundary(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap,
                                            CLIP_REAL *dev_a, CLIP_REAL *dev_b = nullptr)
     {
-        using namespace boundary;
 
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
@@ -161,8 +129,8 @@ namespace clip
     template <int Q>
     void Solver::periodicBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_b)
     {
-        if (m_boundary.isPeriodic)
-            kernelPeriodicBoundary<Q><<<DataArray::dimGrid, DataArray::dimBlock>>>(m_domain.info, m_boundary.BCMap, dev_a, dev_b);
+        // if (m_boundary->isPeriodic)
+            // kernelPeriodicBoundary<Q><<<DataArray::dimGrid, DataArray::dimBlock>>>(m_domain.info, m_boundary.BCMap, dev_a, dev_b);
     }
 
     template void clip::Solver::periodicBoundary<9>(CLIP_REAL *, CLIP_REAL *);

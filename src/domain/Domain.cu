@@ -25,12 +25,14 @@ namespace clip
 
 
 
-        info.ghostDomainMinIdx[IDX_X] = 1;
-        info.ghostDomainMinIdx[IDX_Y] = 1;
+        info.domainMinIdx[IDX_X] = 1;
+        info.domainMinIdx[IDX_Y] = 1;
+        info.domainMinIdx[IDX_Z] = 0;
 
 
         info.domainMaxIdx[IDX_X] = info.extent[IDX_X] - 2;
         info.domainMaxIdx[IDX_Y] = info.extent[IDX_Y] - 2;
+        info.domainMaxIdx[IDX_Z] = 0;
 
         domainSize = info.extent[IDX_X] * info.extent[IDX_Y];
 

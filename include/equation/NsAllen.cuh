@@ -3,7 +3,7 @@
 #include <InputData.cuh>
 #include <Solver.cuh>
 #include <DataArray.cuh>
-
+#include "WMRT.cuh"
 
 namespace clip
 {
@@ -11,68 +11,31 @@ namespace clip
     class NSAllen : public Solver
     {
 
-    private:
-        
-
-    protected:
-        // data structures
-        InputData m_idata;
-
-
-
-
-
-        size_t m_nVelocity;
-
-
-        /// funtions
-
-
-        Solver::WMRTvelSet m_velset;
-
-
-
     public:
-        explicit NSAllen(InputData idata);
-
-        void setVectors();
-
-
-    //     NSAllen(InputData idata)
-    //     : m_idata(idata), Solver(idata)
-    // {
-
-
-    //     flagGenLauncher2();
-
-    //     // initialization();
-    // };
-
-
-
+        explicit NSAllen(const InputData &idata, const Domain &domain, DataArray &DA, const Boundary &boundary);
 
         ~NSAllen();
 
-        __device__ __forceinline__ static CLIP_REAL Equilibrium_new(const Solver::WMRTvelSet velSet, int q, CLIP_REAL Ux, CLIP_REAL Uy, CLIP_REAL Uz);
+        __device__ __forceinline__ static CLIP_REAL Equilibrium_new(const WMRT::WMRTvelSet velSet, CLIP_UINT q, CLIP_REAL Ux, CLIP_REAL Uy, CLIP_REAL Uz = 0);
 
         template <CLIP_UINT q, size_t dim>
-        __device__ __forceinline__ static void calculateVF(const Solver::WMRTvelSet velSet, const InputData::SimParams params, CLIP_REAL gneq[q], CLIP_REAL fv[dim], CLIP_REAL tau, CLIP_REAL dcdx, CLIP_REAL dcdy, CLIP_REAL dcdz = 0);
+        __device__ __forceinline__ static void calculateVF(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, CLIP_REAL gneq[q], CLIP_REAL fv[dim], CLIP_REAL tau, CLIP_REAL dcdx, CLIP_REAL dcdy, CLIP_REAL dcdz = 0);
         
 
-
-        void collision();
-        void streaming();
-        void macroscopic();
+        void flagGenLauncher2();
         void solve();
         void initializer();
-        void flagGenLauncher2 (const Solver::WMRTvelSet velSet);
+        
+    private:
+        void initialization();
+        
+        WMRT::WMRTvelSet m_velset;
+        InputData::SimParams m_params;
+        Domain::DomainInfo m_info;
+        dim3 dimGrid, dimBlock;
 
-// #ifdef ENABLE_2D
-//         static constexpr CLIP_UINT Q = 9;
-// #elif defined(ENABLE_3D)
-//         static constexpr CLIP_UINT Q = 19;
-// #endif
-
-
+        void streaming();
+        void collision();
+        void macroscopic();
     };
 }

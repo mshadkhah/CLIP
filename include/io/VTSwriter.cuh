@@ -5,6 +5,7 @@
 #include <DataArray.cuh>
 #include <Boundary.cuh>
 #include <Domain.cuh>
+#include "TimeInfo.cuh"
 
 
 namespace clip
@@ -14,9 +15,9 @@ namespace clip
     {
 
     public:
-        explicit Solver(InputData idata);
+        explicit VTSwriter(const InputData& idata, const Domain& domain, const TimeInfo& ti);
 
-        virtual ~Solver();
+        virtual ~VTSwriter();
 
 
 
@@ -24,7 +25,11 @@ namespace clip
         
 
     private:
-    Domain m_domain;
+    const Domain* m_domain;
+    const InputData* m_idata;
+    const TimeInfo* m_ti;
+
+    void writeArray();
 
 
     }

@@ -16,4 +16,5 @@
 #include <algorithm>
 #include <cctype> 
 #include <set>
+#include "Logger.cuh"
 

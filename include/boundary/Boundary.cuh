@@ -1,27 +1,10 @@
 #pragma once
-#include <InputData.cuh>
-#include <includes.h>
-#include <DataArray.cuh>
-#include <Domain.cuh>
 
-namespace boundary
-{
-    constexpr int MAX_BOUNDARIES = 6;
-    // __constant__ clip::InputBoundary::Entry s_boundaries[MAX_BOUNDARIES];
-    __constant__ CLIP_UINT s_XMinus;
-    __constant__ CLIP_UINT s_XPlus;
-    __constant__ CLIP_UINT s_YMinus;
-    __constant__ CLIP_UINT s_YPlus;
-    __constant__ CLIP_UINT s_ZMinus;
-    __constant__ CLIP_UINT s_ZPlus;
+#include "InputData.cuh"
+#include "includes.h"
+#include "DataArray.cuh"
+#include "Domain.cuh"
 
-    __constant__ CLIP_UINT s_XMinus_G;
-    __constant__ CLIP_UINT s_XPlus_G;
-    __constant__ CLIP_UINT s_YMinus_G;
-    __constant__ CLIP_UINT s_YPlus_G;
-    __constant__ CLIP_UINT s_ZMinus_G;
-    __constant__ CLIP_UINT s_ZPlus_G;
-}
 
 namespace object
 {
@@ -40,7 +23,7 @@ namespace clip
     class Boundary
     {
     public:
-        explicit Boundary(const InputData& idata, const Domain& domain, const DataArray& DA);
+        explicit Boundary(const InputData& idata, const Domain& domain, DataArray& DA);
 
         ~Boundary();
 
@@ -93,7 +76,7 @@ namespace clip
     private:
         const InputData* m_idata;
         const Domain* m_domain;
-        const DataArray* m_DA;
+        DataArray* m_DA;
         dim3 dimBlock, dimGrid;
 
 

@@ -41,9 +41,11 @@ set(CLIP_INC
   include/utils/DataTypes.cuh
   include/data/DataArray.cuh
   include/utils/TimeInfo.cuh
+  include/utils/Logger.cuh
   include/input/InputData.cuh
   include/boundary/Boundary.cuh
   include/solver/Solver.cuh
+  include/solver/WMRT.cuh
   include/equation/NsAllen.cuh
   include/domain/Domain.cuh
 )
