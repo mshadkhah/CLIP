@@ -66,9 +66,9 @@ namespace clip
         
 
         template <typename T>
-        void copyFromDevice(T &hostStruct, const T *devPtr, const char *name, CLIP_UINT ndof = SCALAR_FIELD)
+        void copyFromDevice(T*&hostPtr, const T *devPtr, const char *name, CLIP_UINT ndof = SCALAR_FIELD)
         {
-            cudaMemcpy(&hostStruct, devPtr, ndof * m_domain->domainSize * sizeof(T), cudaMemcpyDeviceToHost);
+            cudaMemcpy(hostPtr, devPtr, ndof * m_domain->domainSize * sizeof(T), cudaMemcpyDeviceToHost);
             cudaCheckErrors(("copyFromDevice failed for " + std::string(name)).c_str());
         }
 

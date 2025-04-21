@@ -33,6 +33,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/include/boundary
   ${CMAKE_SOURCE_DIR}/include/domain
   ${CMAKE_SOURCE_DIR}/include/solver
+  ${CMAKE_SOURCE_DIR}/include/io
 )
 
 
@@ -48,6 +49,7 @@ set(CLIP_INC
   include/solver/WMRT.cuh
   include/equation/NsAllen.cuh
   include/domain/Domain.cuh
+  include/io/VTSwriter.cuh
 )
 
 
@@ -60,6 +62,7 @@ set(CLIP_SRC
   src/equation/NsAllen.cu
   src/boundary/Boundary.cu
   src/domain/Domain.cu
+  src/io/VTSwriter.cu
 )
 
 

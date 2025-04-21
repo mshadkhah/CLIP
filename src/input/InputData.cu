@@ -10,6 +10,8 @@ namespace clip
         read_config();
     }
 
+
+
     void InputData::read_config()
     {
         std::cerr << "Reading Parameters:" << std::endl;
@@ -19,6 +21,44 @@ namespace clip
         read("finalStep", params.finalStep);
         read("noOutFiles", params.noOutFiles);
         read("N", params.N);
+        read("C", params.C);
+        read("interfaceWidth", params.interfaceWidth);
+        read("gravity", params.gravity);
+        read("mobility", params.mobility);
+        // read("RhoL", params.RhoL);
+        // read("RhoH", params.RhoH);
+
+
+        read("case", params.caseType);
+        if(params.caseType  == CaseType::Bubble || CaseType::Drop){
+            read("Bo", params.Bo);
+            read("Re", params.Re);
+
+            params.RhoH = 1.0;
+            params.RhoL = params.RhoH / 500;
+
+
+            params.sigma = (params.gravity * (params.RhoH - params.RhoL) * params.D * params.D) / params.Bo;
+            params.muH = sqrt(params.gravity * params.RhoH * (params.RhoH - params.RhoL) * params.D * params.D * params.D) / params.Re;
+            params.muL = params.muH / 70;
+
+
+            params.tauH = 3.0 * ( params.muH /  params.RhoH);
+            params.tauL = 3.0 * ( params.muL /  params.RhoL);
+
+
+            params.kConstant = 1.50 * params.sigma * params.interfaceWidth;
+            params.betaConstant = 8.0 * params.sigma / params.interfaceWidth;
+
+        }
+
+        
+
+
+
+
+
+
         // read("Nx", Nx);
         // read("Ny", Ny);
         // read("Nz", Nz);

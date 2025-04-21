@@ -24,8 +24,9 @@ namespace clip
 
         void flagGenLauncher2();
         void solve();
-        void initializer();
-        
+        void initialCondition();
+        void deviceInitializer();
+
     private:
         void initialization();
         

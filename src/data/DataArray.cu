@@ -13,7 +13,7 @@ namespace clip
     dimBlock = dim3(threadsAlongX, threadsAlongY, threadsAlongZ);
 
 #ifdef ENABLE_2D
-    CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(m_domain->info.extent[IDX_X] / threadsAlongX)); /// need to fix
+    CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(m_domain->info.extent[IDX_X] / threadsAlongX));
     CLIP_INT gridY = static_cast<CLIP_INT>(std::ceil(m_domain->info.extent[IDX_Y] / threadsAlongY));
     dimGrid = dim3(gridX, gridY);
 
@@ -68,6 +68,7 @@ void DataArray::updateDevice()
     const CLIP_UINT Q = WMRT::WMRTvelSet::Q;
 
     copyToDevice(deviceDA.dev_c, hostDA.host_c, "dev_c", SCALAR_FIELD);
+    copyToDevice(deviceDA.dev_vel, hostDA.host_vel, "dev_vel", DIM);
 
     // allocateOnDevice(deviceDA.dev_f, "dev_f", Q);
     // allocateOnDevice(deviceDA.dev_g, "dev_g", Q);
@@ -96,9 +97,13 @@ void DataArray::updateDevice()
 }
 
 
+void DataArray::updateHost()
+{
+    const CLIP_UINT Q = WMRT::WMRTvelSet::Q;
 
+    copyFromDevice(hostDA.host_c, deviceDA.dev_c, "host_c", SCALAR_FIELD);
 
-
+}
 
 
 

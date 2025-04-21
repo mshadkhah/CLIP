@@ -3,6 +3,7 @@
 #include <NsAllen.cuh>
 #include <Boundary.cuh>
 #include <DataArray.cuh>
+#include "VTSwriter.cuh"
 
 int main()
 {
@@ -17,20 +18,31 @@ int main()
     clip::Boundary boundary(input, domain, DA);
     clip::NSAllen eqn(input, domain, DA, boundary);
 
+
     clip::TimeInfo ti(input);
-    eqn.initializer();
+    eqn.initialCondition();
     DA.updateDevice();
+    eqn.deviceInitializer();
 
-    // eqn.setVectors();
-    // eqn.initializer();
-    // eqn.collision();
 
-    // while(ti.getCurrentStep() < ti.getFinalStep()){
+    clip::VTSwriter vi(DA, input, domain, ti, "test", "test");
+    
 
-    //     std::cout << "Testing ..." << std::endl;
+    vi.WriteVTSBinaryFile();
 
-    //     ti.increment();
-    // }
+
+    while(ti.getCurrentStep() < ti.getFinalStep()){
+
+        eqn.solve();
+
+        ti.increment();
+    }
+
+        DA.updateHost();
+        vi.WriteVTSBinaryFile();
+
+
+
 
     return 0;
 }

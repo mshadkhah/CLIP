@@ -1,44 +1,42 @@
-L0 = 128
+case = bubble
+
 finalStep = 10
 noOutFiles = 10
-N = [32, 16, 1]
 
-r0 = 64
-X0 = 128
-Y0 = 128
+N = [64, 128, 1]
+C = [32.5, 64.5, 1]
+D = 25
 
-
-Bo = 17
-Mo = 711
-rhoRatio = 1000
-muRatio = 100
+Bo = 20
+Re = 100
 gravity = 1e-7
-interfaceWidth = 5
 mobility = 0.05
+interfaceWidth = 1
+
 
 
 boundary = [
   {
     side = "x-"
-    temperature_type = "sbm"
+    temperature_type = "periodic"
     temperature = 0.01
     ifRefine = true
   },
     {
     side = "x+"
-    temperature_type = "sbm"
+    temperature_type = "periodic"
     temperature = 0.01
     ifRefine = true
   },
     {
     side = "y-"
-    temperature_type = "sbm"
+    temperature_type = "periodic"
     temperature = 0.01
     ifRefine = true
   },
   {
     side = "y+"
-    temperature_type = "sbm"
+    temperature_type = "periodic"
     temperature = 0.01
     ifRefine = true
   }

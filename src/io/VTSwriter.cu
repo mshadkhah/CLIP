@@ -3,71 +3,137 @@
 namespace clip
 {
 
-    VTSwriter::VTSwriter(const InputData& idata, const Domain& domain, const TimeInfo& ti)
-        : m_idata(&idata), m_domain(&domain), m_ti(&ti)
+    VTSwriter::VTSwriter(const DataArray &DA, const InputData &idata, const Domain &domain, const TimeInfo &ti, const std::string &folder, const std::string &baseName)
+        : m_DA(&DA), m_idata(&idata), m_domain(&domain), m_ti(&ti), m_folder(folder), m_baseName(baseName)
     {
     }
 
-    // void WriteVTKBinaryFile(double t, int Nx, int Ny, double L0,
-    //                         const double *host_ux, const double *host_uy,
-    //                         const double *host_c, const double *host_p,
-    //                         const double *host_rho)
-    // {
-    //     std::filesystem::create_directory("results");
+    VTSwriter::~VTSwriter() = default;
 
-    //     std::ostringstream filename;
-    //     filename << "results/time_step_" << std::fixed << std::setprecision(4) << t << ".vts";
-    //     std::ofstream file(filename.str());
-
-    //     file << "<?xml version=\"1.0\"?>\n";
-    //     file << "<VTKFile type=\"StructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
-    //     file << "<StructuredGrid WholeExtent=\"0 " << Nx << " 0 " << Ny << " 0 0\">\n";
-    //     file << "<Piece Extent=\"0 " << Nx << " 0 " << Ny << " 0 0\">\n";
-
-    //     file << "<Points>\n<DataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"ascii\">\n";
-    //     for (int j = 0; j <= Ny; ++j)
-    //         for (int i = 0; i <= Nx; ++i)
-    //             file << double(i) / L0 << " " << double(j) / L0 << " 0.0\n";
-    //     file << "</DataArray>\n</Points>\n";
-
-    //     file << "<PointData Scalars=\"scalars\">\n";
-    //     auto write_array = [&](const char *name, const double *data)
-    //     {
-    //         file << "<DataArray type=\"Float64\" Name=\"" << name << "\" format=\"ascii\">\n";
-    //         for (int j = 0; j <= Ny; ++j)
-    //             for (int i = 0; i <= Nx; ++i)
-    //                 file << data[i + j * (Nx + 2)] << "\n";
-    //         file << "</DataArray>\n";
-    //     };
-
-    //     write_array("Ux", host_ux);
-    //     write_array("Uy", host_uy);
-    //     write_array("C", host_c);
-    //     write_array("P", host_p);
-    //     write_array("Rho", host_rho);
-
-    //     file << "</PointData>\n";
-    //     file << "</Piece>\n</StructuredGrid>\n</VTKFile>\n";
-    //     file.close();
-    // }
-
-
-
-
-    void VTSwriter::writeArray(std::ofstream &file, const char *name, const double *data,
-                       int Nx, int Ny, int Nz = 0, bool is3D = false)
+    void VTSwriter::WriteVTSBinaryFile()
     {
+        // Create output directory if it doesn't exist
+        std::filesystem::create_directory(m_folder);
+
+        // Construct full path to the output file
+        std::ostringstream filename;
+        filename << m_folder << "/" << m_baseName << "_t" << std::fixed << std::setprecision(4) << m_ti->getCurrentStep() << ".vts";
+
+        std::ofstream file(filename.str());
+
+        if (!file.is_open())
+        {
+            Logger::Error("Failed to open file: " + filename.str());
+            return;
+        }
+
+        file << "<?xml version=\"1.0\"?>\n";
+        file << "<VTKFile type=\"StructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
+
+        file << "<StructuredGrid WholeExtent=\""
+             << m_domain->info.domainMinIdx[IDX_X] << " " << m_domain->info.domainMaxIdx[IDX_X] << " "
+             << m_domain->info.domainMinIdx[IDX_Y] << " " << m_domain->info.domainMaxIdx[IDX_Y] << " ";
+#ifdef ENABLE_3D
+        file << m_domain->info.domainMinIdx[IDX_Z] << " " << m_domain->info.domainMaxIdx[IDX_Z];
+#else
+        file << "0 0";
+#endif
+        file << "\">\n";
+
+        file << "<Piece Extent=\""
+             << m_domain->info.domainMinIdx[IDX_X] << " " << m_domain->info.domainMaxIdx[IDX_X] << " "
+             << m_domain->info.domainMinIdx[IDX_Y] << " " << m_domain->info.domainMaxIdx[IDX_Y] << " ";
+#ifdef ENABLE_3D
+        file << m_domain->info.domainMinIdx[IDX_Z] << " " << m_domain->info.domainMaxIdx[IDX_Z];
+#else
+        file << "0 0";
+#endif
+        file << "\">\n";
+
+        // Points section
+        file << "<Points>\n<DataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"ascii\">\n";
+        for (CLIP_UINT k = m_domain->info.domainMinIdx[IDX_Z]; k <= m_domain->info.domainMaxIdx[IDX_Z]; k++)
+            for (CLIP_UINT j = m_domain->info.domainMinIdx[IDX_Y]; j <= m_domain->info.domainMaxIdx[IDX_Y]; j++)
+                for (CLIP_UINT i = m_domain->info.domainMinIdx[IDX_X]; i <= m_domain->info.domainMaxIdx[IDX_X]; i++)
+                    file << CLIP_REAL(i) << " " << CLIP_REAL(j) << " " << CLIP_REAL(k) << "\n";
+        file << "</DataArray>\n</Points>\n";
+
+        // // Scalar and vector data
+        file << "<PointData Scalars=\"scalars\" Vectors=\"velocity\">\n";
+
+        writeField(file);
+
+        writeScalar(file);
+
+        file << "</PointData>\n";
+        file << "</Piece>\n</StructuredGrid>\n</VTKFile>\n";
+        file.close();
+    }
+
+    void VTSwriter::writeScalarArray(std::ofstream &file, CLIP_REAL *data, const std::string &name)
+    {
+
         file << "<DataArray type=\"Float64\" Name=\"" << name << "\" format=\"ascii\">\n";
 
-    
-
-            for (CLIP_UINT i = m_domain->info.domainMinIdx[IDX_X]; i <= m_domain->info.domainMaxIdx[IDX_X]; i++)
-                for (CLIP_UINT j = m_domain->info.domainMinIdx[IDX_Y]; j <= m_domain->info.domainMaxIdx[IDX_Y]; j++)
-                    for (CLIP_UINT k = m_domain->info.domainMinIdx[IDX_Z]; k <= m_domain->info.domainMaxIdx[IDX_Z]; k++)
-                        file << data[i + j * (Nx + 2) + k * (Nx + 2) * (Ny + 2)] << "\n";
-
+        int counter = 0;
+        for (CLIP_UINT k = m_domain->info.domainMinIdx[IDX_Z]; k <= m_domain->info.domainMaxIdx[IDX_Z]; k++)
+        {
+            for (CLIP_UINT j = m_domain->info.domainMinIdx[IDX_Y]; j <= m_domain->info.domainMaxIdx[IDX_Y]; j++)
+            {
+                for (CLIP_UINT i = m_domain->info.domainMinIdx[IDX_X]; i <= m_domain->info.domainMaxIdx[IDX_X]; i++)
+                {
+                    const CLIP_UINT idx_SCALAR = Domain::getIndex(m_domain->info, i, j, k);
+                    file << data[idx_SCALAR] << "\n";
+                    counter++;
+                }
+            }
+        }
+        std::cout << "count: " << counter << std::endl;
 
         file << "</DataArray>\n";
+    }
+
+    void VTSwriter::writeFieldArray(std::ofstream &file, CLIP_REAL *data, const std::string &name)
+    {
+
+        file << "<DataArray type=\"Float64\" Name=\"" << name
+             << "\" NumberOfComponents=\"" << DIM
+             << "\" format=\"ascii\">\n";
+
+        for (CLIP_UINT k = m_domain->info.domainMinIdx[IDX_Z]; k <= m_domain->info.domainMaxIdx[IDX_Z]; k++)
+        {
+            for (CLIP_UINT j = m_domain->info.domainMinIdx[IDX_Y]; j <= m_domain->info.domainMaxIdx[IDX_Y]; j++)
+            {
+                for (CLIP_UINT i = m_domain->info.domainMinIdx[IDX_X]; i <= m_domain->info.domainMaxIdx[IDX_X]; i++)
+                {
+
+                    const CLIP_UINT idx_X = Domain::getIndex<DIM>(m_domain->info, i, j, k, IDX_X);
+                    const CLIP_UINT idx_Y = Domain::getIndex<DIM>(m_domain->info, i, j, k, IDX_Y);
+
+#ifdef ENABLE_3D
+                    const CLIP_UINT idx_Z = Domain::getIndex<DIM>(m_domain->info, i, j, k, IDX_Z);
+#endif
+
+                    file << data[idx_X] << " " << data[idx_Y];
+#ifdef ENABLE_3D
+                    file << " " << data[idx_Z];
+#endif
+                    file << "\n";
+                }
+            }
+        }
+
+        file << "</DataArray>\n";
+    }
+
+    void VTSwriter::writeScalar(std::ofstream &file)
+    {
+        writeScalarArray(file, m_DA->hostDA.host_c, "C");
+    }
+
+    void VTSwriter::writeField(std::ofstream &file)
+    {
+        writeScalarArray(file, m_DA->hostDA.host_vel, "Velocity");
     }
 
 }

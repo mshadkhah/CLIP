@@ -57,6 +57,9 @@ namespace clip
 
             CLIP_REAL tauL;
             CLIP_REAL tauH;
+
+            CLIP_REAL muL;
+            CLIP_REAL muH;
         };
 
         SimParams params;

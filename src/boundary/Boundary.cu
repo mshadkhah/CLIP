@@ -14,7 +14,7 @@ namespace clip
         dimBlock = m_DA->dimBlock;
         dimGrid = m_DA->dimGrid;
 
-        readBoundaries(boundaries);
+
         updateFlags();
         print();
 
@@ -52,6 +52,8 @@ namespace clip
             return Type::FreeWall;
         if (str == "dirichlet")
             return Type::Dirichlet;
+        if (str == "periodic")
+            return Type::Periodic;
         return Type::Unknown;
     }
 
