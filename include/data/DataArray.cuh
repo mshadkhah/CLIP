@@ -1,10 +1,8 @@
 #pragma once
 #include "includes.h"
 #include "InputData.cuh"
-#include "DataTypes.cuh"
 #include "Domain.cuh"
 #include "WMRT.cuh"
-// #include "Solver.cuh"
 
 
 

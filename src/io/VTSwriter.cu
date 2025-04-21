@@ -3,14 +3,41 @@
 namespace clip
 {
 
-    VTSwriter::VTSwriter(const DataArray &DA, const InputData &idata, const Domain &domain, const TimeInfo &ti, const std::string &folder, const std::string &baseName)
+    VTSwriter::VTSwriter(DataArray &DA, const InputData &idata, const Domain &domain, const TimeInfo &ti, const std::string &folder, const std::string &baseName)
         : m_DA(&DA), m_idata(&idata), m_domain(&domain), m_ti(&ti), m_folder(folder), m_baseName(baseName)
     {
     }
 
     VTSwriter::~VTSwriter() = default;
 
-    void VTSwriter::WriteVTSBinaryFile()
+
+    void VTSwriter::writeScalar(std::ofstream &file)
+    {
+        writeScalarArray(file, m_DA->hostDA.host_c, "C");
+    }
+
+    void VTSwriter::writeField(std::ofstream &file)
+    {
+        // writeScalarArray(file, m_DA->hostDA.host_vel, "Velocity");
+    }
+
+
+
+    void VTSwriter::writeToFile()
+    {
+        m_DA->updateHost();
+        if(m_ti->getCurrentStep() % m_idata->params.outputInterval == 0){
+            writeVTSBinaryFile();
+        }
+    }
+
+
+
+
+
+  
+
+    void VTSwriter::writeVTSBinaryFile()
     {
         // Create output directory if it doesn't exist
         std::filesystem::create_directory(m_folder);
@@ -126,14 +153,18 @@ namespace clip
         file << "</DataArray>\n";
     }
 
-    void VTSwriter::writeScalar(std::ofstream &file)
-    {
-        writeScalarArray(file, m_DA->hostDA.host_c, "C");
-    }
 
-    void VTSwriter::writeField(std::ofstream &file)
-    {
-        writeScalarArray(file, m_DA->hostDA.host_vel, "Velocity");
-    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

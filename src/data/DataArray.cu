@@ -13,15 +13,15 @@ namespace clip
     dimBlock = dim3(threadsAlongX, threadsAlongY, threadsAlongZ);
 
 #ifdef ENABLE_2D
-    CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(m_domain->info.extent[IDX_X] / threadsAlongX));
-    CLIP_INT gridY = static_cast<CLIP_INT>(std::ceil(m_domain->info.extent[IDX_Y] / threadsAlongY));
+    CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(CLIP_REAL(m_domain->info.extent[IDX_X]) / threadsAlongX));
+    CLIP_INT gridY = static_cast<CLIP_INT>(std::ceil(CLIP_REAL(m_domain->info.extent[IDX_Y]) / threadsAlongY));
     dimGrid = dim3(gridX, gridY);
 
 #elif defined(ENABLE_3D)
 
-    CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(m_domain->info.extent[IDX_X] / threadsAlongX));
-    CLIP_INT gridY = static_cast<CLIP_INT>(std::ceil(m_domain->info.extent[IDX_Y] / threadsAlongY));
-    CLIP_INT gridZ = static_cast<CLIP_INT>(std::ceil(m_domain->info.extent[IDX_Z] / threadsAlongZ));
+    CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(CLIP_REAL(m_domain->info.extent[IDX_X]) / threadsAlongX));
+    CLIP_INT gridY = static_cast<CLIP_INT>(std::ceil(CLIP_REAL(m_domain->info.extent[IDX_Y]) / threadsAlongY));
+    CLIP_INT gridZ = static_cast<CLIP_INT>(std::ceil(CLIP_REAL(m_domain->info.extent[IDX_Z]) / threadsAlongZ));
     dimGrid = dim3(gridX, gridY, gridZ);
 
 #endif

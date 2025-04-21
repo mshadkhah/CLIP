@@ -43,6 +43,7 @@ set(CLIP_INC
   include/data/DataArray.cuh
   include/utils/TimeInfo.cuh
   include/utils/Logger.cuh
+  include/utils/Reporter.cuh
   include/input/InputData.cuh
   include/boundary/Boundary.cuh
   include/solver/Solver.cuh
@@ -57,6 +58,7 @@ set(CLIP_INC
 set(CLIP_SRC
   src/data/DataArray.cu
   src/utils/TimeInfo.cu
+  src/utils/Reporter.cu
   src/input/InputData.cu
   src/solver/Solver.cu
   src/equation/NsAllen.cu

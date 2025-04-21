@@ -19,28 +19,30 @@ namespace clip
         read("D", params.D);
         read("tFinal", params.tFinal);
         read("finalStep", params.finalStep);
-        read("noOutFiles", params.noOutFiles);
+        read("outputInterval", params.outputInterval);
+        read("reportInterval", params.reportInterval);
         read("N", params.N);
         read("C", params.C);
         read("interfaceWidth", params.interfaceWidth);
         read("gravity", params.gravity);
         read("mobility", params.mobility);
-        // read("RhoL", params.RhoL);
-        // read("RhoH", params.RhoH);
+        read("muRatio", params.muRatio);
+        read("rhoRatio", params.rhoRatio);
 
 
         read("case", params.caseType);
         if(params.caseType  == CaseType::Bubble || CaseType::Drop){
-            read("Bo", params.Bo);
+            read("We", params.We);
             read("Re", params.Re);
 
             params.RhoH = 1.0;
-            params.RhoL = params.RhoH / 500;
+            params.RhoL = params.RhoH / params.rhoRatio;
 
 
-            params.sigma = (params.gravity * (params.RhoH - params.RhoL) * params.D * params.D) / params.Bo;
+            // params.sigma = (params.gravity * (params.RhoH - params.RhoL) * params.D * params.D) / params.Bo;
+            params.sigma = (params.RhoH * params.gravity * params.D * params.D) / params.We;
             params.muH = sqrt(params.gravity * params.RhoH * (params.RhoH - params.RhoL) * params.D * params.D * params.D) / params.Re;
-            params.muL = params.muH / 70;
+            params.muL = params.muH / params.muRatio;
 
 
             params.tauH = 3.0 * ( params.muH /  params.RhoH);

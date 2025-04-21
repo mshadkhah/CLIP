@@ -484,17 +484,18 @@ WMRT::convertD3Q19Weighted(gneq, tmp);
             for (CLIP_UINT q = 0; q < Q; q++)
             {
                 dev_c[idx_SCALAR] += dev_g_post[Domain::getIndex<Q>(domain, i, j, k, q)];
+                // dev_c[idx_SCALAR] = 6;
             }
 
             dev_rho[idx_SCALAR] = (params.RhoL + (dev_c[idx_SCALAR] * (params.RhoH - params.RhoL)));
         }
     }
 
-    __global__ void kernelCollisionMRTf(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, const Domain::DomainInfo domain,
+    __global__ void kernelCollisionMRTg(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, const Domain::DomainInfo domain,
                                         CLIP_REAL *dev_g, CLIP_REAL *dev_g_post, CLIP_REAL *dev_c, CLIP_REAL *dev_rho, CLIP_REAL *dev_vel, CLIP_REAL *dev_normal)
     {
 
-        const CLIP_REAL wc = 1.0 / (0.50 + 3.0 * params.interfaceWidth);
+        const CLIP_REAL wc = 1.0 / (0.50 + 3.0 * params.mobility);
         constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
@@ -531,7 +532,7 @@ WMRT::convertD3Q19Weighted(gneq, tmp);
         }
     }
 
-    __global__ void kernelCollisionMRTg(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, const Domain::DomainInfo domain,
+    __global__ void kernelCollisionMRTf(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, const Domain::DomainInfo domain,
                                         CLIP_REAL *dev_f, CLIP_REAL *dev_f_post, CLIP_REAL *dev_p, CLIP_REAL *dev_c, CLIP_REAL *dev_dc,
                                         CLIP_REAL *dev_mu, CLIP_REAL *dev_rho, CLIP_REAL *dev_vel, CLIP_REAL *dev_normal)
     {
@@ -712,10 +713,10 @@ void NSAllen::collision()
 
     normal_FD<<<dimGrid, dimBlock>>>(m_info, m_DA->deviceDA.dev_dc, m_DA->deviceDA.dev_normal);
 
-    kernelCollisionMRTf<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
+    kernelCollisionMRTg<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
         m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_g_post, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_normal);
 
-    kernelCollisionMRTg<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
+    kernelCollisionMRTf<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
         m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_p, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_dc, m_DA->deviceDA.dev_mu, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_normal);
 
     cudaDeviceSynchronize();
@@ -748,10 +749,10 @@ void NSAllen::solve()
 {
     constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
 
-    // collision();
-    // periodicBoundary<Q>(m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g);
-    // periodicBoundary<SCALAR_FIELD>(m_DA->deviceDA.dev_c);
-    // streaming();
+    collision();
+    periodicBoundary<Q>(m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g);
+    periodicBoundary<SCALAR_FIELD>(m_DA->deviceDA.dev_c);
+    streaming();
     macroscopic();
     cudaDeviceSynchronize();
 }
@@ -787,8 +788,8 @@ void NSAllen::initialCondition()
 
                 if (m_params.caseType == InputData::CaseType::Bubble)
                 {
-                    // m_DA->hostDA.host_c[idx_SCALAR] = 0.50 - 0.50 * tanh(2.0 * (radius - Ri) / m_params.interfaceWidth);
-                    m_DA->hostDA.host_c[idx_SCALAR] = 0.50;
+                    m_DA->hostDA.host_c[idx_SCALAR] = 0.50 - 0.50 * tanh(2.0 * (radius - Ri) / m_params.interfaceWidth);
+                    // m_DA->hostDA.host_c[idx_SCALAR] = 0.50;
                 }
                 else if (m_params.caseType == InputData::CaseType::Drop)
                 {
@@ -816,8 +817,8 @@ void NSAllen::deviceInitializer()
 
     normal_FD<<<dimGrid, dimBlock>>>(m_info, m_DA->deviceDA.dev_dc, m_DA->deviceDA.dev_normal);
 
-    // KernelInitializeDistributions<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info, m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_g_post,
-    //     m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_p, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_normal);
+    KernelInitializeDistributions<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info, m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_g_post,
+        m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_p, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_normal);
 
 }
 

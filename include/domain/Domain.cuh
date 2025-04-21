@@ -1,7 +1,6 @@
 #pragma once
 #include <includes.h>
 #include <InputData.cuh>
-#include <DataTypes.cuh>
 
 
 namespace clip

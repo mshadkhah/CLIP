@@ -75,6 +75,9 @@ namespace clip
 
         const CLIP_UINT idx_SCALAR = Domain::getIndex(domain, i, j, k);
 
+        // printf("i: %d,    j: %d", i, j);
+
+
         if (Domain::isInside<DIM>(domain, i, j, k))
         {
 
@@ -82,11 +85,14 @@ namespace clip
 #pragma unroll
             for (CLIP_UINT q = 0; q < dof; ++q)
             {
+                
 
                 if (BCmap.types[object::XMinus] == Boundary::Type::Periodic || BCmap.types[object::XPlus] == Boundary::Type::Periodic)
                 {
                     dev_a[Domain::getIndex<dof>(domain, domain.ghostDomainMinIdx[IDX_X], j, k, q)] = dev_a[Domain::getIndex<dof>(domain, domain.domainMaxIdx[IDX_X], j, k, q)];
                     dev_a[Domain::getIndex<dof>(domain, domain.ghostDomainMaxIdx[IDX_X], j, k, q)] = dev_a[Domain::getIndex<dof>(domain, domain.domainMinIdx[IDX_X], j, k, q)];
+
+                    // printf("i: %d,    j: %d", i, j);
 
                     if (dev_b)
                     {

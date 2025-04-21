@@ -14,11 +14,12 @@ namespace clip
         dimBlock = m_DA->dimBlock;
         dimGrid = m_DA->dimGrid;
 
+        readBoundaries(boundaries);
+
 
         updateFlags();
         print();
 
-        std::cout << dimBlock.x << " " << dimBlock.y << "\n";
 
         m_DA->allocateOnDevice(dev_boundaryFlags, "dev_boundaryFlags", static_cast<CLIP_UINT>(Objects::MAX));
 

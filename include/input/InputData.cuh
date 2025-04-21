@@ -26,7 +26,8 @@ namespace clip
             CLIP_REAL D;
             CLIP_REAL tFinal;
             CLIP_UINT finalStep;
-            CLIP_UINT noOutFiles;
+            CLIP_UINT outputInterval;
+            CLIP_UINT reportInterval;
 
             CLIP_UINT N[MAX_DIM];
             CLIP_REAL C[MAX_DIM];

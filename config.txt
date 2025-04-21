@@ -1,18 +1,20 @@
 case = bubble
 
-finalStep = 10
-noOutFiles = 10
+finalStep = 1
+outputInterval = 1000
+reportInterval = 1000
 
 N = [64, 128, 1]
 C = [32.5, 64.5, 1]
 D = 25
 
-Bo = 20
+We = 50
 Re = 100
-gravity = 1e-7
+gravity = 1e-6
 mobility = 0.05
-interfaceWidth = 1
-
+interfaceWidth = 4
+muRatio = 50
+rhoRatio = 500
 
 
 boundary = [
