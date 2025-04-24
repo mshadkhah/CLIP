@@ -158,8 +158,9 @@ namespace clip
                                                       params.interfaceWidth * (velSet.ex[q] * dev_normal[idx_X] + velSet.ey[q] * dev_normal[idx_Y]));
 
 #elif defined(ENABLE_3D)
-                const CLIP_REAL ga_wa = NSAllen::Equilibrium_new(q, dev_vel[idx_X], dev_vel[idx_Y], dev_vel[idx_Z]);
-/// TO DO adding eq for 3D
+                const CLIP_REAL ga_wa = NSAllen::Equilibrium_new(velSet, q, dev_vel[idx_X], dev_vel[idx_Y], dev_vel[idx_Z]);
+                const CLIP_REAL hlp = velSet.wa[q] * ((1.0 - 4.0 * ((dev_c[idx_SCALAR] - 0.50) * (dev_c[idx_SCALAR] - 0.50))) / params.interfaceWidth * (velSet.ex[q] * 
+                    dev_normal[idx_X] + velSet.ey[q] * dev_normal[idx_Y] + velSet.ez[q] * dev_normal[idx_Z]));
 #endif
 
                 const CLIP_REAL Gamma = ga_wa + velSet.wa[q];
@@ -195,7 +196,7 @@ namespace clip
                                   6.0;
 #elif defined(ENABLE_3D)
 
-            const CLIP_REAL D2C = (20.0 * (dev_c[Domain::getIndex(domain, i + 1, j, k)] + dev_c[Domain::getIndex(domain, i - 1, j, k)] + dev_c[Domain::getIndex(domain, i, j + 1, k)] + dev_c[Domain::getIndex(domain, i, j - 1, k)] + dev_c[Domain::getIndex(i, j, k + 1)] + dev_c[Domain::getIndex(domain, i, j, k - 1)]) +
+            const CLIP_REAL D2C = (20.0 * (dev_c[Domain::getIndex(domain, i + 1, j, k)] + dev_c[Domain::getIndex(domain, i - 1, j, k)] + dev_c[Domain::getIndex(domain, i, j + 1, k)] + dev_c[Domain::getIndex(domain, i, j - 1, k)] + dev_c[Domain::getIndex(domain, i, j, k + 1)] + dev_c[Domain::getIndex(domain, i, j, k - 1)]) +
                                    6.0 * (dev_c[Domain::getIndex(domain, i + 1, j + 1, k)] + dev_c[Domain::getIndex(domain, i, j + 1, k - 1)] + dev_c[Domain::getIndex(domain, i - 1, j + 1, k)] + dev_c[Domain::getIndex(domain, i, j + 1, k + 1)] + dev_c[Domain::getIndex(domain, i + 1, j, k + 1)] + dev_c[Domain::getIndex(domain, i + 1, j, k - 1)] +
                                           dev_c[Domain::getIndex(domain, i - 1, j, k - 1)] + dev_c[Domain::getIndex(domain, i - 1, j, k + 1)] + dev_c[Domain::getIndex(domain, i, j - 1, k + 1)] + dev_c[Domain::getIndex(domain, i + 1, j - 1, k)] + dev_c[Domain::getIndex(domain, i, j - 1, k - 1)] + dev_c[Domain::getIndex(domain, i - 1, j - 1, k)]) +
                                    (dev_c[Domain::getIndex(domain, i + 1, j + 1, k + 1)] + dev_c[Domain::getIndex(domain, i + 1, j + 1, k - 1)] + dev_c[Domain::getIndex(domain, i - 1, j + 1, k - 1)] + dev_c[Domain::getIndex(domain, i - 1, j + 1, k + 1)] + dev_c[Domain::getIndex(domain, i + 1, j - 1, k + 1)] + dev_c[Domain::getIndex(domain, i + 1, j - 1, k - 1)] +
@@ -320,7 +321,8 @@ namespace clip
 
                 {
                     f_post[Domain::getIndex<Q>(domain, i, j, k, q)] = f[Domain::getIndex<Q>(domain, id, jd, kd, q)];
-                    // printf ("i = %d , id = %d \n", i, id);
+                    // if (i == 16 && j == 1)
+                    // printf ("q = %d  f = %f\n", q, f_post[Domain::getIndex<Q>(domain, i, j, k, q)]);
                 }
             }
         }
@@ -726,8 +728,9 @@ void NSAllen::collision()
 
 void NSAllen::streaming()
 {
-
+    // printf("stream1 \n");
     kernelStreaming<<<dimGrid, dimBlock>>>(m_velset, m_info, m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_f_post);
+    // printf("stream2 \n");
     kernelStreaming<<<dimGrid, dimBlock>>>(m_velset, m_info, m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_g_post);
 
     cudaDeviceSynchronize();
@@ -747,12 +750,10 @@ void NSAllen::macroscopic()
 
 void NSAllen::solve()
 {
-    constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
-
     collision();
-    periodicBoundary<Q>(m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g);
-    periodicBoundary<SCALAR_FIELD>(m_DA->deviceDA.dev_c);
+    applyPeriodicBoundary();
     streaming();
+    applyWallBoundary();
     macroscopic();
     cudaDeviceSynchronize();
 }
@@ -779,12 +780,11 @@ void NSAllen::initialCondition()
 
                 const CLIP_REAL X0 = i - m_params.C[IDX_X];
                 const CLIP_REAL Y0 = j - m_params.C[IDX_Y];
-                const CLIP_REAL Z0 = k - m_params.C[IDX_Z];
+                const CLIP_REAL Z0 = (DIM == 3) ? (k - m_params.C[IDX_Z]) : 0;
 
                 // std::cout << "i = " << i << ", j = " << j << ", k = " << k << std::endl;
 
-                // const CLIP_REAL Ri = sqrt(X0 * X0 + Y0 * Y0 + Z0 * Z0);
-                const CLIP_REAL Ri = sqrt(X0 * X0 + Y0 * Y0);
+                const CLIP_REAL Ri = sqrt(X0 * X0 + Y0 * Y0 + Z0 * Z0);
 
                 if (m_params.caseType == InputData::CaseType::Bubble)
                 {
@@ -823,7 +823,29 @@ void NSAllen::deviceInitializer()
 }
 
 
+void NSAllen::applyPeriodicBoundary()
+{
 
+    constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
+
+    periodicBoundary<Q>(m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g);
+    periodicBoundary<SCALAR_FIELD>(m_DA->deviceDA.dev_c);
+    cudaDeviceSynchronize();
+
+}
+
+
+void NSAllen::applyWallBoundary()
+{
+    constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
+    constexpr CLIP_UINT dof = WMRT::wallBCMap::Q;
+    // printf("wall \n");
+    wallBoundary<Q, dof>(m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_g_post);
+    // wallBoundary<Q, dof>(m_DA->deviceDA.dev_g_post, m_DA->deviceDA.dev_f_post);
+    mirrorBoundary(m_DA->deviceDA.dev_c);
+    cudaDeviceSynchronize();
+
+}
 
 
 

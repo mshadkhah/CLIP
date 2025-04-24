@@ -15,8 +15,6 @@ namespace clip
         dimGrid = m_DA->dimGrid;
 
         readBoundaries(boundaries);
-
-
         updateFlags();
         print();
 
@@ -47,9 +45,9 @@ namespace clip
 
     Boundary::Type Boundary::typeFromString(const std::string &str)
     {
-        if (str == "Wall")
+        if (str == "wall")
             return Type::Wall;
-        if (str == "Free Wall")
+        if (str == "free wall")
             return Type::FreeWall;
         if (str == "dirichlet")
             return Type::Dirichlet;

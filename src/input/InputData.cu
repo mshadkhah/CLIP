@@ -1,21 +1,20 @@
 #include <InputData.cuh>
 
-
 namespace clip
 {
 
     InputData::InputData(const std::string &filename)
         : m_filename(filename)
     {
+        Logger::Info("Reading input parameters...");
         read_config();
+        Logger::Success("Input parameters loaded successfully.");
     }
-
-
 
     void InputData::read_config()
     {
-        std::cerr << "Reading Parameters:" << std::endl;
 
+        read("case", params.caseType);
         read("D", params.D);
         read("tFinal", params.tFinal);
         read("finalStep", params.finalStep);
@@ -29,37 +28,40 @@ namespace clip
         read("muRatio", params.muRatio);
         read("rhoRatio", params.rhoRatio);
 
+        params.RhoH = 1.0;
+        params.RhoL = params.RhoH / params.rhoRatio;
 
-        read("case", params.caseType);
-        if(params.caseType  == CaseType::Bubble || CaseType::Drop){
+        
+        if (params.caseType == CaseType::Bubble || CaseType::Drop)
+        {
             read("We", params.We);
             read("Re", params.Re);
-
-            params.RhoH = 1.0;
-            params.RhoL = params.RhoH / params.rhoRatio;
-
 
             // params.sigma = (params.gravity * (params.RhoH - params.RhoL) * params.D * params.D) / params.Bo;
             params.sigma = (params.RhoH * params.gravity * params.D * params.D) / params.We;
             params.muH = sqrt(params.gravity * params.RhoH * (params.RhoH - params.RhoL) * params.D * params.D * params.D) / params.Re;
-            params.muL = params.muH / params.muRatio;
-
-
-            params.tauH = 3.0 * ( params.muH /  params.RhoH);
-            params.tauL = 3.0 * ( params.muL /  params.RhoL);
-
-
-            params.kConstant = 1.50 * params.sigma * params.interfaceWidth;
-            params.betaConstant = 8.0 * params.sigma / params.interfaceWidth;
 
         }
 
-        
+        else if (params.caseType == CaseType::RTI)
+        {
+            read("Ca", params.Ca);
+            read("Pe", params.Pe);
+            read("Re", params.Re);
 
 
+            params.muH = (params.RhoH * sqrt(params.gravity * params.N[IDX_X]) * params.N[IDX_X]) / params.Re;
+            params.sigma = (params.muH * sqrt(params.gravity * params.N[IDX_X])) / params.Ca;
+            params.mobility = (sqrt(params.gravity * params.N[IDX_X]) * params.N[IDX_X]) / params.Pe;
+
+        }
 
 
-
+        params.muL = params.muH / params.muRatio;
+        params.tauH = 3.0 * (params.muH / params.RhoH);
+        params.tauL = 3.0 * (params.muL / params.RhoL);
+        params.kConstant = 1.50 * params.sigma * params.interfaceWidth;
+        params.betaConstant = 8.0 * params.sigma / params.interfaceWidth;
 
         // read("Nx", Nx);
         // read("Ny", Ny);
@@ -82,74 +84,86 @@ namespace clip
         // read("mobility", mobility);
     }
 
-    InputData::CaseType InputData::caseTypeFromString(const std::string &str) {
-        if (str == "drop") return CaseType::Drop;
-        if (str == "bubble") return CaseType::Bubble;
-        if (str == "jet") return CaseType::Jet;
+    InputData::CaseType InputData::caseTypeFromString(const std::string &str)
+    {
+        if (str == "drop")
+            return CaseType::Drop;
+        if (str == "bubble")
+            return CaseType::Bubble;
+        if (str == "jet")
+            return CaseType::Jet;
+        if (str == "RTI")
+            return CaseType::RTI;
         throw std::invalid_argument("Unknown case type: " + str);
     }
-    
-
 
     template <typename T, std::size_t N>
-    bool InputData::read_array(const std::string& varName, T (&arr)[N]) const {
+    bool InputData::read_array(const std::string &varName, T (&arr)[N]) const
+    {
         std::ifstream inputFile(m_filename);
-        if (!inputFile.is_open()) {
+        if (!inputFile.is_open())
+        {
             std::cerr << "Error opening config file: " << m_filename << std::endl;
             return false;
         }
-    
+
         std::string line;
-        while (std::getline(inputFile, line)) {
-            if (line.empty() || line[0] == '#') continue;
-    
+        while (std::getline(inputFile, line))
+        {
+            if (line.empty() || line[0] == '#')
+                continue;
+
             std::size_t pos = line.find('=');
-            if (pos != std::string::npos) {
+            if (pos != std::string::npos)
+            {
                 std::string key = line.substr(0, pos);
                 std::string value = line.substr(pos + 1);
                 trim(key);
                 trim(value);
-    
-                if (key == varName) {
+
+                if (key == varName)
+                {
                     std::fill(std::begin(arr), std::end(arr), static_cast<T>(0));
-    
+
                     value.erase(std::remove(value.begin(), value.end(), '['), value.end());
                     value.erase(std::remove(value.begin(), value.end(), ']'), value.end());
-    
+
                     std::stringstream ss(value);
                     std::string token;
                     std::size_t count = 0;
-    
-                    while (std::getline(ss, token, ',') && count < N) {
+
+                    while (std::getline(ss, token, ',') && count < N)
+                    {
                         trim(token);
                         if constexpr (std::is_same<T, CLIP_UINT>::value)
                             arr[count++] = static_cast<T>(std::stoul(token));
                         else if constexpr (std::is_same<T, CLIP_REAL>::value)
                             arr[count++] = static_cast<T>(std::stod(token));
                     }
-    
+
                     // Print the result
                     std::cout << varName << " = [";
-                    for (std::size_t i = 0; i < N; ++i) {
+                    for (std::size_t i = 0; i < N; ++i)
+                    {
                         std::cout << arr[i];
-                        if (i < N - 1) std::cout << ", ";
+                        if (i < N - 1)
+                            std::cout << ", ";
                     }
                     std::cout << "]\n";
-    
-                    if (count < N) {
+
+                    if (count < N)
+                    {
                         std::cerr << "Warning: Only " << count << " values provided for " << varName
                                   << "; remaining " << (N - count) << " set to 0.\n";
                     }
-    
+
                     return true;
                 }
             }
         }
-    
+
         return false;
     }
-    
-    
 
     template <typename T>
     bool InputData::read_vector(const std::string &varName, std::vector<T> &arr) const
@@ -160,29 +174,29 @@ namespace clip
             std::cerr << "Error opening config file: " << m_filename << std::endl;
             return false;
         }
-    
+
         std::string line;
         while (std::getline(inputFile, line))
         {
             if (line.empty() || line[0] == '#')
                 continue;
-    
+
             std::size_t pos = line.find('=');
             if (pos != std::string::npos)
             {
                 std::string key = line.substr(0, pos);
                 std::string value = line.substr(pos + 1);
-    
+
                 trim(key);
                 trim(value);
-    
+
                 if (key == varName)
                 {
                     arr.clear();
                     // Remove square brackets
                     value.erase(std::remove(value.begin(), value.end(), '['), value.end());
                     value.erase(std::remove(value.begin(), value.end(), ']'), value.end());
-    
+
                     std::stringstream ss(value);
                     std::string token;
                     while (std::getline(ss, token, ','))
@@ -195,20 +209,19 @@ namespace clip
                         else
                             static_assert(sizeof(T) == 0, "Unsupported type for read_array");
                     }
-    
+
                     std::cout << varName << " = [";
                     for (size_t i = 0; i < arr.size(); ++i)
                         std::cout << arr[i] << (i < arr.size() - 1 ? ", " : "");
                     std::cout << "]" << std::endl;
-    
+
                     return true;
                 }
             }
         }
-    
+
         return false;
     }
-
 
     template <typename T>
     bool InputData::read_value(const std::string &varName, T &var) const
@@ -302,8 +315,6 @@ namespace clip
         return read_array(varName, arr);
     }
 
-
-
     bool InputData::read(const std::string &varName, CaseType &caseType) const
     {
         std::string str;
@@ -319,14 +330,10 @@ namespace clip
             return false;
         }
     }
-    
 
-
-    std::string InputData::getConfig() const {
+    std::string InputData::getConfig() const
+    {
         return m_filename;
     }
-    
 
-
-    
 }

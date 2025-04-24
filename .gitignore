@@ -1,5 +1,7 @@
 # Ignore build directory
 /build
+/build2D
+/build3D
 /CMakeFiles
 /CMakeCache.txt
 cmake_install.cmake
@@ -33,3 +35,8 @@ Makefile
 # Ignore config/IDE
 .idea/
 *.user
+
+# Outputs
+*.vts
+*.vtk
+*.vtu

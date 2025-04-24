@@ -59,7 +59,7 @@ namespace clip
         info.ghostDomainMaxIdx[IDX_Y] = info.extent[IDX_Y] - 1;
         info.ghostDomainMaxIdx[IDX_Z] = info.extent[IDX_Z] - 1;
 
-        domainSize = m_idata.params.N[IDX_X] * m_idata.params.N[IDX_Y] * m_idata.params.N[IDX_Z];
+        domainSize = info.extent[IDX_X] * info.extent[IDX_Y] * info.extent[IDX_Z];
 #endif
     };
 

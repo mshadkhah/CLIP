@@ -38,5 +38,8 @@ namespace clip
         void streaming();
         void collision();
         void macroscopic();
+        void applyPeriodicBoundary();
+        void applyWallBoundary();
+
     };
 }

@@ -18,10 +18,6 @@ if (MSVC)
   add_definitions(-D__CUDACC__)
 endif()
 
-# Flag options
-option(ENABLE_2D "Enable 2D computation" ON)
-option(ENABLE_3D "Enable 3D computation" OFF)
-option(USE_SINGLE_PRECISION "Use float instead of double" OFF)
 
 # Include directories
 include_directories(
@@ -76,18 +72,38 @@ add_executable(clip
 
 add_library(clip_lib STATIC ${CLIP_SRC} ${CLIP_INC})
 
-# Preprocessor definitions
+
+if (ENABLE_2D AND ENABLE_3D)
+  message(FATAL_ERROR "You cannot enable both ENABLE_2D and ENABLE_3D.")
+elseif (NOT ENABLE_2D AND NOT ENABLE_3D)
+  message(STATUS "No mode specified — defaulting to 2D.")
+  set(ENABLE_2D ON)
+endif()
+
 if (ENABLE_2D)
+message(STATUS "Compiling in 2D mode.")
   target_compile_definitions(clip PRIVATE ENABLE_2D)
   target_compile_definitions(clip_lib PRIVATE ENABLE_2D)
 elseif (ENABLE_3D)
+message(STATUS "Compiling in 3D mode.")
   target_compile_definitions(clip PRIVATE ENABLE_3D)
   target_compile_definitions(clip_lib PRIVATE ENABLE_3D)
 endif()
 
+
+
+
+# Precision flag
+option(USE_SINGLE_PRECISION "Use float instead of double" OFF)
+
 if (USE_SINGLE_PRECISION)
-  target_compile_definitions(clip PRIVATE USE_SINGLE_PRECISION)
+    message(STATUS "Using single precision (float).")
+    target_compile_definitions(clip PRIVATE USE_SINGLE_PRECISION)
+    target_compile_definitions(clip_lib PRIVATE USE_SINGLE_PRECISION)
+else()
+    message(STATUS "Using double precision (default).")
 endif()
+
 
 # CUDA-specific options
 target_compile_options(clip_lib PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--extended-lambda>)

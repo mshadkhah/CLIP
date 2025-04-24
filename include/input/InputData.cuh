@@ -15,8 +15,9 @@ namespace clip
         {
             Bubble = 0,
             Drop = 1,
-            Jet = 2,
-            Unknown = 3
+            RTI = 2,
+            Jet = 3,
+            Unknown = 4
         };
 
         struct SimParams
@@ -36,6 +37,7 @@ namespace clip
             CLIP_REAL Re;
             CLIP_REAL We;
             CLIP_REAL Pe;
+            CLIP_REAL Ca;
             CLIP_REAL Mo;
 
             CLIP_REAL rhoRatio;
