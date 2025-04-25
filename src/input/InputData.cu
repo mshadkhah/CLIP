@@ -27,12 +27,13 @@ namespace clip
         read("mobility", params.mobility);
         read("muRatio", params.muRatio);
         read("rhoRatio", params.rhoRatio);
+        read("amplitude", params.amplitude);
 
         params.RhoH = 1.0;
         params.RhoL = params.RhoH / params.rhoRatio;
 
         
-        if (params.caseType == CaseType::Bubble || CaseType::Drop)
+        if (params.caseType == CaseType::Bubble || params.caseType == CaseType::Drop)
         {
             read("We", params.We);
             read("Re", params.Re);
@@ -54,6 +55,8 @@ namespace clip
             params.sigma = (params.muH * sqrt(params.gravity * params.N[IDX_X])) / params.Ca;
             params.mobility = (sqrt(params.gravity * params.N[IDX_X]) * params.N[IDX_X]) / params.Pe;
 
+
+
         }
 
 
@@ -63,25 +66,7 @@ namespace clip
         params.kConstant = 1.50 * params.sigma * params.interfaceWidth;
         params.betaConstant = 8.0 * params.sigma / params.interfaceWidth;
 
-        // read("Nx", Nx);
-        // read("Ny", Ny);
-        // read("Nz", Nz);
-        // read("X0", X0);
-        // read("Y0", Y0);
-        // read("Z0", Z0);
 
-        // read("Bo", Bo);
-        // read("Re", Re);
-        // read("We", We);
-        // read("Pe", Pe);
-        // read("Mo", Mo);
-
-        // read("rhoRatio", rhoRatio);
-        // read("muRatio", muRatio);
-
-        // read("gravity", gravity);
-        // read("interfaceWidth", interfaceWidth);
-        // read("mobility", mobility);
     }
 
     InputData::CaseType InputData::caseTypeFromString(const std::string &str)
@@ -92,7 +77,7 @@ namespace clip
             return CaseType::Bubble;
         if (str == "jet")
             return CaseType::Jet;
-        if (str == "RTI")
+        if (str == "rti")
             return CaseType::RTI;
         throw std::invalid_argument("Unknown case type: " + str);
     }

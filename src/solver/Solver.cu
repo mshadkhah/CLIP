@@ -220,9 +220,9 @@ namespace clip
         }
     }
 
-    template <CLIP_UINT Q, CLIP_UINT dof>
+    template <CLIP_UINT Q, CLIP_UINT dof, typename T>
     __global__ void kernelHalfBounceBack(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap,
-                                         const WMRT::wallBCMap wallMap, CLIP_REAL *dev_a, CLIP_REAL *dev_a_post, CLIP_REAL *dev_b, CLIP_REAL *dev_b_post)
+                                         const T wallMap, CLIP_REAL *dev_a, CLIP_REAL *dev_a_post, CLIP_REAL *dev_b, CLIP_REAL *dev_b_post)
     {
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
@@ -300,9 +300,11 @@ namespace clip
     }
 
 
-    template <CLIP_UINT Q, CLIP_UINT dof>
-    __global__ void kernelBounceBackEdgeCorrection(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap,
-                                         const WMRT::wallBCMap wallMap, CLIP_REAL *dev_a, CLIP_REAL *dev_a_post, CLIP_REAL *dev_b, CLIP_REAL *dev_b_post)
+
+    
+    template <CLIP_UINT Q, CLIP_UINT dof, typename T>
+    __global__ void kernelFreeConvect(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap,
+                                         const T wallMap, CLIP_REAL *dev_a, CLIP_REAL *dev_a_post, CLIP_REAL *dev_b, CLIP_REAL *dev_b_post)
     {
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
@@ -315,10 +317,10 @@ namespace clip
         for (CLIP_UINT q = 0; q < dof; ++q)
         {
             // X boundaries
-            if (BCmap.types[object::XMinus] == Boundary::Type::Wall ||  BCmap.types[object::YMinus] == Boundary::Type::Wall ||  BCmap.types[object::ZMinus] == Boundary::Type::Wall)
+            if (BCmap.types[object::XMinus] == Boundary::Type::FreeConvect && i == domain.domainMinIdx[IDX_X])
             {
-                const CLIP_UINT idx = Domain::getIndex<Q>(domain, domain.domainMinIdx[IDX_X], domain.domainMinIdx[IDX_Y], domain.domainMinIdx[IDX_Z], wallMap.XMinus[q]);
-                const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, domain.domainMinIdx[IDX_X], domain.domainMinIdx[IDX_Y], domain.domainMinIdx[IDX_Z], wallMap.XPlus[q]);
+                const CLIP_UINT idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.XMinus[q]);
+                const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.XPlus[q]);
                 dev_a_post[idx] = dev_a[opp_idx];
                 if (dev_b)
                     dev_b_post[idx] = dev_b[opp_idx];
@@ -378,6 +380,7 @@ namespace clip
 #endif
         }
     }
+
 
 
 
@@ -451,7 +454,15 @@ namespace clip
     void Solver::wallBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_a_post, CLIP_REAL *dev_b, CLIP_REAL *dev_b_post)
     {
         if (m_boundary->isWall)
-        kernelHalfBounceBack<Q, dof><<<dimGrid, dimBlock>>>(m_info, m_BCMap, m_wallBCMap, dev_a, dev_a_post, dev_b, dev_b_post);
+        kernelHalfBounceBack<Q, dof, WMRT::wallBCMap><<<dimGrid, dimBlock>>>(m_info, m_BCMap, m_wallBCMap, dev_a, dev_a_post, dev_b, dev_b_post);
+
+    }
+
+    template <CLIP_UINT Q, CLIP_UINT dof>
+    void Solver::slipWallBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_a_post, CLIP_REAL *dev_b, CLIP_REAL *dev_b_post)
+    {
+        if (m_boundary->isSlipWall)
+        kernelHalfBounceBack<Q, dof, WMRT::slipWallBCMap><<<dimGrid, dimBlock>>>(m_info, m_BCMap, m_slipWallBCMap, dev_a, dev_a_post, dev_b, dev_b_post);
 
     }
 
@@ -469,5 +480,8 @@ namespace clip
 
     template void clip::Solver::wallBoundary<9,3>(CLIP_REAL *, CLIP_REAL *,CLIP_REAL *, CLIP_REAL *);
     template void clip::Solver::wallBoundary<19,5>(CLIP_REAL *, CLIP_REAL *,CLIP_REAL *, CLIP_REAL *);
+
+    template void clip::Solver::slipWallBoundary<9,3>(CLIP_REAL *, CLIP_REAL *,CLIP_REAL *, CLIP_REAL *);
+    template void clip::Solver::slipWallBoundary<19,5>(CLIP_REAL *, CLIP_REAL *,CLIP_REAL *, CLIP_REAL *);
 
 }

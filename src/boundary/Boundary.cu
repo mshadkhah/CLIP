@@ -1,13 +1,10 @@
 #include <Boundary.cuh>
 #include <includes.h>
 
-
-
-
 namespace clip
 {
 
-    Boundary::Boundary(const InputData& idata, const Domain& domain, DataArray& DA)
+    Boundary::Boundary(const InputData &idata, const Domain &domain, DataArray &DA)
         : m_idata(&idata), m_DA(&DA), m_domain(&domain)
     {
 
@@ -17,7 +14,6 @@ namespace clip
         readBoundaries(boundaries);
         updateFlags();
         print();
-
 
         m_DA->allocateOnDevice(dev_boundaryFlags, "dev_boundaryFlags", static_cast<CLIP_UINT>(Objects::MAX));
 
@@ -47,8 +43,8 @@ namespace clip
     {
         if (str == "wall")
             return Type::Wall;
-        if (str == "free wall")
-            return Type::FreeWall;
+        if (str == "slip wall")
+            return Type::SlipWall;
         if (str == "dirichlet")
             return Type::Dirichlet;
         if (str == "periodic")
@@ -83,8 +79,8 @@ namespace clip
         {
         case Type::Wall:
             return "wall";
-        case Type::FreeWall:
-            return "free wall";
+        case Type::SlipWall:
+            return "slip wall";
         case Type::Dirichlet:
             return "dirichlet";
         case Type::Periodic:
@@ -103,9 +99,9 @@ namespace clip
             const auto &bc = boundaries[i];
             std::cout << "  Block " << i << ":\n";
             std::cout << "    Side: " << toString(bc.side) << "\n";
-            std::cout << "    Temperature Type: " << toString(bc.BCtype) << "\n";
-            std::cout << "    Temperature: " << bc.temperature << "\n";
-            std::cout << "    Refinement: " << (bc.ifRefine ? "true" : "false") << "\n \n";
+            std::cout << "    Type: " << toString(bc.BCtype) << "\n";
+            std::cout << "    Value: " << bc.value << "\n";
+            std::cout << "    : " << (bc.ifRefine ? "true" : "false") << "\n \n";
         }
     }
 
@@ -169,14 +165,14 @@ namespace clip
 
                         if (key == "side")
                             current.side = clip::Boundary::sideFromString(value);
-                        else if (key == "temperature_type"){
+                        else if (key == "type")
+                        {
                             current.BCtype = clip::Boundary::typeFromString(value);
                             size_t index = static_cast<size_t>(current.side);
-                            Boundary::BCMap.types[index] =  current.BCtype;
+                            Boundary::BCMap.types[index] = current.BCtype;
                         }
-
-                        else if (key == "temperature")
-                            current.temperature = std::stod(value);
+                        else if (key == "value")
+                            current.value = std::stod(value);
                         else if (key == "ifRefine")
                             current.ifRefine = (value == "true" || value == "1");
                     }
@@ -248,7 +244,8 @@ namespace clip
         const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
         const CLIP_UINT idx_SCALAR = Domain::getIndex(domain, i, j, k);
 
-        if (Domain::isInside<DIM>(domain, i, j, k)){
+        if (Domain::isInside<DIM>(domain, i, j, k))
+        {
             // if(i == 0){
             //     dev_flag[idx_SCALAR] = boundaries[static_cast<CLIP_UINT>(Boundary::Objects::XMinus].BCtype);
             // }
@@ -271,19 +268,18 @@ namespace clip
             // }
             // #endif
 
-        printf("index: i = %d\n", idx_SCALAR);
+            printf("index: i = %d\n", idx_SCALAR);
         }
     }
 
-
-
-    void Boundary::flagGenLauncher (CLIP_UINT* dev_flag, const Domain::DomainInfo& domain){
-             flagGen<<<dimGrid, dimBlock>>>(dev_flag, domain);
-             cudaDeviceSynchronize();  
+    void Boundary::flagGenLauncher(CLIP_UINT *dev_flag, const Domain::DomainInfo &domain)
+    {
+        flagGen<<<dimGrid, dimBlock>>>(dev_flag, domain);
+        cudaDeviceSynchronize();
     }
 
-
-    void Boundary::updateFlags(){
+    void Boundary::updateFlags()
+    {
 
         for (size_t i = 0; i < boundaryObjects; ++i)
         {
@@ -293,11 +289,11 @@ namespace clip
             case Type::Wall:
                 isWall = true;
                 break;
-            case Type::FreeWall:
-                isFreeWall = true;
+            case Type::SlipWall:
+                isSlipWall = true;
                 break;
             case Type::Dirichlet:
-                isFreeWall = true;
+                isSlipWall = true;
                 break;
             case Type::Periodic:
                 isPeriodic = true;
@@ -305,5 +301,4 @@ namespace clip
             }
         }
     }
-
 }

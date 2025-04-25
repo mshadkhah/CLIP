@@ -8,12 +8,10 @@ namespace clip
         : Solver(idata, domain, DA, boundary)
     {
 
-
         m_info = m_domain->info;
         m_params = m_idata->params;
         dimGrid = m_DA->dimGrid;
         dimBlock = m_DA->dimBlock;
-
     };
 
     void NSAllen::initialization()
@@ -159,8 +157,7 @@ namespace clip
 
 #elif defined(ENABLE_3D)
                 const CLIP_REAL ga_wa = NSAllen::Equilibrium_new(velSet, q, dev_vel[idx_X], dev_vel[idx_Y], dev_vel[idx_Z]);
-                const CLIP_REAL hlp = velSet.wa[q] * ((1.0 - 4.0 * ((dev_c[idx_SCALAR] - 0.50) * (dev_c[idx_SCALAR] - 0.50))) / params.interfaceWidth * (velSet.ex[q] * 
-                    dev_normal[idx_X] + velSet.ey[q] * dev_normal[idx_Y] + velSet.ez[q] * dev_normal[idx_Z]));
+                const CLIP_REAL hlp = velSet.wa[q] * ((1.0 - 4.0 * ((dev_c[idx_SCALAR] - 0.50) * (dev_c[idx_SCALAR] - 0.50))) / params.interfaceWidth * (velSet.ex[q] * dev_normal[idx_X] + velSet.ey[q] * dev_normal[idx_Y] + velSet.ez[q] * dev_normal[idx_Z]));
 #endif
 
                 const CLIP_REAL Gamma = ga_wa + velSet.wa[q];
@@ -174,9 +171,6 @@ namespace clip
             }
         }
     }
-
-
-
 
     __global__ void Chemical_Potential(const InputData::SimParams params, const Domain::DomainInfo domain, double *dev_c, double *dev_mu)
     {
@@ -375,7 +369,7 @@ namespace clip
 
 #ifdef ENABLE_2D
 
-WMRT::convertD2Q9Weighted(gneq, tmp);
+            WMRT::convertD2Q9Weighted(gneq, tmp);
 
             if (dev_c[idx_SCALAR] < 0.0)
                 tau = params.tauL;
@@ -394,7 +388,7 @@ WMRT::convertD2Q9Weighted(gneq, tmp);
 
             NSAllen::calculateVF<Q, DIM>(velSet, params, gneq, fv, tau, dev_dc[idx_X], dev_dc[idx_Y]);
 #elif defined(ENABLE_3D)
-WMRT::convertD3Q19Weighted(gneq, tmp);
+            WMRT::convertD3Q19Weighted(gneq, tmp);
 
             if (dev_c[idx_SCALAR] < 0.0)
                 tau = params.tauL;
@@ -419,8 +413,12 @@ WMRT::convertD3Q19Weighted(gneq, tmp);
 
 #endif
 
-            CLIP_REAL Fgy = 0;
-            if (params.caseType == InputData::CaseType::Bubble)
+            CLIP_REAL Fgy = 0.0;
+            if (params.caseType == InputData::CaseType::RTI)
+            {
+                Fgy = -(dev_rho[idx_SCALAR]) * params.gravity;
+            }
+            else if (params.caseType == InputData::CaseType::Bubble)
             {
                 Fgy = -(dev_rho[idx_SCALAR] - params.RhoH) * params.gravity;
             }
@@ -428,9 +426,6 @@ WMRT::convertD3Q19Weighted(gneq, tmp);
             {
                 Fgy = -(dev_rho[idx_SCALAR] - params.RhoL) * params.gravity;
             }
-
-            // double Fgy = (*dev_rhol - dev_rho[index]) * *dev_gy;
-            //  double Fgy = (-dev_rho[index]) * *dev_gy;
 
             const CLIP_REAL Fpx = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_X];
             const CLIP_REAL Fpy = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_Y];
@@ -468,7 +463,7 @@ WMRT::convertD3Q19Weighted(gneq, tmp);
     }
 
     __global__ void kernelMacroscopicg(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, const Domain::DomainInfo domain,
-                                     CLIP_REAL *dev_g_post, CLIP_REAL *dev_rho, CLIP_REAL *dev_c)
+                                       CLIP_REAL *dev_g_post, CLIP_REAL *dev_rho, CLIP_REAL *dev_c)
     {
 
         constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
@@ -573,7 +568,7 @@ WMRT::convertD3Q19Weighted(gneq, tmp);
 
 #ifdef ENABLE_2D
 
-WMRT::convertD2Q9Weighted(gneq, tmp);
+            WMRT::convertD2Q9Weighted(gneq, tmp);
 
             if (dev_c[idx_SCALAR] < 0.0)
                 tau = params.tauL;
@@ -592,7 +587,7 @@ WMRT::convertD2Q9Weighted(gneq, tmp);
 
             NSAllen::calculateVF<Q, DIM>(velSet, params, gneq, fv, tau, dev_dc[idx_X], dev_dc[idx_Y]);
 #elif defined(ENABLE_3D)
-WMRT::convertD3Q19Weighted(gneq, tmp);
+            WMRT::convertD3Q19Weighted(gneq, tmp);
 
             if (dev_c[idx_SCALAR] < 0.0)
                 tau = params.tauL;
@@ -617,8 +612,12 @@ WMRT::convertD3Q19Weighted(gneq, tmp);
 
 #endif
 
-            CLIP_REAL Fgy = 0;
-            if (params.caseType == InputData::CaseType::Bubble)
+            CLIP_REAL Fgy = 0.0;
+            if (params.caseType == InputData::CaseType::RTI)
+            {
+                Fgy = -(dev_rho[idx_SCALAR]) * params.gravity;
+            }
+            else if (params.caseType == InputData::CaseType::Bubble)
             {
                 Fgy = -(dev_rho[idx_SCALAR] - params.RhoH) * params.gravity;
             }
@@ -626,9 +625,6 @@ WMRT::convertD3Q19Weighted(gneq, tmp);
             {
                 Fgy = -(dev_rho[idx_SCALAR] - params.RhoL) * params.gravity;
             }
-
-            // double Fgy = (*dev_rhol - dev_rho[index]) * *dev_gy;
-            //  double Fgy = (-dev_rho[index]) * *dev_gy;
 
             const CLIP_REAL Fpx = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_X];
             const CLIP_REAL Fpy = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_Y];
@@ -676,7 +672,7 @@ WMRT::convertD3Q19Weighted(gneq, tmp);
             WMRT::reconvertD2Q9Weighted(tmp, gneq);
 
 #elif defined(ENABLE_3D)
-WMRT::convertD3Q19Weighted(gneq, tmp);
+            WMRT::convertD3Q19Weighted(gneq, tmp);
 
             if (dev_c[idx_SCALAR] < 0.0)
                 tau = params.tauL;
@@ -707,148 +703,137 @@ WMRT::convertD3Q19Weighted(gneq, tmp);
         }
     }
 
-
-
-
-void NSAllen::collision()
-{
-
-    normal_FD<<<dimGrid, dimBlock>>>(m_info, m_DA->deviceDA.dev_dc, m_DA->deviceDA.dev_normal);
-
-    kernelCollisionMRTg<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
-        m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_g_post, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_normal);
-
-    kernelCollisionMRTf<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
-        m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_p, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_dc, m_DA->deviceDA.dev_mu, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_normal);
-
-    cudaDeviceSynchronize();
-}
-
-
-
-void NSAllen::streaming()
-{
-    // printf("stream1 \n");
-    kernelStreaming<<<dimGrid, dimBlock>>>(m_velset, m_info, m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_f_post);
-    // printf("stream2 \n");
-    kernelStreaming<<<dimGrid, dimBlock>>>(m_velset, m_info, m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_g_post);
-
-    cudaDeviceSynchronize();
-}
-
-void NSAllen::macroscopic()
-{
-    kernelMacroscopicg<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
-        m_DA->deviceDA.dev_g_post, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_c);
-
-    Chemical_Potential<<<dimGrid, dimBlock>>>(m_params, m_info, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_mu);
-    Isotropic_Gradient<<<dimGrid, dimBlock>>>(m_info, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_dc);
-    kernelMacroscopicf<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
-        m_DA->deviceDA.dev_p, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_dc, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_mu);
-        cudaDeviceSynchronize();
-}
-
-void NSAllen::solve()
-{
-    collision();
-    applyPeriodicBoundary();
-    streaming();
-    applyWallBoundary();
-    macroscopic();
-    cudaDeviceSynchronize();
-}
-
-
-
-
-
-void NSAllen::initialCondition()
-{
-
-    const CLIP_REAL radius = m_params.D / 2;
-
-    for (CLIP_UINT i = m_info.ghostDomainMinIdx[IDX_X]; i <= m_info.ghostDomainMaxIdx[IDX_X]; i++)
+    void NSAllen::collision()
     {
-        for (CLIP_UINT j = m_info.ghostDomainMinIdx[IDX_Y]; j <= m_info.ghostDomainMaxIdx[IDX_Y]; j++)
+
+        normal_FD<<<dimGrid, dimBlock>>>(m_info, m_DA->deviceDA.dev_dc, m_DA->deviceDA.dev_normal);
+
+        kernelCollisionMRTg<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
+                                                   m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_g_post, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_normal);
+
+        kernelCollisionMRTf<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
+                                                   m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_p, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_dc, m_DA->deviceDA.dev_mu, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_normal);
+
+        cudaDeviceSynchronize();
+    }
+
+    void NSAllen::streaming()
+    {
+        // printf("stream1 \n");
+        kernelStreaming<<<dimGrid, dimBlock>>>(m_velset, m_info, m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_f_post);
+        // printf("stream2 \n");
+        kernelStreaming<<<dimGrid, dimBlock>>>(m_velset, m_info, m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_g_post);
+
+        cudaDeviceSynchronize();
+    }
+
+    void NSAllen::macroscopic()
+    {
+        kernelMacroscopicg<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
+                                                  m_DA->deviceDA.dev_g_post, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_c);
+
+        Chemical_Potential<<<dimGrid, dimBlock>>>(m_params, m_info, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_mu);
+        Isotropic_Gradient<<<dimGrid, dimBlock>>>(m_info, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_dc);
+        kernelMacroscopicf<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
+                                                  m_DA->deviceDA.dev_p, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_dc, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_mu);
+        cudaDeviceSynchronize();
+    }
+
+    void NSAllen::solve()
+    {
+        collision();
+        applyPeriodicBoundary();
+        streaming();
+        applyWallBoundary();
+        macroscopic();
+        cudaDeviceSynchronize();
+    }
+
+    void NSAllen::initialCondition()
+    {
+
+        const CLIP_REAL radius = m_params.D / 2;
+
+        for (CLIP_UINT i = m_info.ghostDomainMinIdx[IDX_X]; i <= m_info.ghostDomainMaxIdx[IDX_X]; i++)
         {
-            for (CLIP_UINT k = m_info.ghostDomainMinIdx[IDX_Z]; k <= m_info.ghostDomainMaxIdx[IDX_Z]; k++)
+            for (CLIP_UINT j = m_info.ghostDomainMinIdx[IDX_Y]; j <= m_info.ghostDomainMaxIdx[IDX_Y]; j++)
             {
-
-                const CLIP_UINT idx_SCALAR = Domain::getIndex(m_info, i, j, k);
-
-                // printf("index:  inside initi index = %d\n", idx_SCALAR);
-
-                const CLIP_REAL X0 = i - m_params.C[IDX_X];
-                const CLIP_REAL Y0 = j - m_params.C[IDX_Y];
-                const CLIP_REAL Z0 = (DIM == 3) ? (k - m_params.C[IDX_Z]) : 0;
-
-                // std::cout << "i = " << i << ", j = " << j << ", k = " << k << std::endl;
-
-                const CLIP_REAL Ri = sqrt(X0 * X0 + Y0 * Y0 + Z0 * Z0);
-
-                if (m_params.caseType == InputData::CaseType::Bubble)
+                for (CLIP_UINT k = m_info.ghostDomainMinIdx[IDX_Z]; k <= m_info.ghostDomainMaxIdx[IDX_Z]; k++)
                 {
-                    m_DA->hostDA.host_c[idx_SCALAR] = 0.50 - 0.50 * tanh(2.0 * (radius - Ri) / m_params.interfaceWidth);
-                    // m_DA->hostDA.host_c[idx_SCALAR] = 0.50;
-                }
-                else if (m_params.caseType == InputData::CaseType::Drop)
-                {
-                    m_DA->hostDA.host_c[idx_SCALAR] = 0.50 + 0.50 * tanh(2.0 * (radius - Ri) / m_params.interfaceWidth);
-                }
-                else
-                {
-                    m_DA->hostDA.host_c[idx_SCALAR] = 0.0; // fallback
+
+                    const CLIP_UINT idx_SCALAR = Domain::getIndex(m_info, i, j, k);
+
+                    // Compute coordinates relative to center
+                    const CLIP_REAL X0 = i - m_params.C[IDX_X];
+                    const CLIP_REAL Y0 = j - m_params.C[IDX_Y];
+                    const CLIP_REAL Z0 = (DIM == 3) ? (k - m_params.C[IDX_Z]) : 0;
+                    const CLIP_REAL Ri = sqrt(X0 * X0 + Y0 * Y0 + Z0 * Z0);
+
+                    // Handle different initialization cases
+                    switch (m_params.caseType)
+                    {
+                    case InputData::CaseType::Bubble:
+                        m_DA->hostDA.host_c[idx_SCALAR] = 0.50 - 0.50 * tanh(2.0 * (radius - Ri) / m_params.interfaceWidth);
+                        break;
+
+                    case InputData::CaseType::Drop:
+                        m_DA->hostDA.host_c[idx_SCALAR] = 0.50 + 0.50 * tanh(2.0 * (radius - Ri) / m_params.interfaceWidth);
+                        break;
+
+                    case InputData::CaseType::RTI:
+                    {
+                        // Rayleigh-Taylor perturbation: cosine pattern on x/z plane
+#ifdef ENABLE_2D
+                        const CLIP_REAL perturbation = m_params.amplitude * m_params.N[IDX_X] * (cos(2.0 * M_PI * i / m_params.N[IDX_X]));
+#elif defined(ENABLE_3D)
+                        const CLIP_REAL perturbation = m_params.amplitude * m_params.N[IDX_X] * (cos(2.0 * M_PI * i / m_params.N[IDX_X]) + cos(2.0 * pi * k / m_params.N[IDX_Z]));
+#endif
+                        const CLIP_REAL yShift = Y0 - perturbation;
+                        m_DA->hostDA.host_c[idx_SCALAR] = 0.50 + 0.50 * tanh(2.0 * yShift / m_params.interfaceWidth);
+                        break;
+                    }
+
+                    default:
+                        m_DA->hostDA.host_c[idx_SCALAR] = 0.0;
+                        break;
+                    }
                 }
             }
         }
     }
 
-}
+    void NSAllen::deviceInitializer()
+    {
 
+        Chemical_Potential<<<dimGrid, dimBlock>>>(m_params, m_info, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_mu);
 
+        Isotropic_Gradient<<<dimGrid, dimBlock>>>(m_info, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_dc);
 
+        normal_FD<<<dimGrid, dimBlock>>>(m_info, m_DA->deviceDA.dev_dc, m_DA->deviceDA.dev_normal);
 
-void NSAllen::deviceInitializer()
-{
+        KernelInitializeDistributions<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info, m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_g_post,
+                                                             m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_p, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_normal);
+    }
 
-    Chemical_Potential<<<dimGrid, dimBlock>>>(m_params, m_info, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_mu);
+    void NSAllen::applyPeriodicBoundary()
+    {
 
-    Isotropic_Gradient<<<dimGrid, dimBlock>>>(m_info, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_dc);
+        constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
 
-    normal_FD<<<dimGrid, dimBlock>>>(m_info, m_DA->deviceDA.dev_dc, m_DA->deviceDA.dev_normal);
+        periodicBoundary<Q>(m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g);
+        periodicBoundary<SCALAR_FIELD>(m_DA->deviceDA.dev_c);
+        cudaDeviceSynchronize();
+    }
 
-    KernelInitializeDistributions<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info, m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_g_post,
-        m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_p, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_normal);
-
-}
-
-
-void NSAllen::applyPeriodicBoundary()
-{
-
-    constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
-
-    periodicBoundary<Q>(m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g);
-    periodicBoundary<SCALAR_FIELD>(m_DA->deviceDA.dev_c);
-    cudaDeviceSynchronize();
-
-}
-
-
-void NSAllen::applyWallBoundary()
-{
-    constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
-    constexpr CLIP_UINT dof = WMRT::wallBCMap::Q;
-    // printf("wall \n");
-    wallBoundary<Q, dof>(m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_g_post);
-    // wallBoundary<Q, dof>(m_DA->deviceDA.dev_g_post, m_DA->deviceDA.dev_f_post);
-    mirrorBoundary(m_DA->deviceDA.dev_c);
-    cudaDeviceSynchronize();
-
-}
-
-
-
-
+    void NSAllen::applyWallBoundary()
+    {
+        constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
+        constexpr CLIP_UINT dof = WMRT::wallBCMap::Q;
+        // printf("wall \n");
+        wallBoundary<Q, dof>(m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_g_post);
+        // wallBoundary<Q, dof>(m_DA->deviceDA.dev_g_post, m_DA->deviceDA.dev_f_post);
+        mirrorBoundary(m_DA->deviceDA.dev_c);
+        cudaDeviceSynchronize();
+    }
 
 }

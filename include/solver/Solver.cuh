@@ -21,13 +21,13 @@ namespace clip
 
         template <CLIP_UINT Q>
         void periodicBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_b = nullptr);
-        
-
-        // template <CLIP_UINT Q, CLIP_UINT dof>
-        // void wallBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_b = nullptr);
+    
 
         template <CLIP_UINT Q, CLIP_UINT dof>
         void wallBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_a_post, CLIP_REAL *dev_b = nullptr, CLIP_REAL *dev_b_post = nullptr);
+
+        template <CLIP_UINT Q, CLIP_UINT dof>
+        void slipWallBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_a_post, CLIP_REAL *dev_b = nullptr, CLIP_REAL *dev_b_post = nullptr);
 
         void mirrorBoundary(CLIP_REAL *dev_a);
 
@@ -40,6 +40,7 @@ namespace clip
         Domain::DomainInfo m_info;
         Boundary::BCTypeMap m_BCMap;
         WMRT::wallBCMap m_wallBCMap;
+        WMRT::slipWallBCMap m_slipWallBCMap;
         DataArray* m_DA;
         dim3 dimGrid, dimBlock;
     };

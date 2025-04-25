@@ -42,8 +42,8 @@ namespace clip
         enum class Type
         {
             Wall = 0,
-            FreeWall = 1,
-            Dirichlet = 2,
+            SlipWall = 1,
+            FreeConvect = 2,
             Periodic = 3,
             Unknown = 4,
             MAX = 5
@@ -55,7 +55,7 @@ namespace clip
         {
             Objects side = Objects::Unknown;
             Type BCtype = Type::Unknown;
-            double temperature = 0.0;
+            CLIP_REAL value = 0.0;
             bool ifRefine = false;
         };
 
@@ -70,7 +70,7 @@ namespace clip
 
         bool isPeriodic = false;
         bool isWall = false;
-        bool isFreeWall = false;
+        bool isSlipWall = false;
 
     private:
         const InputData* m_idata;

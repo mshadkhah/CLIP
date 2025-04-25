@@ -9,7 +9,8 @@
 int main()
 {
 
-    clip::InputData input("/home/mehdi/projects/CLIP/tests/2D/Bubble/config.txt");
+    clip::InputData input("/home/mehdi/projects/CLIP/tests/2D/RTI/config.txt");
+    // clip::InputData input("config.txt");
 
     clip::Domain domain(input);
     clip::DataArray DA(input, domain);

@@ -162,6 +162,29 @@ namespace clip
 
             static constexpr CLIP_UINT Q = 5;
             const CLIP_INT XMinus[Q] = {1, 9, 7, 13, 11};
+            const CLIP_INT XPlus[Q] = {2, 10, 8, 14, 12};
+            const CLIP_INT YMinus[Q] = {3, 10, 7, 17, 15};
+            const CLIP_INT YPlus[Q] = {4, 9, 8, 18, 16};
+            const CLIP_INT ZMinus[Q] = {5, 14, 11, 18, 15};
+            const CLIP_INT ZPlus[Q] = {6, 13, 12, 17, 16};
+
+#endif
+        };
+
+        struct slipWallBCMap
+        {
+
+#ifdef ENABLE_2D
+            static constexpr CLIP_UINT Q = 3;
+            const CLIP_INT XMinus[Q] = {1, 5, 8};
+            const CLIP_INT XPlus[Q] = {3, 6, 7};
+            const CLIP_INT YMinus[Q] = {2, 5, 6};
+            const CLIP_INT YPlus[Q] = {4, 8, 7};
+
+#elif defined(ENABLE_3D)
+
+            static constexpr CLIP_UINT Q = 5;
+            const CLIP_INT XMinus[Q] = {1, 9, 7, 13, 11};
             const CLIP_INT XPlus[Q] = {2, 8, 10, 12, 14};
             const CLIP_INT YMinus[Q] = {3, 10, 7, 17, 15};
             const CLIP_INT YPlus[Q] = {4, 8, 9, 16, 18};
@@ -170,6 +193,10 @@ namespace clip
 
 #endif
         };
+
+
+
+
 
 
         struct wallCornerBCMap

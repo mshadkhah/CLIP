@@ -30,7 +30,7 @@ namespace clip
             CLIP_UINT outputInterval;
             CLIP_UINT reportInterval;
 
-            CLIP_UINT N[MAX_DIM];
+            CLIP_REAL N[MAX_DIM];
             CLIP_REAL C[MAX_DIM];
 
             CLIP_REAL Bo;
@@ -63,6 +63,8 @@ namespace clip
 
             CLIP_REAL muL;
             CLIP_REAL muH;
+
+            CLIP_REAL amplitude;
         };
 
         SimParams params;
