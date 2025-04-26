@@ -71,6 +71,7 @@ namespace clip
         bool isPeriodic = false;
         bool isWall = false;
         bool isSlipWall = false;
+        bool isFreeConvect = false;
 
     private:
         const InputData* m_idata;

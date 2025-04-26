@@ -70,6 +70,13 @@ namespace clip
             cudaCheckErrors(("copyFromDevice failed for " + std::string(name)).c_str());
         }
 
+        template <typename T>
+        void copyDevice(T*&destPtr, const T *sourcePtr, const char *name, CLIP_UINT ndof = SCALAR_FIELD)
+        {
+            cudaMemcpy(destPtr, sourcePtr, ndof * m_domain->domainSize * sizeof(T), cudaMemcpyDeviceToDevice);
+            cudaCheckErrors(("copyFromDeviceToDevice failed for " + std::string(name)).c_str());
+        }
+
         template <typename T, size_t N>
         void symbolOnDevice(const T (&symbol)[N], const T *hostPtr, const char *name)
         {
@@ -102,6 +109,11 @@ namespace clip
         CLIP_REAL *dev_vel;
         CLIP_REAL *dev_mu;
         CLIP_REAL *dev_normal;
+
+        CLIP_REAL *dev_f_prev;
+        CLIP_REAL *dev_g_prev;
+        CLIP_REAL *dev_c_prev;
+
         };
 
         struct hostDataArray

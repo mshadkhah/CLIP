@@ -40,6 +40,7 @@ namespace clip
         void macroscopic();
         void applyPeriodicBoundary();
         void applyWallBoundary();
+        void applyFreeConvectBoundary();
 
     };
 }

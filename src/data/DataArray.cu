@@ -35,6 +35,10 @@ void DataArray::createVectors()
 {
     const CLIP_UINT Q = WMRT::WMRTvelSet::Q;
 
+    this->allocateOnDevice(deviceDA.dev_f_prev, "dev_f_prev", Q);
+    this->allocateOnDevice(deviceDA.dev_g_prev, "dev_g_prev", Q);
+    this->allocateOnDevice(deviceDA.dev_c_prev, "dev_c_prev", SCALAR_FIELD);
+
     this->allocateOnDevice(deviceDA.dev_f, "dev_f", Q);
     this->allocateOnDevice(deviceDA.dev_g, "dev_g", Q);
     this->allocateOnDevice(deviceDA.dev_f_post, "dev_f_post", Q);

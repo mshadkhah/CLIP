@@ -45,8 +45,8 @@ namespace clip
             return Type::Wall;
         if (str == "slip wall")
             return Type::SlipWall;
-        if (str == "dirichlet")
-            return Type::Dirichlet;
+        if (str == "free convect")
+            return Type::FreeConvect;
         if (str == "periodic")
             return Type::Periodic;
         return Type::Unknown;
@@ -81,8 +81,8 @@ namespace clip
             return "wall";
         case Type::SlipWall:
             return "slip wall";
-        case Type::Dirichlet:
-            return "dirichlet";
+        case Type::FreeConvect:
+            return "free convect";
         case Type::Periodic:
             return "periodic";
         default:
@@ -292,8 +292,8 @@ namespace clip
             case Type::SlipWall:
                 isSlipWall = true;
                 break;
-            case Type::Dirichlet:
-                isSlipWall = true;
+            case Type::FreeConvect:
+                isFreeConvect = true;
                 break;
             case Type::Periodic:
                 isPeriodic = true;
