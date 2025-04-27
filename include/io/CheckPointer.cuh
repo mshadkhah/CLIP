@@ -16,7 +16,10 @@ namespace clip
         explicit CheckPointer(DataArray &DA, const InputData &idata, const Domain &domain, TimeInfo &ti, const Boundary &boundary);
 
         virtual ~CheckPointer();
-        void writeToFile();
+        void save();
+        void load();
+
+
 
     private:
 
@@ -40,13 +43,13 @@ namespace clip
         void saveToFile(T*& hostPtr, const T* devPtr, CLIP_UINT ndof, const std::string& folder, const std::string& name);
         template <typename T>
         void loadFromFile(T*& devPtr, T*& hostPtr, CLIP_UINT ndof, const std::string& folder, const std::string& name);
-        void saveTimeInfo(const std::string& folder, const std::string& name, int copyNumber);
+        void saveTimeInfo(const std::string& folder, const std::string& name);
         void loadTimeInfo(const std::string& folder, const std::string& name);
         void saveDomainSize(const std::string& folder, const std::string& filename);
         void checkDomainSize(const std::string& folder, const std::string& filename);
-        void rotateFolders( const std::string& folder);
-        void save();
-        void load();
+        void rotateFolders( const std::string& folder);   
+        void saveSummaryInfo(const std::string &folder, const std::string &filename);
+
     };
 
 }

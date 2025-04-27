@@ -61,7 +61,7 @@ void DataArray::createVectors()
 
 
 
-    
+
     this->allocateOnHost(hostDA.host_c, "host_c", SCALAR_FIELD);
     this->allocateOnHost(hostDA.host_p, "host_p", SCALAR_FIELD);
     this->allocateOnHost(hostDA.host_vel, "host_vel", DIM);
@@ -89,7 +89,6 @@ void DataArray::updateDevice()
     const CLIP_UINT Q = WMRT::WMRTvelSet::Q;
 
     copyToDevice(deviceDA.dev_c, hostDA.host_c, "dev_c", SCALAR_FIELD);
-    // copyToDevice(deviceDA.dev_vel, hostDA.host_vel, "dev_vel", DIM);
 
 }
 

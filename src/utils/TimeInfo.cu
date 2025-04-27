@@ -13,8 +13,6 @@ namespace clip
 
     double TimeInfo::getCurrentTime() const
     {
-        if (!m_info.dtIsSet)
-            throw std::runtime_error("Time step not set before calling getCurrentTime()");
         return m_info.currentStep * m_info.dt;
     }
 

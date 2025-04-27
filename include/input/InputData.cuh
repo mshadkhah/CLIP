@@ -29,8 +29,8 @@ namespace clip
             CLIP_UINT finalStep;
             CLIP_UINT outputInterval;
             CLIP_UINT reportInterval;
-            CLIP_UINT checkpointInterval;
-            CLIP_UINT checkpointCopy;
+            CLIP_UINT checkpointInterval = 0;
+            CLIP_UINT checkpointCopy = 0;
        
 
             CLIP_REAL N[MAX_DIM];

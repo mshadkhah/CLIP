@@ -24,6 +24,7 @@ namespace clip
 
         void flagGenLauncher2();
         void solve();
+        void macroscopic();
         void initialCondition();
         void deviceInitializer();
 
@@ -32,12 +33,13 @@ namespace clip
         
         WMRT::WMRTvelSet m_velset;
         InputData::SimParams m_params;
+        const Boundary *m_boundary;
         Domain::DomainInfo m_info;
         dim3 dimGrid, dimBlock;
 
         void streaming();
         void collision();
-        void macroscopic();
+        
         void applyPeriodicBoundary();
         void applyWallBoundary();
         void applyFreeConvectBoundary();

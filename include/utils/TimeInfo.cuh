@@ -11,7 +11,7 @@ public:
     {
         double currentTime = 0;
         int currentStep = 0;
-        double dt;
+        double dt = 0;
         bool dtIsSet = false;
     };
 

@@ -5,7 +5,7 @@ namespace clip
 {
 
     NSAllen::NSAllen(const InputData &idata, const Domain &domain, DataArray &DA, const Boundary &boundary)
-        : Solver(idata, domain, DA, boundary)
+        : Solver(idata, domain, DA, boundary), m_boundary(&boundary)
     {
 
         m_info = m_domain->info;
@@ -971,9 +971,12 @@ namespace clip
     void NSAllen::streaming()
     {
         constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
-
-        m_DA->copyDevice(m_DA->deviceDA.dev_g_prev, m_DA->deviceDA.dev_g_post, "dev_g_prev", Q);
+        if(m_boundary->isFreeConvect)
+        {
+                    m_DA->copyDevice(m_DA->deviceDA.dev_g_prev, m_DA->deviceDA.dev_g_post, "dev_g_prev", Q);
         m_DA->copyDevice(m_DA->deviceDA.dev_f_prev, m_DA->deviceDA.dev_f_post, "dev_f_prev", Q);
+        }
+
 
 
         kernelStreaming<<<dimGrid, dimBlock>>>(m_velset, m_info, m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_f_post);

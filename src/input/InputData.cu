@@ -19,6 +19,8 @@ namespace clip
         read("tFinal", params.tFinal);
         read("finalStep", params.finalStep);
         read("outputInterval", params.outputInterval);
+        read("checkpointInterval", params.checkpointInterval);
+        read("checkpointCopy", params.checkpointCopy);
         read("reportInterval", params.reportInterval);
         read("N", params.N);
         read("C", params.C);
