@@ -41,6 +41,7 @@ namespace clip
         void applyPeriodicBoundary();
         void applyWallBoundary();
         void applyFreeConvectBoundary();
+        void applyNeumannBoundary();
 
     };
 }

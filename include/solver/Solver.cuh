@@ -17,8 +17,6 @@ namespace clip
 
         virtual ~Solver();
 
-        void flagGenLauncher3();
-
         template <CLIP_UINT Q>
         void periodicBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_b = nullptr);
     
@@ -31,6 +29,9 @@ namespace clip
 
         template <CLIP_UINT Q, CLIP_UINT dof>
         void freeConvectBoundary(CLIP_REAL *dev_vel, CLIP_REAL *dev_a, CLIP_REAL *dev_a_post, CLIP_REAL *dev_b = nullptr, CLIP_REAL *dev_b_post = nullptr);
+        
+        template <CLIP_UINT Q, CLIP_UINT dof>
+        void NeumannBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_b = nullptr);
 
         void mirrorBoundary(CLIP_REAL *dev_a);
 

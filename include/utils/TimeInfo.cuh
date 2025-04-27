@@ -2,32 +2,34 @@
 #include <includes.h>
 #include <InputData.cuh>
 
-
 namespace clip {
 
-    class TimeInfo {
-        public:
-            explicit TimeInfo(InputData idata);
+class TimeInfo {
+public:
 
-            int getCurrentStep() const;
-            double getCurrentTime() const;
-            double getEndTime() const;
-            double getFinalStep() const;
-            void increment();
-            void setTimeStep(double dt);
-       
+    struct simInfo
+    {
+        double currentTime = 0;
+        int currentStep = 0;
+        double dt;
+        bool dtIsSet = false;
+    };
 
+    explicit TimeInfo(InputData idata);
 
-        
-        private:
-            double m_currentTime = 0;
-            int m_currentStep = 0;
-            double m_dt;
-            bool m_dtIsSet = false;
-            InputData m_idata;
-        };
-    
-}
+    int getCurrentStep() const;
+    double getCurrentTime() const;
+    double getEndTime() const;
+    double getFinalStep() const;
+    void increment();
+    void setTimeStep(double dt);
 
+    simInfo& getSimInfo();
+    const simInfo& getSimInfo() const;
 
+private:
+    InputData m_idata;
+    simInfo m_info;
+};
 
+} // namespace clip

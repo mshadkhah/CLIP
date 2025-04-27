@@ -1,7 +1,6 @@
 #pragma once
 #include "InputData.cuh"
 #include "includes.h"
-#include "DataArray.cuh"
 #include "Domain.cuh"
 
 
@@ -22,7 +21,7 @@ namespace clip
     class Boundary
     {
     public:
-        explicit Boundary(const InputData& idata, const Domain& domain, DataArray& DA);
+        explicit Boundary(const InputData& idata, const Domain& domain);
 
         ~Boundary();
 
@@ -45,8 +44,9 @@ namespace clip
             SlipWall = 1,
             FreeConvect = 2,
             Periodic = 3,
-            Unknown = 4,
-            MAX = 5
+            Neumann = 4,
+            Unknown = 5,
+            MAX = 6
         };
 
 
@@ -65,26 +65,36 @@ namespace clip
             Boundary::Type types[static_cast<int>(Boundary::Objects::MAX)];
         };
 
+
+
+        __device__ __forceinline__ static bool isMirrorType(Boundary::Type type)
+        {
+            return (type == Boundary::Type::Wall || 
+                    type == Boundary::Type::FreeConvect ||
+                    type == Boundary::Type::Neumann ||
+                    type == Boundary::Type::SlipWall);
+        }
+
+
+
+
         BCTypeMap BCMap;
-
-
         bool isPeriodic = false;
         bool isWall = false;
         bool isSlipWall = false;
         bool isFreeConvect = false;
+        bool isNeumann = false;
+
+
 
     private:
         const InputData* m_idata;
         const Domain* m_domain;
-        DataArray* m_DA;
         dim3 dimBlock, dimGrid;
 
 
-
-        void updateFlags();
         std::vector<Entry> boundaries;
         CLIP_UINT boundaryObjects;
-        Type* dev_boundaryFlags;
 
 
 
@@ -96,7 +106,8 @@ namespace clip
         Type typeFromString(const std::string& str);
         Objects sideFromString(const std::string& str);
         void trim(std::string &s);
-        void flagGenLauncher(CLIP_UINT* dev_flag, const Domain::DomainInfo& domain);
+        void updateFlags();
+        std::string toLower(const std::string &s);
 
     };
 

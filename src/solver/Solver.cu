@@ -18,43 +18,9 @@ namespace clip
 
 #endif
 
-        // this->symbolOnDevice(boundary::s_boundaries, m_idata.boundaries.data(), "boundaries");
-
-        // flagGenLauncher3();
     }
 
-    __global__ void flagGen3()
-    {
-        const CLIP_UINT i = THREAD_IDX_X;
-        const CLIP_UINT j = THREAD_IDX_Y;
-        const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
 
-        // const CLIP_UINT idx_SCALAR = DataArray::getIndex(i, j, k);
-
-        // printf("Thread index: i = %d, j = %d, k = %d\n", i, j, k);
-        // printf("Thread index2: %d \n", idx_SCALAR);
-
-        // if (DataArray::isInside<DIM>(i, j, k)){
-
-        // printf("Thread index: i = %d, j = %d, k = %d\n", i, j, k);
-        // printf("index: i = %d\n", DataArray::getDomainExtent(IDX_X));
-        // printf("index: s_domainExtent = %d\n", s_domainExtent[IDX_Y]);
-
-        // }
-        // printf("index: inside equation getDomainExtent = %d\n", DataArray::getDomainExtent(1));
-        // printf("index:  inside equation s_domainExtent = %d\n", s_domainExtent[IDX_Y]);
-
-        // printf("index:  inside equation ex = %d\n", WMRT::ex[3]);
-        // printf("index: i = %d\n", idx_SCALAR);
-        // printf("Thread index: i = %d, j = %d, k = %d\n", i, j, k);
-    }
-
-    void Solver::flagGenLauncher3()
-    {
-
-        // flagGen3<<<dimGrid, dimBlock>>>();
-        cudaDeviceSynchronize();
-    }
 
     Solver::~Solver()
     {
@@ -228,80 +194,90 @@ namespace clip
         const CLIP_UINT j = THREAD_IDX_Y;
         const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
 
-        if (!Domain::isInside<DIM>(domain, i, j, k))
-            return;
-
-#pragma unroll
-        for (CLIP_UINT q = 0; q < dof; ++q)
+        if (Domain::isInside<DIM>(domain, i, j, k))
         {
-            // X boundaries
-            if (BCmap.types[object::XMinus] == Boundary::Type::Wall && i == domain.domainMinIdx[IDX_X])
+#pragma unroll
+            for (CLIP_UINT q = 0; q < dof; ++q)
             {
-                const CLIP_UINT idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.XMinus[q]);
-                const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.XPlus[q]);
-                dev_a_post[idx] = dev_a[opp_idx];
-                if (dev_b)
-                    dev_b_post[idx] = dev_b[opp_idx];
-            }
+                // X boundaries
+                if ((BCmap.types[object::XMinus] == Boundary::Type::Wall ||
+                     BCmap.types[object::XMinus] == Boundary::Type::SlipWall) &&
+                    i == domain.domainMinIdx[IDX_X])
+                {
+                    const CLIP_UINT idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.XMinus[q]);
+                    const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.XPlus[q]);
+                    dev_a_post[idx] = dev_a[opp_idx];
+                    if (dev_b)
+                        dev_b_post[idx] = dev_b[opp_idx];
+                }
 
-            if (BCmap.types[object::XPlus] == Boundary::Type::Wall && i == domain.domainMaxIdx[IDX_X])
-            {
-                const CLIP_UINT idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.XPlus[q]);
-                const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.XMinus[q]);
-                dev_a_post[idx] = dev_a[opp_idx];
-                if (dev_b)
-                    dev_b_post[idx] = dev_b[opp_idx];
-            }
+                if ((BCmap.types[object::XPlus] == Boundary::Type::Wall ||
+                     BCmap.types[object::XPlus] == Boundary::Type::SlipWall) &&
+                    i == domain.domainMaxIdx[IDX_X])
+                {
+                    const CLIP_UINT idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.XPlus[q]);
+                    const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.XMinus[q]);
+                    dev_a_post[idx] = dev_a[opp_idx];
+                    if (dev_b)
+                        dev_b_post[idx] = dev_b[opp_idx];
+                }
 
-            // Y boundaries
-            if (BCmap.types[object::YMinus] == Boundary::Type::Wall && j == domain.domainMinIdx[IDX_Y])
-            {
-                const CLIP_UINT idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.YMinus[q]);
-                const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.YPlus[q]);
-                dev_a_post[idx] = dev_a[opp_idx];
-                if (dev_b)
-                    dev_b_post[idx] = dev_b[opp_idx];
-                // if (i == 16 && j == 1)
-                // printf ("q = %d  f = %f\n", wallMap.YMinus[q], dev_a[Domain::getIndex<Q>(domain, i, j, k, wallMap.YMinus[q])]);
+                // Y boundaries
+                if ((BCmap.types[object::YMinus] == Boundary::Type::Wall ||
+                     BCmap.types[object::YMinus] == Boundary::Type::SlipWall) &&
+                    j == domain.domainMinIdx[IDX_Y])
+                {
+                    const CLIP_UINT idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.YMinus[q]);
+                    const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.YPlus[q]);
+                    dev_a_post[idx] = dev_a[opp_idx];
+                    if (dev_b)
+                        dev_b_post[idx] = dev_b[opp_idx];
+                }
 
-                // printf("q= %d, opp= %d \n", wallMap.YMinus[q], wallMap.YPlus[q]);
-            }
-
-            if (BCmap.types[object::YPlus] == Boundary::Type::Wall && j == domain.domainMaxIdx[IDX_Y])
-            {
-                const CLIP_UINT idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.YPlus[q]);
-                const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.YMinus[q]);
-                dev_a_post[idx] = dev_a[opp_idx];
-                if (dev_b)
-                    dev_b_post[idx] = dev_b[opp_idx];
-            }
+                if ((BCmap.types[object::YPlus] == Boundary::Type::Wall ||
+                     BCmap.types[object::YPlus] == Boundary::Type::SlipWall) &&
+                    j == domain.domainMaxIdx[IDX_Y])
+                {
+                    const CLIP_UINT idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.YPlus[q]);
+                    const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.YMinus[q]);
+                    dev_a_post[idx] = dev_a[opp_idx];
+                    if (dev_b)
+                        dev_b_post[idx] = dev_b[opp_idx];
+                }
 
 #ifdef ENABLE_3D
-            // Z boundaries
-            if (BCmap.types[object::ZMinus] == Boundary::Type::Wall && k == domain.domainMinIdx[IDX_Z])
-            {
-                const CLIP_UINT idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.ZMinus[q]);
-                const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.ZPlus[q]);
-                dev_a_post[idx] = dev_a[opp_idx];
-                if (dev_b)
-                    dev_b_post[idx] = dev_b[opp_idx];
-            }
+                // Z boundaries
+                if ((BCmap.types[object::ZMinus] == Boundary::Type::Wall ||
+                     BCmap.types[object::ZMinus] == Boundary::Type::SlipWall) &&
+                    k == domain.domainMinIdx[IDX_Z])
+                {
+                    const CLIP_UINT idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.ZMinus[q]);
+                    const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.ZPlus[q]);
+                    dev_a_post[idx] = dev_a[opp_idx];
+                    if (dev_b)
+                        dev_b_post[idx] = dev_b[opp_idx];
+                }
 
-            if (BCmap.types[object::ZPlus] == Boundary::Type::Wall && k == domain.domainMaxIdx[IDX_Z])
-            {
-                const CLIP_UINT idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.ZPlus[q]);
-                const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.ZMinus[q]);
-                dev_a_post[idx] = dev_a[opp_idx];
-                if (dev_b)
-                    dev_b_post[idx] = dev_b[opp_idx];
-            }
+                if ((BCmap.types[object::ZPlus] == Boundary::Type::Wall ||
+                     BCmap.types[object::ZPlus] == Boundary::Type::SlipWall) &&
+                    k == domain.domainMaxIdx[IDX_Z])
+                {
+                    const CLIP_UINT idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.ZPlus[q]);
+                    const CLIP_UINT opp_idx = Domain::getIndex<Q>(domain, i, j, k, wallMap.ZMinus[q]);
+                    dev_a_post[idx] = dev_a[opp_idx];
+                    if (dev_b)
+                        dev_b_post[idx] = dev_b[opp_idx];
+                }
 #endif
+            }
         }
     }
 
     template <CLIP_UINT Q, CLIP_UINT dof, typename T>
     __global__ void kernelFreeConvect(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap,
-                                      const T wallMap, CLIP_REAL *dev_vel, CLIP_REAL *dev_a, CLIP_REAL *dev_a_prev, CLIP_REAL *dev_b, CLIP_REAL *dev_b_prev)
+                                      const T wallMap, CLIP_REAL *dev_vel,
+                                      CLIP_REAL *dev_a, CLIP_REAL *dev_a_prev,
+                                      CLIP_REAL *dev_b, CLIP_REAL *dev_b_prev)
     {
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
@@ -309,12 +285,12 @@ namespace clip
 
         if (Domain::isInside<DIM>(domain, i, j, k))
         {
-#pragma unroll
-            for (CLIP_UINT q = 0; q < dof; ++q)
-            {
 
-                // X boundaries
-                if (BCmap.types[object::XMinus] == Boundary::Type::FreeConvect && i == domain.domainMinIdx[IDX_X])
+            // XMIN
+            if (BCmap.types[object::XMinus] == Boundary::Type::FreeConvect && i == domain.domainMinIdx[IDX_X])
+            {
+#pragma unroll
+                for (CLIP_UINT q = 0; q < dof; ++q)
                 {
                     const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, j, k, wallMap.XMinus[q]);
                     const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i + 1, j, k, wallMap.XMinus[q]);
@@ -324,8 +300,13 @@ namespace clip
                     if (dev_b)
                         dev_b[idxBoundary] = (dev_b_prev[idxBoundary] + convectVel * dev_b[idxInterior]) / (1.0 + convectVel);
                 }
+            }
 
-                if (BCmap.types[object::XPlus] == Boundary::Type::FreeConvect && i == domain.domainMaxIdx[IDX_X])
+            // XMAX
+            if (BCmap.types[object::XPlus] == Boundary::Type::FreeConvect && i == domain.domainMaxIdx[IDX_X])
+            {
+#pragma unroll
+                for (CLIP_UINT q = 0; q < dof; ++q)
                 {
                     const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, j, k, wallMap.XPlus[q]);
                     const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i - 1, j, k, wallMap.XPlus[q]);
@@ -335,20 +316,29 @@ namespace clip
                     if (dev_b)
                         dev_b[idxBoundary] = (dev_b_prev[idxBoundary] + convectVel * dev_b[idxInterior]) / (1.0 + convectVel);
                 }
+            }
 
-                // Y boundaries
-                if (BCmap.types[object::YMinus] == Boundary::Type::FreeConvect && j == domain.domainMinIdx[IDX_Y])
+            // YMIN
+            if (BCmap.types[object::YMinus] == Boundary::Type::FreeConvect && j == domain.domainMinIdx[IDX_Y])
+            {
+#pragma unroll
+                for (CLIP_UINT q = 0; q < dof; ++q)
                 {
-                    const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, 1, k, wallMap.YMinus[q]);
-                    const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i, 2, k, wallMap.YMinus[q]);
-                    const CLIP_REAL convectVel = fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]);
-                    // printf("inside %d \n", domain.domainMinIdx[IDX_Y]);
+                    const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, j, k, wallMap.YMinus[q]);
+                    const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i, j + 1, k, wallMap.YMinus[q]);
+                    const CLIP_REAL convectVel = fabs(dev_vel[Domain::getIndex<DIM>(domain, i, j + 1, k, IDX_Y)]);
+
                     dev_a[idxBoundary] = (dev_a_prev[idxBoundary] + convectVel * dev_a[idxInterior]) / (1.0 + convectVel);
                     if (dev_b)
                         dev_b[idxBoundary] = (dev_b_prev[idxBoundary] + convectVel * dev_b[idxInterior]) / (1.0 + convectVel);
                 }
+            }
 
-                if (BCmap.types[object::YPlus] == Boundary::Type::FreeConvect && j == domain.domainMaxIdx[IDX_Y])
+            // YMAX
+            if (BCmap.types[object::YPlus] == Boundary::Type::FreeConvect && j == domain.domainMaxIdx[IDX_Y])
+            {
+#pragma unroll
+                for (CLIP_UINT q = 0; q < dof; ++q)
                 {
                     const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, j, k, wallMap.YPlus[q]);
                     const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i, j - 1, k, wallMap.YPlus[q]);
@@ -358,10 +348,14 @@ namespace clip
                     if (dev_b)
                         dev_b[idxBoundary] = (dev_b_prev[idxBoundary] + convectVel * dev_b[idxInterior]) / (1.0 + convectVel);
                 }
+            }
 
 #ifdef ENABLE_3D
-                // Z boundaries
-                if (BCmap.types[object::ZMinus] == Boundary::Type::FreeConvect && k == domain.domainMinIdx[IDX_Z])
+            // ZMIN
+            if (BCmap.types[object::ZMinus] == Boundary::Type::FreeConvect && k == domain.domainMinIdx[IDX_Z])
+            {
+#pragma unroll
+                for (CLIP_UINT q = 0; q < dof; ++q)
                 {
                     const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, j, k, wallMap.ZMinus[q]);
                     const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i, j, k + 1, wallMap.ZMinus[q]);
@@ -371,8 +365,13 @@ namespace clip
                     if (dev_b)
                         dev_b[idxBoundary] = (dev_b_prev[idxBoundary] + convectVel * dev_b[idxInterior]) / (1.0 + convectVel);
                 }
+            }
 
-                if (BCmap.types[object::ZPlus] == Boundary::Type::FreeConvect && k == domain.domainMaxIdx[IDX_Z])
+            // ZMAX
+            if (BCmap.types[object::ZPlus] == Boundary::Type::FreeConvect && k == domain.domainMaxIdx[IDX_Z])
+            {
+#pragma unroll
+                for (CLIP_UINT q = 0; q < dof; ++q)
                 {
                     const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, j, k, wallMap.ZPlus[q]);
                     const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i, j, k - 1, wallMap.ZPlus[q]);
@@ -382,15 +381,14 @@ namespace clip
                     if (dev_b)
                         dev_b[idxBoundary] = (dev_b_prev[idxBoundary] + convectVel * dev_b[idxInterior]) / (1.0 + convectVel);
                 }
-#endif
             }
+#endif
         }
     }
 
-
     template <CLIP_UINT Q, CLIP_UINT dof, typename T>
     __global__ void kernelNeumann(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap,
-                                      const T wallMap, CLIP_REAL *dev_vel, CLIP_REAL *dev_a, CLIP_REAL *dev_a_prev, CLIP_REAL *dev_b, CLIP_REAL *dev_b_prev)
+                                  const T wallMap, CLIP_REAL *dev_a, CLIP_REAL *dev_b)
     {
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
@@ -403,81 +401,72 @@ namespace clip
             {
 
                 // X boundaries
-                if (BCmap.types[object::XMinus] == Boundary::Type::FreeConvect && i == domain.domainMinIdx[IDX_X])
+                if (BCmap.types[object::XMinus] == Boundary::Type::Neumann && i == domain.domainMinIdx[IDX_X])
                 {
                     const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, j, k, wallMap.XMinus[q]);
                     const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i + 1, j, k, wallMap.XMinus[q]);
-                    const CLIP_REAL convectVel = fabs(dev_vel[Domain::getIndex<DIM>(domain, i + 1, j, k, IDX_X)]);
 
-                    dev_a[idxBoundary] = (dev_a_prev[idxBoundary] + convectVel * dev_a[idxInterior]) / (1.0 + convectVel);
-                    if (dev_b)
-                        dev_b[idxBoundary] = (dev_b_prev[idxBoundary] + convectVel * dev_b[idxInterior]) / (1.0 + convectVel);
-                }
-
-                if (BCmap.types[object::XPlus] == Boundary::Type::FreeConvect && i == domain.domainMaxIdx[IDX_X])
-                {
-                    const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, j, k, wallMap.XPlus[q]);
-                    const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i - 1, j, k, wallMap.XPlus[q]);
-                    const CLIP_REAL convectVel = fabs(dev_vel[Domain::getIndex<DIM>(domain, i - 1, j, k, IDX_X)]);
-
-                    dev_a[idxBoundary] = (dev_a_prev[idxBoundary] + convectVel * dev_a[idxInterior]) / (1.0 + convectVel);
-                    if (dev_b)
-                        dev_b[idxBoundary] = (dev_b_prev[idxBoundary] + convectVel * dev_b[idxInterior]) / (1.0 + convectVel);
-                }
-
-                // Y boundaries
-                if (BCmap.types[object::YMinus] == Boundary::Type::FreeConvect && j == domain.domainMinIdx[IDX_Y])
-                {
-                    const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, 1, k, wallMap.YMinus[q]);
-                    const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i, 2, k, wallMap.YMinus[q]);
-                    const CLIP_REAL convectVel = fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]);
-
-                    // dev_a[idxBoundary] = (dev_a_prev[idxBoundary] + convectVel * dev_a[idxInterior]) / (1.0 + convectVel);
                     dev_a[idxBoundary] = dev_a[idxInterior];
                     if (dev_b)
                         dev_b[idxBoundary] = dev_b[idxInterior];
                 }
 
-                if (BCmap.types[object::YPlus] == Boundary::Type::FreeConvect && j == domain.domainMaxIdx[IDX_Y])
+                if (BCmap.types[object::XPlus] == Boundary::Type::Neumann && i == domain.domainMaxIdx[IDX_X])
+                {
+                    const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, j, k, wallMap.XPlus[q]);
+                    const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i - 1, j, k, wallMap.XPlus[q]);
+
+                    dev_a[idxBoundary] = dev_a[idxInterior];
+                    if (dev_b)
+                        dev_b[idxBoundary] = dev_b[idxInterior];
+                }
+
+                // Y boundaries
+                if (BCmap.types[object::YMinus] == Boundary::Type::Neumann && j == domain.domainMinIdx[IDX_Y])
+                {
+                    const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, j, k, wallMap.YMinus[q]);
+                    const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i, j + 1, k, wallMap.YMinus[q]);
+
+                    dev_a[idxBoundary] = dev_a[idxInterior];
+                    if (dev_b)
+                        dev_b[idxBoundary] = dev_b[idxInterior];
+                }
+
+                if (BCmap.types[object::YPlus] == Boundary::Type::Neumann && j == domain.domainMaxIdx[IDX_Y])
                 {
                     const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, j, k, wallMap.YPlus[q]);
                     const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i, j - 1, k, wallMap.YPlus[q]);
-                    const CLIP_REAL convectVel = fabs(dev_vel[Domain::getIndex<DIM>(domain, i, j - 1, k, IDX_Y)]);
 
-                    dev_a[idxBoundary] = (dev_a_prev[idxBoundary] + convectVel * dev_a[idxInterior]) / (1.0 + convectVel);
+                    dev_a[idxBoundary] = dev_a[idxInterior];
                     if (dev_b)
-                        dev_b[idxBoundary] = (dev_b_prev[idxBoundary] + convectVel * dev_b[idxInterior]) / (1.0 + convectVel);
+                        dev_b[idxBoundary] = dev_b[idxInterior];
                 }
 
 #ifdef ENABLE_3D
                 // Z boundaries
-                if (BCmap.types[object::ZMinus] == Boundary::Type::FreeConvect && k == domain.domainMinIdx[IDX_Z])
+                if (BCmap.types[object::ZMinus] == Boundary::Type::Neumann && k == domain.domainMinIdx[IDX_Z])
                 {
                     const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, j, k, wallMap.ZMinus[q]);
                     const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i, j, k + 1, wallMap.ZMinus[q]);
-                    const CLIP_REAL convectVel = fabs(dev_vel[Domain::getIndex<DIM>(domain, i, j, k + 1, IDX_Z)]);
 
-                    dev_a[idxBoundary] = (dev_a_prev[idxBoundary] + convectVel * dev_a[idxInterior]) / (1.0 + convectVel);
+                    dev_a[idxBoundary] = dev_a[idxInterior];
                     if (dev_b)
-                        dev_b[idxBoundary] = (dev_b_prev[idxBoundary] + convectVel * dev_b[idxInterior]) / (1.0 + convectVel);
+                        dev_b[idxBoundary] = dev_b[idxInterior];
                 }
 
-                if (BCmap.types[object::ZPlus] == Boundary::Type::FreeConvect && k == domain.domainMaxIdx[IDX_Z])
+                if (BCmap.types[object::ZPlus] == Boundary::Type::Neumann && k == domain.domainMaxIdx[IDX_Z])
                 {
                     const CLIP_UINT idxBoundary = Domain::getIndex<Q>(domain, i, j, k, wallMap.ZPlus[q]);
                     const CLIP_UINT idxInterior = Domain::getIndex<Q>(domain, i, j, k - 1, wallMap.ZPlus[q]);
-                    const CLIP_REAL convectVel = fabs(dev_vel[Domain::getIndex<DIM>(domain, i, j, k - 1, IDX_Z)]);
 
-                    dev_a[idxBoundary] = (dev_a_prev[idxBoundary] + convectVel * dev_a[idxInterior]) / (1.0 + convectVel);
+                    dev_a[idxBoundary] = dev_a[idxInterior];
                     if (dev_b)
-                        dev_b[idxBoundary] = (dev_b_prev[idxBoundary] + convectVel * dev_b[idxInterior]) / (1.0 + convectVel);
+                        dev_b[idxBoundary] = dev_b[idxInterior];
                 }
 #endif
             }
         }
     }
-
-   
 
     __global__ void kernelMirrorBoundary(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap, CLIP_REAL *dev_a)
     {
@@ -487,47 +476,43 @@ namespace clip
 
         if (Domain::isInside<DIM>(domain, i, j, k))
         {
+
             const CLIP_UINT idx = Domain::getIndex(domain, i, j, k);
 
             // XMIN
-            if ((BCmap.types[object::XMinus] == Boundary::Type::Wall || BCmap.types[object::XMinus] == Boundary::Type::FreeConvect) && i == domain.domainMinIdx[IDX_X])
+            if (Boundary::isMirrorType(BCmap.types[object::XMinus]) && i == domain.domainMinIdx[IDX_X])
             {
                 const CLIP_UINT ghost = Domain::getIndex(domain, domain.ghostDomainMinIdx[IDX_X], j, k);
                 dev_a[ghost] = dev_a[idx];
             }
-
             // XMAX
-            if ((BCmap.types[object::XPlus] == Boundary::Type::Wall || BCmap.types[object::XPlus] == Boundary::Type::FreeConvect) && i == domain.domainMaxIdx[IDX_X])
+            if (Boundary::isMirrorType(BCmap.types[object::XPlus]) && i == domain.domainMaxIdx[IDX_X])
             {
                 const CLIP_UINT ghost = Domain::getIndex(domain, domain.ghostDomainMaxIdx[IDX_X], j, k);
                 dev_a[ghost] = dev_a[idx];
             }
-
             // YMIN
-            if ((BCmap.types[object::YMinus] == Boundary::Type::Wall || BCmap.types[object::YMinus] == Boundary::Type::FreeConvect) && j == domain.domainMinIdx[IDX_Y])
+            if (Boundary::isMirrorType(BCmap.types[object::YMinus]) && j == domain.domainMinIdx[IDX_Y])
             {
                 const CLIP_UINT ghost = Domain::getIndex(domain, i, domain.ghostDomainMinIdx[IDX_Y], k);
                 dev_a[ghost] = dev_a[idx];
             }
-
             // YMAX
-            if ((BCmap.types[object::YPlus] == Boundary::Type::Wall || BCmap.types[object::YPlus] == Boundary::Type::FreeConvect) && j == domain.domainMaxIdx[IDX_Y])
+            if (Boundary::isMirrorType(BCmap.types[object::YPlus]) && j == domain.domainMaxIdx[IDX_Y])
             {
                 const CLIP_UINT ghost = Domain::getIndex(domain, i, domain.ghostDomainMaxIdx[IDX_Y], k);
                 dev_a[ghost] = dev_a[idx];
-                // printf("inside\n");
             }
 
 #ifdef ENABLE_3D
             // ZMIN
-            if ((BCmap.types[object::ZMinus] == Boundary::Type::Wall || BCmap.types[object::ZMinus] == Boundary::Type::FreeConvect) && k == domain.domainMinIdx[IDX_Z])
+            if (Boundary::isMirrorType(BCmap.types[object::ZMinus]) && k == domain.domainMinIdx[IDX_Z])
             {
                 const CLIP_UINT ghost = Domain::getIndex(domain, i, j, domain.ghostDomainMinIdx[IDX_Z]);
                 dev_a[ghost] = dev_a[idx];
             }
-
             // ZMAX
-            if ((BCmap.types[object::ZPlus] == Boundary::Type::Wall || BCmap.types[object::ZPlus] == Boundary::Type::FreeConvect) && k == domain.domainMaxIdx[IDX_Z])
+            if (Boundary::isMirrorType(BCmap.types[object::ZPlus]) && k == domain.domainMaxIdx[IDX_Z])
             {
                 const CLIP_UINT ghost = Domain::getIndex(domain, i, j, domain.ghostDomainMaxIdx[IDX_Z]);
                 dev_a[ghost] = dev_a[idx];
@@ -561,13 +546,19 @@ namespace clip
     void Solver::freeConvectBoundary(CLIP_REAL *dev_vel, CLIP_REAL *dev_a, CLIP_REAL *dev_a_prev, CLIP_REAL *dev_b, CLIP_REAL *dev_b_prev)
     {
         if (m_boundary->isFreeConvect)
-            // kernelFreeConvect<Q, dof, WMRT::wallBCMap><<<dimGrid, dimBlock>>>(m_info, m_BCMap, m_wallBCMap, dev_vel, dev_a, dev_a_prev, dev_b, dev_b_prev);
-            kernelNeumann<Q, dof, WMRT::wallBCMap><<<dimGrid, dimBlock>>>(m_info, m_BCMap, m_wallBCMap, dev_vel, dev_a, dev_a_prev, dev_b, dev_b_prev);
+            kernelFreeConvect<Q, dof, WMRT::wallBCMap><<<dimGrid, dimBlock>>>(m_info, m_BCMap, m_wallBCMap, dev_vel, dev_a, dev_a_prev, dev_b, dev_b_prev);
+    }
+
+    template <CLIP_UINT Q, CLIP_UINT dof>
+    void Solver::NeumannBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_b)
+    {
+        if (m_boundary->isNeumann)
+            kernelNeumann<Q, dof, WMRT::wallBCMap><<<dimGrid, dimBlock>>>(m_info, m_BCMap, m_wallBCMap, dev_a, dev_b);
     }
 
     void Solver::mirrorBoundary(CLIP_REAL *dev_a)
     {
-        if (m_boundary->isWall || m_boundary->isFreeConvect || m_boundary->isSlipWall)
+        if (m_boundary->isWall || m_boundary->isFreeConvect || m_boundary->isSlipWall || m_boundary->isNeumann)
             kernelMirrorBoundary<<<dimGrid, dimBlock>>>(m_info, m_BCMap, dev_a);
     }
 
@@ -584,5 +575,7 @@ namespace clip
     template void clip::Solver::freeConvectBoundary<9, 3>(CLIP_REAL *, CLIP_REAL *, CLIP_REAL *, CLIP_REAL *, CLIP_REAL *);
     template void clip::Solver::freeConvectBoundary<19, 5>(CLIP_REAL *, CLIP_REAL *, CLIP_REAL *, CLIP_REAL *, CLIP_REAL *);
 
+    template void clip::Solver::NeumannBoundary<9, 3>(CLIP_REAL *, CLIP_REAL *);
+    template void clip::Solver::NeumannBoundary<19, 5>(CLIP_REAL *, CLIP_REAL *);
 
 }

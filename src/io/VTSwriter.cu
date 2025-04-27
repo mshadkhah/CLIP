@@ -10,32 +10,26 @@ namespace clip
 
     VTSwriter::~VTSwriter() = default;
 
-
     void VTSwriter::writeScalar(std::ofstream &file)
     {
         writeScalarArray(file, m_DA->hostDA.host_c, "C");
+        writeScalarArray(file, m_DA->hostDA.host_p, "P");
+        writeScalarArray(file, m_DA->hostDA.host_rho, "Rho");
     }
 
     void VTSwriter::writeField(std::ofstream &file)
     {
-        // writeScalarArray(file, m_DA->hostDA.host_vel, "Velocity");
+        writeFieldArray(file, m_DA->hostDA.host_vel, "Velocity");
     }
-
-
 
     void VTSwriter::writeToFile()
     {
         m_DA->updateHost();
-        if(m_ti->getCurrentStep() % m_idata->params.outputInterval == 0){
+        if (m_ti->getCurrentStep() % m_idata->params.outputInterval == 0)
+        {
             writeVTSBinaryFile();
         }
     }
-
-
-
-
-
-  
 
     void VTSwriter::writeVTSBinaryFile()
     {
@@ -89,7 +83,6 @@ namespace clip
         file << "<PointData Scalars=\"scalars\" Vectors=\"velocity\">\n";
 
         writeField(file);
-
         writeScalar(file);
 
         file << "</PointData>\n";
@@ -102,7 +95,6 @@ namespace clip
 
         file << "<DataArray type=\"Float64\" Name=\"" << name << "\" format=\"ascii\">\n";
 
-        int counter = 0;
         for (CLIP_UINT k = m_domain->info.domainMinIdx[IDX_Z]; k <= m_domain->info.domainMaxIdx[IDX_Z]; k++)
         {
             for (CLIP_UINT j = m_domain->info.domainMinIdx[IDX_Y]; j <= m_domain->info.domainMaxIdx[IDX_Y]; j++)
@@ -111,11 +103,9 @@ namespace clip
                 {
                     const CLIP_UINT idx_SCALAR = Domain::getIndex(m_domain->info, i, j, k);
                     file << data[idx_SCALAR] << "\n";
-                    counter++;
                 }
             }
         }
-        std::cout << "count: " << counter << std::endl;
 
         file << "</DataArray>\n";
     }
@@ -152,19 +142,5 @@ namespace clip
 
         file << "</DataArray>\n";
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

@@ -4,51 +4,48 @@
 namespace clip
 {
 
-    Boundary::Boundary(const InputData &idata, const Domain &domain, DataArray &DA)
-        : m_idata(&idata), m_DA(&DA), m_domain(&domain)
+    Boundary::Boundary(const InputData &idata, const Domain &domain)
+        : m_idata(&idata), m_domain(&domain)
     {
-
-        dimBlock = m_DA->dimBlock;
-        dimGrid = m_DA->dimGrid;
 
         readBoundaries(boundaries);
         updateFlags();
         print();
-
-        m_DA->allocateOnDevice(dev_boundaryFlags, "dev_boundaryFlags", static_cast<CLIP_UINT>(Objects::MAX));
-
-        // flagGenLauncher(dev_boundaryFlags, m_domain.info);
     }
 
     Boundary::~Boundary() {}
 
     Boundary::Objects Boundary::sideFromString(const std::string &str)
     {
-        if (str == "x-")
+        std::string lowerStr = toLower(str); // << make it lowercase
+        if (lowerStr == "x-")
             return Objects::XMinus;
-        if (str == "x+")
+        if (lowerStr == "x+")
             return Objects::XPlus;
-        if (str == "y-")
+        if (lowerStr == "y-")
             return Objects::YMinus;
-        if (str == "y+")
+        if (lowerStr == "y+")
             return Objects::YPlus;
-        if (str == "z-")
+        if (lowerStr == "z-")
             return Objects::ZMinus;
-        if (str == "z+")
+        if (lowerStr == "z+")
             return Objects::ZPlus;
         return Objects::Unknown;
     }
 
     Boundary::Type Boundary::typeFromString(const std::string &str)
     {
-        if (str == "wall")
+        std::string lowerStr = toLower(str); // << make it lowercase
+        if (lowerStr == "wall")
             return Type::Wall;
-        if (str == "slip wall")
+        if (lowerStr == "slip wall")
             return Type::SlipWall;
-        if (str == "free convect")
+        if (lowerStr == "free convect")
             return Type::FreeConvect;
-        if (str == "periodic")
+        if (lowerStr == "periodic")
             return Type::Periodic;
+        if (lowerStr == "neumann")
+            return Type::Neumann;
         return Type::Unknown;
     }
 
@@ -85,6 +82,8 @@ namespace clip
             return "free convect";
         case Type::Periodic:
             return "periodic";
+        case Type::Neumann:
+            return "neumann";
         default:
             return "unknown";
         }
@@ -237,47 +236,6 @@ namespace clip
         }
     }
 
-    __global__ void flagGen(CLIP_UINT *dev_flag, const Domain::DomainInfo domain)
-    {
-        const CLIP_UINT i = THREAD_IDX_X;
-        const CLIP_UINT j = THREAD_IDX_Y;
-        const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
-        const CLIP_UINT idx_SCALAR = Domain::getIndex(domain, i, j, k);
-
-        if (Domain::isInside<DIM>(domain, i, j, k))
-        {
-            // if(i == 0){
-            //     dev_flag[idx_SCALAR] = boundaries[static_cast<CLIP_UINT>(Boundary::Objects::XMinus].BCtype);
-            // }
-            // else if(i == domain.extent[IDX_X]){
-            //     dev_flag[idx_SCALAR] = static_cast<CLIP_UINT>(Boundary::Objects::XPlus);
-            // }
-            // else if(j == 0){
-            //     dev_flag[idx_SCALAR] = static_cast<CLIP_UINT>(Boundary::Objects::YMinus);
-            // }
-            // else if(i == domain.extent[IDX_Y]){
-            //     dev_flag[idx_SCALAR] = static_cast<CLIP_UINT>(Boundary::Objects::YPlus);
-            // }
-
-            // #ifdef ENABLE_2D
-            // else if(k == 0){
-            //     dev_flag[idx_SCALAR] = static_cast<CLIP_UINT>(Boundary::Objects::ZMinus);
-            // }
-            // else if(k == domain.extent[IDX_Z]){
-            //     dev_flag[idx_SCALAR] = static_cast<CLIP_UINT>(Boundary::Objects::ZPlus);
-            // }
-            // #endif
-
-            printf("index: i = %d\n", idx_SCALAR);
-        }
-    }
-
-    void Boundary::flagGenLauncher(CLIP_UINT *dev_flag, const Domain::DomainInfo &domain)
-    {
-        flagGen<<<dimGrid, dimBlock>>>(dev_flag, domain);
-        cudaDeviceSynchronize();
-    }
-
     void Boundary::updateFlags()
     {
 
@@ -295,10 +253,23 @@ namespace clip
             case Type::FreeConvect:
                 isFreeConvect = true;
                 break;
+            case Type::Neumann:
+                isNeumann = true;
+                break;
             case Type::Periodic:
                 isPeriodic = true;
                 break;
             }
         }
     }
+
+    std::string Boundary::toLower(const std::string &s)
+    {
+        std::string result = s;
+        std::transform(result.begin(), result.end(), result.begin(),
+                       [](unsigned char c)
+                       { return std::tolower(c); });
+        return result;
+    }
+
 }

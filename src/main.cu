@@ -5,6 +5,7 @@
 #include <DataArray.cuh>
 #include "VTSwriter.cuh"
 #include "Reporter.cuh"
+#include "CheckPointer.cuh"
 
 int main()
 {
@@ -13,9 +14,8 @@ int main()
     // clip::InputData input("config.txt");
 
     clip::Domain domain(input);
-    clip::DataArray DA(input, domain);
-    clip::Boundary boundary(input, domain, DA);
-
+    clip::Boundary boundary(input, domain);
+    clip::DataArray DA(input, domain, boundary);
     DA.createVectors();
 
 
@@ -28,6 +28,9 @@ int main()
     eqn.initialCondition();
     DA.updateDevice();
     eqn.deviceInitializer();
+
+
+    clip::CheckPointer chechpoint(DA, input, domain, ti, boundary);
 
 
     while (ti.getCurrentStep() < ti.getFinalStep())

@@ -47,6 +47,7 @@ set(CLIP_INC
   include/equation/NsAllen.cuh
   include/domain/Domain.cuh
   include/io/VTSwriter.cuh
+  include/io/CheckPointer.cuh
 )
 
 
@@ -61,6 +62,7 @@ set(CLIP_SRC
   src/boundary/Boundary.cu
   src/domain/Domain.cu
   src/io/VTSwriter.cu
+  src/io/CheckPointer.cu
 )
 
 

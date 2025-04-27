@@ -1,35 +1,47 @@
 #include <TimeInfo.cuh>
 
-
-namespace clip {
+namespace clip
+{
 
     TimeInfo::TimeInfo(InputData idata)
-    :m_idata(idata) {}
+        : m_idata(idata) {}
 
-    
-    int TimeInfo::getCurrentStep() const{
-        return m_currentStep;
+    int TimeInfo::getCurrentStep() const
+    {
+        return m_info.currentStep;
     }
 
-    double TimeInfo::getCurrentTime() const{
-        if (!m_dtIsSet)
+    double TimeInfo::getCurrentTime() const
+    {
+        if (!m_info.dtIsSet)
             throw std::runtime_error("Time step not set before calling getCurrentTime()");
-        return m_currentStep * m_dt;
+        return m_info.currentStep * m_info.dt;
     }
 
-    void TimeInfo::setTimeStep(double dt){
-        m_dtIsSet = true;
-        m_dt = dt;
+    void TimeInfo::setTimeStep(double dt)
+    {
+        m_info.dtIsSet = true;
+        m_info.dt = dt;
     }
 
-    void TimeInfo::increment(){
-        m_currentStep++;
+    void TimeInfo::increment()
+    {
+        m_info.currentStep++;
     }
 
-    double TimeInfo::getFinalStep() const{
+    double TimeInfo::getFinalStep() const
+    {
         return m_idata.params.finalStep;
     }
+
+    TimeInfo::simInfo &clip::TimeInfo::getSimInfo()
+    {
+        return m_info;
+    }
+
+    const TimeInfo::simInfo &clip::TimeInfo::getSimInfo() const
+    {
+        return m_info;
+    }
+
 }
-
-
-

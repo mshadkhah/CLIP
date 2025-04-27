@@ -742,13 +742,13 @@ namespace clip
                 //                                                                                                               dev_g_post[Domain::getIndex<Q>(domain, i, 2, k, q)])) /
                 //                                                       (1 + fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]));
 
-                dev_f_post[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])] = (dev_f_temp[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])] + ( fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]) *
+                dev_f_post[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])] = (dev_f_temp[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])] + (fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]) *
                                                                                                                                                 dev_f_post[Domain::getIndex<Q>(domain, i, 2, k, velsetY[q])])) /
-                                                                               (1 +  fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]));
+                                                                               (1 + fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]));
 
                 dev_g_post[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])] = (dev_g_temp[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])] + (fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]) *
                                                                                                                                                 dev_g_post[Domain::getIndex<Q>(domain, i, 2, k, velsetY[q])])) /
-                                                                               (1 +  fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]));
+                                                                               (1 + fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]));
 
                 //    printf("vel = %f \n", fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]));
 
@@ -877,27 +877,27 @@ namespace clip
             const CLIP_REAL Fz = dev_mu[idx_SCALAR] * dev_dc[idx_Z] + Fpz + fv[2];
 #endif
 
-//             dev_vel[idx_X] = 0;
-//             dev_vel[idx_Y] = 0;
-// #ifdef ENABLE_3D
-//             dev_vel[idx_Z] = 0;
-// #endif
+            //             dev_vel[idx_X] = 0;
+            //             dev_vel[idx_Y] = 0;
+            // #ifdef ENABLE_3D
+            //             dev_vel[idx_Z] = 0;
+            // #endif
 
-// #pragma unroll
-//             for (int q = 0; q < Q; q++)
-//             {
-//                 dev_vel[idx_X] += velSet.ex[q] * dev_f_post[Domain::getIndex<Q>(domain, i, j, k, q)];
-//                 dev_vel[idx_Y] += velSet.ey[q] * dev_f_post[Domain::getIndex<Q>(domain, i, j, k, q)];
-// #ifdef ENABLE_3D
-//                 dev_vel[idx_Z] += velSet.ez[q] * dev_f_post[Domain::getIndex<Q>(domain, i, j, k, q)];
-// #endif
-//             }
+            // #pragma unroll
+            //             for (int q = 0; q < Q; q++)
+            //             {
+            //                 dev_vel[idx_X] += velSet.ex[q] * dev_f_post[Domain::getIndex<Q>(domain, i, j, k, q)];
+            //                 dev_vel[idx_Y] += velSet.ey[q] * dev_f_post[Domain::getIndex<Q>(domain, i, j, k, q)];
+            // #ifdef ENABLE_3D
+            //                 dev_vel[idx_Z] += velSet.ez[q] * dev_f_post[Domain::getIndex<Q>(domain, i, j, k, q)];
+            // #endif
+            //             }
 
-//             dev_vel[idx_X] = dev_vel[idx_X] + 0.50 * Fx / dev_rho[idx_SCALAR];
-//             dev_vel[idx_Y] = dev_vel[idx_Y] + 0.50 * Fy / dev_rho[idx_SCALAR];
-// #ifdef ENABLE_3D
-//             dev_vel[idx_Z] = dev_vel[idx_Z] + 0.50 * Fz / dev_rho[idx_SCALAR];
-// #endif
+            //             dev_vel[idx_X] = dev_vel[idx_X] + 0.50 * Fx / dev_rho[idx_SCALAR];
+            //             dev_vel[idx_Y] = dev_vel[idx_Y] + 0.50 * Fy / dev_rho[idx_SCALAR];
+            // #ifdef ENABLE_3D
+            //             dev_vel[idx_Z] = dev_vel[idx_Z] + 0.50 * Fz / dev_rho[idx_SCALAR];
+            // #endif
         }
     }
 
@@ -975,9 +975,8 @@ namespace clip
         m_DA->copyDevice(m_DA->deviceDA.dev_g_prev, m_DA->deviceDA.dev_g_post, "dev_g_prev", Q);
         m_DA->copyDevice(m_DA->deviceDA.dev_f_prev, m_DA->deviceDA.dev_f_post, "dev_f_prev", Q);
 
-        // printf("stream1 \n");
+
         kernelStreaming<<<dimGrid, dimBlock>>>(m_velset, m_info, m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_f_post);
-        // printf("stream2 \n");
         kernelStreaming<<<dimGrid, dimBlock>>>(m_velset, m_info, m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_g_post);
 
         cudaDeviceSynchronize();
@@ -986,7 +985,6 @@ namespace clip
     void NSAllen::macroscopic()
     {
 
-        m_DA->copyDevice(m_DA->deviceDA.dev_c_prev, m_DA->deviceDA.dev_c, "dev_c_prev", SCALAR_FIELD);
 
         kernelMacroscopicg<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
                                                   m_DA->deviceDA.dev_g_post, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_c);
@@ -1002,15 +1000,11 @@ namespace clip
     {
         collision();
         applyPeriodicBoundary();
-
         streaming();
         applyWallBoundary();
         applyFreeConvectBoundary();
+        applyNeumannBoundary();
         macroscopic();
-        
-        // constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
-        // freeConvecMacroscopic<Q>(m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_c_prev);
-
         cudaDeviceSynchronize();
     }
 
@@ -1041,9 +1035,7 @@ namespace clip
     {
         constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
         constexpr CLIP_UINT dof = WMRT::wallBCMap::Q;
-        // printf("wall \n");
         wallBoundary<Q, dof>(m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_g, m_DA->deviceDA.dev_g_post);
-        // wallBoundary<Q, dof>(m_DA->deviceDA.dev_g_post, m_DA->deviceDA.dev_f_post);
         mirrorBoundary(m_DA->deviceDA.dev_c);
         cudaDeviceSynchronize();
     }
@@ -1052,20 +1044,17 @@ namespace clip
     {
         constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
         constexpr CLIP_UINT dof = WMRT::wallBCMap::Q;
-        // __global__ void OutConvect(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, const Domain::DomainInfo domain, float *dev_p, float *dev_rho, float *dev_c, float *dev_f_post, float *dev_g_post, float *dev_f_temp, float *dev_g_temp,
-        //     float *dev_dc, float *dev_vel, float *dev_mu)
-
-        // OutConvect<<<dimGrid, dimBlock>>>(m_velset, m_params, m_info,
-        //                                   m_DA->deviceDA.dev_p, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_g_post, m_DA->deviceDA.dev_f_prev, m_DA->deviceDA.dev_g_prev, m_DA->deviceDA.dev_c_prev,
-        //                                   m_DA->deviceDA.dev_dc, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_mu);
-
-        // constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
-        // constexpr CLIP_UINT dof = WMRT::wallBCMap::Q;
         freeConvectBoundary<Q, dof>(m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_f_prev, m_DA->deviceDA.dev_g_post, m_DA->deviceDA.dev_g_prev);
-        // freeConvecMacroscopic<Q>(m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_c,  m_DA->deviceDA.dev_p);
         mirrorBoundary(m_DA->deviceDA.dev_c);
-
         cudaDeviceSynchronize();
     }
 
+    void NSAllen::applyNeumannBoundary()
+    {
+        constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
+        constexpr CLIP_UINT dof = WMRT::wallBCMap::Q;
+        NeumannBoundary<Q, dof>( m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_g_post);
+        mirrorBoundary(m_DA->deviceDA.dev_c);
+        cudaDeviceSynchronize();
+    }
 }
