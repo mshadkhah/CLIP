@@ -4,14 +4,15 @@
 namespace clip
 {
 
-    NSAllen::NSAllen(const InputData &idata, const Domain &domain, DataArray &DA, const Boundary &boundary)
-        : Solver(idata, domain, DA, boundary), m_boundary(&boundary)
+    NSAllen::NSAllen(const InputData &idata, const Domain &domain, DataArray &DA, const Boundary &boundary, const Geometry &geom)
+        : Solver(idata, domain, DA, boundary, geom), m_boundary(&boundary), m_geom(&geom)
     {
 
         m_info = m_domain->info;
         m_params = m_idata->params;
         dimGrid = m_DA->dimGrid;
         dimBlock = m_DA->dimBlock;
+        m_geomPool = m_geom->getDeviceStruct();
     };
 
     void NSAllen::initialization()
@@ -22,37 +23,6 @@ namespace clip
     {
     }
 
-    __global__ void flagGen2()
-    {
-        const CLIP_UINT i = THREAD_IDX_X;
-        const CLIP_UINT j = THREAD_IDX_Y;
-        const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
-
-        // const CLIP_UINT idx_SCALAR = DataArray::getIndex(i, j, k);
-
-        // printf("Thread index: i = %d, j = %d, k = %d\n", i, j, k);
-        // printf("Thread index2: %d \n", idx_SCALAR);
-
-        // if (DataArray::isInside<DIM>(i, j, k)){
-
-        // printf("Thread index: i = %d, j = %d, k = %d\n", i, j, k);
-        // printf("index: i = %d\n", DataArray::getDomainExtent(IDX_X));
-        // printf("index: s_domainExtent = %d\n", s_domainExtent[IDX_Y]);
-
-        // }
-        // printf("index: inside allen s_domainExtent = %d\n", DataArray::getDomainExtent(1));
-        // printf("index: i = %d\n", idx_SCALAR);
-        // printf("Thread index: i = %d, j = %d, k = %d\n", i, j, k);
-
-        // printf("index:  inside allen ex = %d\n", ex[3]);
-    }
-
-    void NSAllen::flagGenLauncher2()
-    {
-
-        // flagGen2<<<dimGrid, dimBlock>>>();
-        cudaDeviceSynchronize();
-    }
 
     __device__ __forceinline__ CLIP_REAL NSAllen::Equilibrium_new(const WMRT::WMRTvelSet velSet, CLIP_UINT q, CLIP_REAL Ux, CLIP_REAL Uy, CLIP_REAL Uz)
     {
@@ -127,11 +97,11 @@ namespace clip
 
             if (params.caseType == InputData::CaseType::Bubble)
             {
-                dev_p[idx_SCALAR] = dev_p[idx_SCALAR] - dev_c[idx_SCALAR] * params.sigma / (params.D / 2.0) / (dev_rho[idx_SCALAR] / 3.0);
+                dev_p[idx_SCALAR] = dev_p[idx_SCALAR] - dev_c[idx_SCALAR] * params.sigma / (params.referenceLength / 2.0) / (dev_rho[idx_SCALAR] / 3.0);
             }
             else if (params.caseType == InputData::CaseType::Drop)
             {
-                dev_p[idx_SCALAR] = dev_p[idx_SCALAR] + dev_c[idx_SCALAR] * params.sigma / (params.D / 2.0) / (dev_rho[idx_SCALAR] / 3.0);
+                dev_p[idx_SCALAR] = dev_p[idx_SCALAR] + dev_c[idx_SCALAR] * params.sigma / (params.referenceLength / 2.0) / (dev_rho[idx_SCALAR] / 3.0);
             }
             else
             {
@@ -710,7 +680,7 @@ namespace clip
         int velsetY[3] = {6, 2, 5};
 
         constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
-        CLIP_REAL gneq[Q], tmp[Q], ga_wa[Q], hlp[Q], fv[DIM], tau, s9;
+        CLIP_REAL gneq[Q], tmp[Q], ga_wa[Q], hlp[Q], fv[DIM], tau;
         const CLIP_REAL drho3 = (params.RhoH - params.RhoL) / 3.0;
         const CLIP_UINT i = THREAD_IDX_X;
         // const CLIP_UINT j = THREAD_IDX_Y;
@@ -901,58 +871,127 @@ namespace clip
         }
     }
 
+
     void NSAllen::initialCondition()
+{
+    using namespace clip;
+
+    for (CLIP_UINT i = m_info.ghostDomainMinIdx[IDX_X]; i <= m_info.ghostDomainMaxIdx[IDX_X]; i++)
     {
-
-        const CLIP_REAL radius = m_params.D / 2;
-
-        for (CLIP_UINT i = m_info.ghostDomainMinIdx[IDX_X]; i <= m_info.ghostDomainMaxIdx[IDX_X]; i++)
+        for (CLIP_UINT j = m_info.ghostDomainMinIdx[IDX_Y]; j <= m_info.ghostDomainMaxIdx[IDX_Y]; j++)
         {
-            for (CLIP_UINT j = m_info.ghostDomainMinIdx[IDX_Y]; j <= m_info.ghostDomainMaxIdx[IDX_Y]; j++)
+            for (CLIP_UINT k = m_info.ghostDomainMinIdx[IDX_Z]; k <= m_info.ghostDomainMaxIdx[IDX_Z]; k++)
             {
-                for (CLIP_UINT k = m_info.ghostDomainMinIdx[IDX_Z]; k <= m_info.ghostDomainMaxIdx[IDX_Z]; k++)
+                const CLIP_UINT idx_SCALAR = Domain::getIndex(m_info, i, j, k);
+
+                // Physical coordinate relative to center
+                const CLIP_REAL x = static_cast<CLIP_REAL>(i);
+                const CLIP_REAL y = static_cast<CLIP_REAL>(j);
+                const CLIP_REAL z = (DIM == 3) ? static_cast<CLIP_REAL>(k) : 0.0;
+
+                CLIP_REAL sdf_val = 1e10;
+
+                // Select based on case
+                switch (m_params.caseType)
                 {
+                case InputData::CaseType::Bubble:
+                case InputData::CaseType::Drop:
+                {
+                    // Assume ID=0 is your initial bubble or drop
+                    sdf_val = Geometry::sdf(m_geomPool, 0, x, y, z);
 
-                    const CLIP_UINT idx_SCALAR = Domain::getIndex(m_info, i, j, k);
+                    if (m_params.caseType == InputData::CaseType::Bubble)
+                        m_DA->hostDA.host_c[idx_SCALAR] = 0.50 - 0.50 * tanh(2.0 * sdf_val / m_params.interfaceWidth);
+                    else // Drop
+                        m_DA->hostDA.host_c[idx_SCALAR] = 0.50 + 0.50 * tanh(2.0 * sdf_val / m_params.interfaceWidth);
 
-                    // Compute coordinates relative to center
-                    const CLIP_REAL X0 = i - m_params.C[IDX_X];
-                    const CLIP_REAL Y0 = j - m_params.C[IDX_Y];
-                    const CLIP_REAL Z0 = (DIM == 3) ? (k - m_params.C[IDX_Z]) : 0;
-                    const CLIP_REAL Ri = sqrt(X0 * X0 + Y0 * Y0 + Z0 * Z0);
-
-                    // Handle different initialization cases
-                    switch (m_params.caseType)
-                    {
-                    case InputData::CaseType::Bubble:
-                        m_DA->hostDA.host_c[idx_SCALAR] = 0.50 - 0.50 * tanh(2.0 * (radius - Ri) / m_params.interfaceWidth);
-                        break;
-
-                    case InputData::CaseType::Drop:
-                        m_DA->hostDA.host_c[idx_SCALAR] = 0.50 + 0.50 * tanh(2.0 * (radius - Ri) / m_params.interfaceWidth);
-                        break;
-
-                    case InputData::CaseType::RTI:
-                    {
-                        // Rayleigh-Taylor perturbation: cosine pattern on x/z plane
-#ifdef ENABLE_2D
-                        const CLIP_REAL perturbation = m_params.amplitude * m_params.N[IDX_X] * (cos(2.0 * M_PI * i / m_params.N[IDX_X]));
-#elif defined(ENABLE_3D)
-                        const CLIP_REAL perturbation = m_params.amplitude * m_params.N[IDX_X] * (cos(2.0 * M_PI * i / m_params.N[IDX_X]) + cos(2.0 * pi * k / m_params.N[IDX_Z]));
-#endif
-                        const CLIP_REAL yShift = Y0 - perturbation;
-                        m_DA->hostDA.host_c[idx_SCALAR] = 0.50 + 0.50 * tanh(2.0 * yShift / m_params.interfaceWidth);
-                        break;
-                    }
-
-                    default:
-                        m_DA->hostDA.host_c[idx_SCALAR] = 0.0;
-                        break;
-                    }
+                    break;
+                }
+                case InputData::CaseType::RTI:
+                {
+                    // Assume ID=0 corresponds to perturbation field
+                    sdf_val = Geometry::sdf(m_geomPool, 0, x, y, z);
+                    m_DA->hostDA.host_c[idx_SCALAR] = 0.50 + 0.50 * tanh(2.0 * sdf_val / m_params.interfaceWidth);
+                    break;
+                }
+                default:
+                    m_DA->hostDA.host_c[idx_SCALAR] = 0.0;
+                    break;
                 }
             }
         }
     }
+}
+
+
+
+
+//     void NSAllen::initialCondition()
+//     {
+
+//         const CLIP_REAL radius = m_params.D / 2;
+
+//         for (CLIP_UINT i = m_info.ghostDomainMinIdx[IDX_X]; i <= m_info.ghostDomainMaxIdx[IDX_X]; i++)
+//         {
+//             for (CLIP_UINT j = m_info.ghostDomainMinIdx[IDX_Y]; j <= m_info.ghostDomainMaxIdx[IDX_Y]; j++)
+//             {
+//                 for (CLIP_UINT k = m_info.ghostDomainMinIdx[IDX_Z]; k <= m_info.ghostDomainMaxIdx[IDX_Z]; k++)
+//                 {
+
+//                     const CLIP_UINT idx_SCALAR = Domain::getIndex(m_info, i, j, k);
+
+//                     // Compute coordinates relative to center
+//                     const CLIP_REAL X0 = i - m_params.C[IDX_X];
+//                     const CLIP_REAL Y0 = j - m_params.C[IDX_Y];
+//                     const CLIP_REAL Z0 = (DIM == 3) ? (k - m_params.C[IDX_Z]) : 0;
+//                     const CLIP_REAL Ri = sqrt(X0 * X0 + Y0 * Y0 + Z0 * Z0);
+
+//                     // Handle different initialization cases
+//                     switch (m_params.caseType)
+//                     {
+//                     case InputData::CaseType::Bubble:
+//                         m_DA->hostDA.host_c[idx_SCALAR] = 0.50 - 0.50 * tanh(2.0 * (radius - Ri) / m_params.interfaceWidth);
+//                         break;
+
+//                     case InputData::CaseType::Drop:
+//                         m_DA->hostDA.host_c[idx_SCALAR] = 0.50 + 0.50 * tanh(2.0 * (radius - Ri) / m_params.interfaceWidth);
+//                         break;
+
+//                     case InputData::CaseType::RTI:
+//                     {
+//                         // Rayleigh-Taylor perturbation: cosine pattern on x/z plane
+// #ifdef ENABLE_2D
+//                         const CLIP_REAL perturbation = m_params.amplitude * m_params.N[IDX_X] * (cos(2.0 * M_PI * i / m_params.N[IDX_X]));
+// #elif defined(ENABLE_3D)
+//                         const CLIP_REAL perturbation = m_params.amplitude * m_params.N[IDX_X] * (cos(2.0 * M_PI * i / m_params.N[IDX_X]) + cos(2.0 * pi * k / m_params.N[IDX_Z]));
+// #endif
+//                         const CLIP_REAL yShift = Y0 - perturbation;
+//                         m_DA->hostDA.host_c[idx_SCALAR] = 0.50 + 0.50 * tanh(2.0 * yShift / m_params.interfaceWidth);
+//                         break;
+//                     }
+
+//                     default:
+//                         m_DA->hostDA.host_c[idx_SCALAR] = 0.0;
+//                         break;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+
+
+
+    struct NSAllen::inletGeom{
+
+        double a;
+
+
+
+    };
+
+
+
+
 
     void NSAllen::collision()
     {
@@ -1007,6 +1046,9 @@ namespace clip
         applyWallBoundary();
         applyFreeConvectBoundary();
         applyNeumannBoundary();
+
+        velocityBoundary(m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_f_post, m_DA->deviceDA.dev_g_post);
+
         macroscopic();
         cudaDeviceSynchronize();
     }

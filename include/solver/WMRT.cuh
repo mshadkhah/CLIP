@@ -195,6 +195,27 @@ namespace clip
         };
 
 
+        struct velocityBCMap
+        {
+
+#ifdef ENABLE_2D
+            static constexpr CLIP_UINT A = 2;
+            const CLIP_INT Y[A] = {2, 4};
+            const CLIP_INT X[A] = {1, 3};
+#elif defined(ENABLE_3D)
+
+            static constexpr CLIP_UINT A = 6;
+            const CLIP_INT XZ[A] = {1, 11, 13, 2, 12, 14};
+            const CLIP_INT ZX[A] = {5, 11, 14, 6, 12, 13};
+            const CLIP_INT YZ[A] = {3, 15, 17, 4, 16, 18};
+            const CLIP_INT ZY[A] = {5, 15, 18, 6, 16, 17};
+            const CLIP_INT YX[A] = {3, 7, 10, 4, 8, 9};
+            const CLIP_INT XY[A] = {1, 7, 9, 2, 8, 10};
+
+#endif
+        };
+
+
 
 
 

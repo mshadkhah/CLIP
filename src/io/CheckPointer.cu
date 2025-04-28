@@ -18,22 +18,9 @@ namespace clip
 
         if (m_idata->params.checkpointCopy != 0 && step % m_idata->params.checkpointInterval == 0)
         {
-
             rotateFolders("Checkpoint");
             saveSummaryInfo("Checkpoint", "info");
-            // saveToFile(m_DA->hostDA.host_c, m_DA->deviceDA.dev_c, SCALAR_FIELD, "Checkpoint", "dev_c");
-            // saveToFile(m_DA->hostDA.host_p, m_DA->deviceDA.dev_p, SCALAR_FIELD, "Checkpoint", "dev_p");
-            // saveToFile(m_DA->hostDA.host_rho, m_DA->deviceDA.dev_rho, SCALAR_FIELD, "Checkpoint", "dev_rho");
-            // saveToFile(m_DA->hostDA.host_vel, m_DA->deviceDA.dev_vel, DIM, "Checkpoint", "dev_vel");
             saveToFile(m_DA->hostDA.host_g_post, m_DA->deviceDA.dev_g_post, Q, "Checkpoint", "dev_g_post");
-            // m_DA->writeHostToFile(m_DA->hostDA.host_g_post, "Checkpoint/tsttt.bin", Q * m_domain->domainSize);
-            // double * testt;
-            // m_DA->allocateOnHost(testt, "test", Q);
-
-            // loadFromFile(m_DA->deviceDA.dev_g_post, testt, Q, "Checkpoint","tsttt");
-            // // m_DA->readHostFromFile(testt, "Checkpoint/tsttt.bin", Q * m_domain->domainSize);
-            // for (int i = 0; i < 50000; i++)
-            // printf("data: %f \n", testt[i]);
             saveToFile(m_DA->hostDA.host_f_post, m_DA->deviceDA.dev_f_post, Q, "Checkpoint", "dev_f_post");
             saveToFile(m_DA->hostDA.host_g, m_DA->deviceDA.dev_g, Q, "Checkpoint", "dev_g");
             saveToFile(m_DA->hostDA.host_f, m_DA->deviceDA.dev_f, Q, "Checkpoint", "dev_f");
@@ -55,23 +42,7 @@ namespace clip
     {
         const CLIP_UINT Q = WMRT::WMRTvelSet::Q;
         checkDomainSize("Checkpoint", "domainSize");
-        // saveToFile(m_DA->deviceDA.dev_c, m_DA->hostDA.host_c, SCALAR_FIELD, "Checkpoint", "dev_c");
-        // saveToFile(m_DA->deviceDA.dev_p, m_DA->hostDA.host_p, SCALAR_FIELD, "Checkpoint", "dev_p");
-        // saveToFile(m_DA->deviceDA.dev_rho, m_DA->hostDA.host_rho, SCALAR_FIELD, "Checkpoint", "dev_rho");
-        // saveToFile(m_DA->deviceDA.dev_vel, m_DA->hostDA.host_vel, DIM, "Checkpoint", "dev_vel");
         loadFromFile(m_DA->deviceDA.dev_g_post, m_DA->hostDA.host_g_post, Q, "Checkpoint", "dev_g_post");
-
-        // double gg[77220];
-        // double test[10000];
-        // for (int i = 0; i < 10000; i++)
-        //     test[i] = 567;
-        // m_DA->writeHostToFile(&test[0], "Checkpoint/test.bin", 10000);
-
-        // double test2[10000];
-        // m_DA->readHostFromFile(&gg[0], "Checkpoint/dev_g_post.bin", 77220);
-        // for (int i = 0; i < 50000; i++)
-        // printf("data: %f \n", m_DA->hostDA.host_g_post[i]);
-
         loadFromFile(m_DA->deviceDA.dev_f_post, m_DA->hostDA.host_f_post, Q, "Checkpoint", "dev_f_post");
         loadFromFile(m_DA->deviceDA.dev_g, m_DA->hostDA.host_g, Q, "Checkpoint", "dev_g");
         loadFromFile(m_DA->deviceDA.dev_f, m_DA->hostDA.host_f, Q, "Checkpoint", "dev_f");
@@ -130,13 +101,11 @@ namespace clip
     template <typename T>
     void CheckPointer::saveToFile(T *&hostPtr, const T *devPtr, CLIP_UINT ndof, const std::string &folder, const std::string &name)
     {
-        // Copy device to host first
+
         m_DA->copyFromDevice(hostPtr, devPtr, name, ndof);
 
-        // Create new empty "checkpoint/" folder
         std::filesystem::create_directories(folder);
 
-        // Now save the current data inside fresh "checkpoint/"
         std::string filename = folder + "/" + name + ".bin";
 
         m_DA->writeHostToFile(hostPtr, filename, ndof * m_domain->domainSize);
@@ -166,7 +135,7 @@ namespace clip
 
     void CheckPointer::saveDomainSize(const std::string &folder, const std::string &filename)
     {
-        // Create the full path
+
         std::filesystem::create_directories(folder);
         std::string filepath = folder + "/" + filename + ".bin";
 
@@ -195,7 +164,7 @@ namespace clip
 
     void CheckPointer::saveSummaryInfo(const std::string &folder, const std::string &filename)
     {
-        std::filesystem::create_directories(folder); // Make sure folder exists
+        std::filesystem::create_directories(folder);
 
         std::string filepath = folder + "/" + filename + ".txt";
 
@@ -206,12 +175,10 @@ namespace clip
             return;
         }
 
-        // Write basic simulation info
         file << "# Summary Info\n";
         file << "CurrentTime: " << m_ti->getCurrentTime() << "\n";
         file << "CurrentStep: " << m_ti->getCurrentStep() << "\n";
 
-        // Write domain size
         file << "DomainSize (N): ";
         for (size_t d = 0; d < MAX_DIM; ++d)
         {

@@ -155,9 +155,6 @@ namespace clip
             CLIP_REAL *host_rho;
             CLIP_REAL *host_p;
             CLIP_REAL *host_vel;
-            CLIP_REAL *host_dc;
-            CLIP_REAL *host_mu;
-            CLIP_REAL *host_normal;
 
             CLIP_REAL *host_f;
             CLIP_REAL *host_f_post;

@@ -1,0 +1,54 @@
+case = bubble
+
+finalStep = 1
+outputInterval = 1000
+reportInterval = 1000
+checkpointInterval = 1000
+checkpointCopy = 10
+
+N = [64, 128, 1]
+referenceLength = 25
+
+We = 5
+Re = 30
+gravity = 1e-6
+mobility = 0.02
+interfaceWidth = 4
+muRatio = 50
+rhoRatio = 1000
+
+
+geometry = [
+  {
+    type = "sphere"
+    center = [10, 20, 0]
+    radius = 5
+    id = 0
+  }
+]
+
+
+
+
+boundary = [
+  {
+    side = "x-"
+    type = "periodic"
+
+  },
+    {
+    side = "x+"
+    type = "periodic"
+ 
+  },
+    {
+    side = "y-"
+    type = "wall"
+
+  },
+  {
+    side = "y+"
+    type = "wall"
+
+  }
+]

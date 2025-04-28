@@ -4,6 +4,7 @@
 #include <Solver.cuh>
 #include <DataArray.cuh>
 #include "WMRT.cuh"
+#include "Geometry.cuh"
 
 namespace clip
 {
@@ -12,7 +13,7 @@ namespace clip
     {
 
     public:
-        explicit NSAllen(const InputData &idata, const Domain &domain, DataArray &DA, const Boundary &boundary);
+        explicit NSAllen(const InputData &idata, const Domain &domain, DataArray &DA, const Boundary &boundary, const Geometry &geom);
 
         ~NSAllen();
 
@@ -22,11 +23,13 @@ namespace clip
         __device__ __forceinline__ static void calculateVF(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, CLIP_REAL gneq[q], CLIP_REAL fv[dim], CLIP_REAL tau, CLIP_REAL dcdx, CLIP_REAL dcdy, CLIP_REAL dcdz = 0);
         
 
+        struct inletGeom;
         void flagGenLauncher2();
         void solve();
         void macroscopic();
         void initialCondition();
         void deviceInitializer();
+
 
     private:
         void initialization();
@@ -34,6 +37,8 @@ namespace clip
         WMRT::WMRTvelSet m_velset;
         InputData::SimParams m_params;
         const Boundary *m_boundary;
+        const Geometry* m_geom;
+        Geometry::GeometryDevice m_geomPool;
         Domain::DomainInfo m_info;
         dim3 dimGrid, dimBlock;
 

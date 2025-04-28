@@ -45,8 +45,9 @@ namespace clip
             FreeConvect = 2,
             Periodic = 3,
             Neumann = 4,
-            Unknown = 5,
-            MAX = 6
+            Velocity = 5,
+            Unknown = 6,
+            MAX = 7
         };
 
 
@@ -55,7 +56,7 @@ namespace clip
         {
             Objects side = Objects::Unknown;
             Type BCtype = Type::Unknown;
-            CLIP_REAL value = 0.0;
+            CLIP_REAL value[MAX_DIM];
             bool ifRefine = false;
         };
 
@@ -63,6 +64,7 @@ namespace clip
         struct BCTypeMap
         {
             Boundary::Type types[static_cast<int>(Boundary::Objects::MAX)];
+            CLIP_REAL val[static_cast<int>(Boundary::Objects::MAX)][MAX_DIM];
         };
 
 

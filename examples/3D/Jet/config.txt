@@ -1,0 +1,65 @@
+case = drop
+
+finalStep = 1000
+outputInterval = 10
+reportInterval = 10
+checkpointInterval = 10
+checkpointCopy = 1
+
+N = [64, 128, 64]
+referenceLength = 25
+
+We = 5
+Re = 1000
+gravity = 1e-6
+mobility = 0.05
+interfaceWidth = 4
+muRatio = 50
+rhoRatio = 1000
+
+
+geometry = [
+  {
+    type = "sphere"
+    center = [32, 128, 32]
+    radius = 15
+    id = 0
+  }
+]
+
+
+
+
+boundary = [
+  {
+    side = "x-"
+    type = "periodic"
+
+  },
+    {
+    side = "x+"
+    type = "periodic"
+ 
+  },
+    {
+    side = "y-"
+    type = "wall"
+
+  },
+  {
+    side = "y+"
+    type = "velocity"
+    value = [0, -0.1, 0]
+
+  },
+  {
+    side = "z-"
+    type = "periodic"
+
+  },
+  {
+    side = "z+"
+    type = "periodic"
+ 
+  }
+]

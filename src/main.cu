@@ -7,6 +7,7 @@
 #include "VTSwriter.cuh"
 #include "Reporter.cuh"
 #include "CheckPointer.cuh"
+#include "Geometry.cuh"
 
 int main(int argc, char *argv[])
 {
@@ -22,15 +23,21 @@ int main(int argc, char *argv[])
         }
     }
 
-    clip::InputData input("/home/mehdi/projects/CLIP/tests/2D/Bubble/config.txt");
+    clip::InputData input("/home/mehdi/projects/CLIP/tests/3D/Jet/config.txt");
     // clip::InputData input("config.txt");
 
     clip::Domain domain(input);
+    clip::Geometry geom(input);
     clip::Boundary boundary(input, domain);
     clip::DataArray DA(input, domain, boundary);
     DA.createVectors();
 
-    clip::NSAllen eqn(input, domain, DA, boundary);
+    
+
+    // if (Geometry::sdf(geom, 0, x, y, z) <= 0)
+    // printf("vel: %f \n",clip::Geometry::sdf(geom.getDeviceStruct(), 0, 32, 128, 32));
+
+    clip::NSAllen eqn(input, domain, DA, boundary, geom);
     clip::TimeInfo ti(input);
     clip::VTSwriter output(DA, input, domain, ti, "test", "test");
     clip::Reporter report(DA, input, domain, ti);

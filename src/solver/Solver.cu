@@ -3,24 +3,22 @@
 namespace clip
 {
 
-    Solver::Solver(const InputData &idata, const Domain &domain, DataArray &DA, const Boundary &boundary)
-        : m_idata(&idata), m_domain(&domain), m_DA(&DA), m_boundary(&boundary)
+    Solver::Solver(const InputData &idata, const Domain &domain, DataArray &DA, const Boundary &boundary, const Geometry &geom)
+        : m_idata(&idata), m_domain(&domain), m_DA(&DA), m_boundary(&boundary), m_geom(&geom)
     {
 
         dimGrid = m_DA->dimGrid;
         dimBlock = m_DA->dimBlock;
         m_info = m_domain->info;
         m_BCMap = m_boundary->BCMap;
+        m_geomPool = m_geom->getDeviceStruct();
 
 #ifdef ENABLE_2D
 
 #elif defined(ENABLE_3D)
 
 #endif
-
     }
-
-
 
     Solver::~Solver()
     {
@@ -468,6 +466,186 @@ namespace clip
         }
     }
 
+    /////////////////////////////////////////////////////// start
+
+    // template <typname T, typename Q, typename R, typename S>
+    __global__ void JetBoundary(const Domain::DomainInfo domain, const Geometry::GeometryDevice geom, const Boundary::BCTypeMap BCmap,
+                                const WMRT::WMRTvelSet velSet, const WMRT::slipWallBCMap wallBCMap, CLIP_REAL *dev_c, CLIP_REAL *dev_f, CLIP_REAL *dev_g)
+    {
+        // const WMRT::velocityBCMap velocityBCMap
+        float feq[19], geq[19];
+        // int FStop[10] = {4, 8, 9, 16, 18, 3, 10, 7, 17, 15};
+
+
+        const CLIP_UINT Q = velSet.Q;
+
+
+        const CLIP_UINT i = THREAD_IDX_X;
+        const CLIP_UINT j = THREAD_IDX_Y;
+        const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
+
+        const CLIP_UINT idx_SCALAR = Domain::getIndex(domain, i, j, k);
+
+        const CLIP_REAL x = static_cast<CLIP_REAL>(i);
+        const CLIP_REAL y = static_cast<CLIP_REAL>(j);
+        const CLIP_REAL z = (DIM == 3) ? static_cast<CLIP_REAL>(k) : 0.0;
+
+
+        if (Domain::isInside<DIM>(domain, i, j, k))
+        
+        {
+
+
+            // if (BCmap.types[object::YPlus] == Boundary::Type::Velocity && i == domain.ghostDomainMaxIdx[IDX_X])
+            if (j == domain.ghostDomainMaxIdx[IDX_Y])
+            {
+
+                if (Geometry::sdf(geom, 0, x, y, z) <= 0)
+                {
+
+                    CLIP_REAL Mx = 0;
+                    CLIP_REAL Mz = 0;
+                    CLIP_REAL N = 0;
+#pragma unroll
+                    for (int q = 1; q < 19; q++)
+                    {
+
+                        const CLIP_REAL fa_wa = Solver::Equilibrium_new(velSet, q, BCmap.val[object::YPlus][IDX_X],
+                                                                         BCmap.val[object::YPlus][IDX_Y], BCmap.val[object::YPlus][IDX_Z]);
+
+                                                                         
+                        feq[q] = 0.0 * velSet.wa[q] + fa_wa;
+                        geq[q] = dev_c[idx_SCALAR] * (fa_wa + velSet.wa[q]);
+
+                        if (velSet.ey[q] == 0)
+                        {
+                            Mx += velSet.ex[q] * (dev_f[Domain::getIndex<Q>(domain, i, j, k, q)] - feq[q]);
+                            N += (dev_g[Domain::getIndex<Q>(domain, i, j, k, q)] - geq[q]);
+                        }
+
+                        if (velSet.ex[q] == 0)
+                            Mz += velSet.ez[q] * (dev_f[Domain::getIndex<Q>(domain, i, j, k, q)] - feq[q]);
+                    }
+
+                    for (int q = 0; q < 5; q++)
+                    {
+
+                        const CLIP_UINT idxF = Domain::getIndex<Q>(domain, i, j, k, wallBCMap.YPlus[q]);
+                        const CLIP_UINT oppos_idxF = Domain::getIndex<Q>(domain, i, j, k, wallBCMap.YMinus[q]);
+                        const CLIP_UINT idx = wallBCMap.YPlus[q];
+                        const CLIP_UINT oppos_idx = wallBCMap.YMinus[q];
+
+                        dev_f[idxF] = dev_f[oppos_idxF] + feq[idx] - feq[oppos_idx] - (1.0 / 4.0) * (velSet.ex[idx] * Mx + velSet.ez[idx] * Mz);
+
+                        // dev_g[getIndexf(i, j, k, 4)] = geq[4] + dev_g[getIndexf(i, j, k, 3)] - geq[3];
+                        // dev_g[getIndexf(i, j, k, 8)] = dev_g[getIndexf(i, j, k, 7)] + geq[8] - geq[7] - (1.0 / 4.0) * (ex[8] * Mx + ez[8] * Mz);
+                        // dev_g[getIndexf(i, j, k, 9)] = dev_g[getIndexf(i, j, k, 10)] + geq[9] - geq[10] - (1.0 / 4.0) * (ex[9] * Mx + ez[9] * Mz);
+                        // dev_g[getIndexf(i, j, k, 16)] = dev_g[getIndexf(i, j, k, 15)] + geq[16] - geq[15] - (1.0 / 4.0) * (ex[16] * Mx + ez[16] * Mz);
+                        // dev_g[getIndexf(i, j, k, 18)] = dev_g[getIndexf(i, j, k, 17)] + geq[18] - geq[17] - (1.0 / 4.0) * (ex[18] * Mx + ez[18] * Mz);
+
+                        if (q == 0)
+                            dev_g[idxF] = geq[idx] - (dev_g[oppos_idxF] - geq[oppos_idx]);
+
+                        else
+                            dev_g[idxF] = geq[idx] - (dev_g[oppos_idxF] - geq[oppos_idx]) - N / 4.0;
+
+                        // dev_h[getIndexf(i, j, k, 4)] = heq[4] - (dev_h[getIndexf(i, j, k, 3)] - heq[3]);
+                        // dev_h[getIndexf(i, j, k, 8)] = heq[8] - (dev_h[getIndexf(i, j, k, 7)] - heq[7]) - N / 4.0;
+                        // dev_h[getIndexf(i, j, k, 9)] = heq[9] - (dev_h[getIndexf(i, j, k, 10)] - heq[10]) - N / 4.0;
+                        // dev_h[getIndexf(i, j, k, 16)] = heq[16] - (dev_h[getIndexf(i, j, k, 15)] - heq[15]) - N / 4.0;
+                        // dev_h[getIndexf(i, j, k, 18)] = heq[18] - (dev_h[getIndexf(i, j, k, 17)] - heq[17]) - N / 4.0;
+                    }
+                }
+                else
+                {
+                    for (int q = 0; q < 5; q++)
+                    {
+
+                        dev_g[ Domain::getIndex<Q>(domain, i, domain.ghostDomainMaxIdx[IDX_Y], k, wallBCMap.YPlus[q])] = dev_g[ Domain::getIndex<Q>(domain, i, domain.domainMaxIdx[IDX_Y], k, wallBCMap.YMinus[q])];
+                        dev_f[ Domain::getIndex<Q>(domain, i, domain.ghostDomainMaxIdx[IDX_Y], k, wallBCMap.YPlus[q])] = dev_f[ Domain::getIndex<Q>(domain, i, domain.domainMaxIdx[IDX_Y], k, wallBCMap.YMinus[q])];
+                    }
+                }
+            }
+
+//             float R = (i - (*dev_x0 + 0.50)) * (i - (*dev_x0 + 0.50)) + (k - (*dev_z0 + 0.50)) * (k - (*dev_z0 + 0.50));
+
+//             if (R < (*dev_r0 * *dev_r0))
+//             {
+
+//                 dev_uy[index] = *dev_u0;
+//                 dev_ux[index] = 0;
+//                 dev_uz[index] = 0;
+
+//                 // dev_c[index] = 1.0L;
+//                 dev_p[index] = 0.0L;
+
+// #pragma unroll
+//                 for (int q = 0; q < 19; q++)
+//                 {
+//                     // index = getIndex(i ,j ,k);
+//                     float ga_wa = Equilibrium_new(0, *dev_u0, 0, q);
+//                     geq[q] = 0.0 * wa[q] + ga_wa;
+
+//                     // float eF = (4.0L * (dev_c[index] * (1.0L - dev_c[index])) * wa[q] * (ex[q] * dev_ni[index] + ey[q] * dev_nj[index] + ez[q] * dev_nk[index])) / *dev_w;
+//                     heq[q] = dev_c[index] * (ga_wa + wa[q]);
+//                 }
+
+//                 dev_h[getIndexf(i, j, k, 0)] = heq[0];
+//                 dev_g[getIndexf(i, j, k, 0)] = geq[0];
+
+//                 CLIP_REAL Mx = 0;
+//                 CLIP_REAL My = 0;
+//                 CLIP_REAL Mz = 0;
+
+// #pragma unroll
+//                 for (int q = 0; q < 19; q++)
+//                 {
+//                     if (ey[0] == 0)
+//                         Mx += ex[q] * (dev_g[getIndexf(i, j, k, q)] - geq[q]);
+
+//                     if (ex[0] == 0)
+//                         My += ey[q] * (dev_g[getIndexf(i, j, k, q)] - geq[q]);
+
+//                     if (ex[0] == 0)
+//                         Mz += ey[q] * (dev_g[getIndexf(i, j, k, q)] - geq[q]);
+//                 }
+
+//                 float Mx = (dev_g[getIndexf(i, j, k, 1)] - geq[1]) + (dev_g[getIndexf(i, j, k, 11)] - geq[11]) + (dev_g[getIndexf(i, j, k, 13)] - geq[13]) - (dev_g[getIndexf(i, j, k, 2)] - geq[2]) - (dev_g[getIndexf(i, j, k, 12)] - geq[12]) - (dev_g[getIndexf(i, j, k, 14)] - geq[14]);
+
+//                 float Mz = (dev_g[getIndexf(i, j, k, 5)] - geq[5]) + (dev_g[getIndexf(i, j, k, 11)] - geq[11]) + (dev_g[getIndexf(i, j, k, 14)] - geq[14]) - (dev_g[getIndexf(i, j, k, 6)] - geq[6]) - (dev_g[getIndexf(i, j, k, 12)] - geq[12]) - (dev_g[getIndexf(i, j, k, 13)] - geq[13]);
+
+//                 dev_g[getIndexf(i, j, k, 4)] = geq[4] + dev_g[getIndexf(i, j, k, 3)] - geq[3];
+//                 dev_g[getIndexf(i, j, k, 8)] = dev_g[getIndexf(i, j, k, 7)] + geq[8] - geq[7] - (1.0 / 4.0) * (ex[8] * Mx + ez[8] * Mz);
+//                 dev_g[getIndexf(i, j, k, 9)] = dev_g[getIndexf(i, j, k, 10)] + geq[9] - geq[10] - (1.0 / 4.0) * (ex[9] * Mx + ez[9] * Mz);
+//                 dev_g[getIndexf(i, j, k, 16)] = dev_g[getIndexf(i, j, k, 15)] + geq[16] - geq[15] - (1.0 / 4.0) * (ex[16] * Mx + ez[16] * Mz);
+//                 dev_g[getIndexf(i, j, k, 18)] = dev_g[getIndexf(i, j, k, 17)] + geq[18] - geq[17] - (1.0 / 4.0) * (ex[18] * Mx + ez[18] * Mz);
+
+//                 float N = (dev_h[getIndexf(i, j, k, 1)] - heq[1]) + (dev_h[getIndexf(i, j, k, 2)] - heq[2]) + (dev_h[getIndexf(i, j, k, 5)] - heq[5]) + (dev_h[getIndexf(i, j, k, 6)] - heq[6]) + (dev_h[getIndexf(i, j, k, 11)] - heq[11]) +
+//                           (dev_h[getIndexf(i, j, k, 12)] - heq[12]) + (dev_h[getIndexf(i, j, k, 13)] - heq[13]) +
+//                           (dev_h[getIndexf(i, j, k, 14)] - heq[14]);
+
+//                 dev_h[getIndexf(i, j, k, 4)] = heq[4] - (dev_h[getIndexf(i, j, k, 3)] - heq[3]);
+//                 dev_h[getIndexf(i, j, k, 8)] = heq[8] - (dev_h[getIndexf(i, j, k, 7)] - heq[7]) - N / 4.0;
+//                 dev_h[getIndexf(i, j, k, 9)] = heq[9] - (dev_h[getIndexf(i, j, k, 10)] - heq[10]) - N / 4.0;
+//                 dev_h[getIndexf(i, j, k, 16)] = heq[16] - (dev_h[getIndexf(i, j, k, 15)] - heq[15]) - N / 4.0;
+//                 dev_h[getIndexf(i, j, k, 18)] = heq[18] - (dev_h[getIndexf(i, j, k, 17)] - heq[17]) - N / 4.0;
+//             }
+
+//             else
+//             {
+//                 // dev_c[index] = 0.0L;
+// #pragma unroll
+//                 for (int q = 0; q < 5; q++)
+//                 {
+//                     dev_h[getIndexf(i, Ny_, k, FStop[q])] = dev_h[getIndexf(i, Ny_1, k, FStop[q + 5])];
+//                     dev_g[getIndexf(i, Ny_, k, FStop[q])] = dev_g[getIndexf(i, Ny_1, k, FStop[q + 5])];
+//                 }
+//             }
+        }
+    }
+
+    //////////////////////////////////////////////////////// end
+
     __global__ void kernelMirrorBoundary(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap, CLIP_REAL *dev_a)
     {
         const CLIP_UINT i = THREAD_IDX_X;
@@ -561,6 +739,21 @@ namespace clip
         if (m_boundary->isWall || m_boundary->isFreeConvect || m_boundary->isSlipWall || m_boundary->isNeumann)
             kernelMirrorBoundary<<<dimGrid, dimBlock>>>(m_info, m_BCMap, dev_a);
     }
+
+
+
+
+    void Solver::velocityBoundary(CLIP_REAL *dev_c, CLIP_REAL *dev_f, CLIP_REAL *dev_g)
+    {
+        // if (m_boundary->isNeumann)
+            JetBoundary<<<dimGrid, dimBlock>>>(m_info, m_geomPool, m_BCMap, m_velSet, m_slipWallBCMap, dev_c, dev_f, dev_g);
+
+
+    }
+
+
+
+
 
     template void clip::Solver::periodicBoundary<9>(CLIP_REAL *, CLIP_REAL *);
     template void clip::Solver::periodicBoundary<19>(CLIP_REAL *, CLIP_REAL *);

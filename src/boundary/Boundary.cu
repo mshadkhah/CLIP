@@ -46,6 +46,8 @@ namespace clip
             return Type::Periodic;
         if (lowerStr == "neumann")
             return Type::Neumann;
+        if (lowerStr == "velocity")
+            return Type::Velocity;
         return Type::Unknown;
     }
 
@@ -84,12 +86,13 @@ namespace clip
             return "periodic";
         case Type::Neumann:
             return "neumann";
+        case Type::Velocity:
+            return "velocity";
         default:
             return "unknown";
         }
     }
 
-    // Print utility
     void Boundary::print()
     {
         std::cout << "\nParsed Boundary Conditions:\n";
@@ -99,8 +102,15 @@ namespace clip
             std::cout << "  Block " << i << ":\n";
             std::cout << "    Side: " << toString(bc.side) << "\n";
             std::cout << "    Type: " << toString(bc.BCtype) << "\n";
-            std::cout << "    Value: " << bc.value << "\n";
-            std::cout << "    : " << (bc.ifRefine ? "true" : "false") << "\n \n";
+            std::cout << "    Value: [";
+            for (int d = 0; d < MAX_DIM; ++d)
+            {
+                std::cout << bc.value[d];
+                if (d != MAX_DIM - 1)
+                    std::cout << ", ";
+            }
+            std::cout << "]\n";
+            std::cout << "    Refinement: " << (bc.ifRefine ? "true" : "false") << "\n\n";
         }
     }
 
@@ -108,6 +118,7 @@ namespace clip
     {
         boundaries.resize(20);
         boundaryObjects = 0;
+
         std::ifstream inputFile(m_idata->getConfig());
         if (!inputFile.is_open())
         {
@@ -136,6 +147,10 @@ namespace clip
             {
                 if (line == "[")
                     continue;
+
+                if (line == "]")
+                    break; // ✅ End of boundary list parsing
+
                 if (line == "{")
                 {
                     inBlock = true;
@@ -145,6 +160,13 @@ namespace clip
                 if (line == "}" || line == "},")
                 {
                     inBlock = false;
+
+                    // ✅ check unknown type
+                    if (current.BCtype == Type::Unknown)
+                    {
+                        Logger::Error("Encountered boundary with unknown type during parsing.");
+                    }
+
                     size_t index = static_cast<size_t>(current.side);
                     boundaries[index] = current;
                     boundaryObjects++;
@@ -171,7 +193,24 @@ namespace clip
                             Boundary::BCMap.types[index] = current.BCtype;
                         }
                         else if (key == "value")
-                            current.value = std::stod(value);
+                        {
+                            if (value.front() == '[')
+                                value.erase(0, 1);
+                            if (value.back() == ']')
+                                value.pop_back();
+
+                            std::stringstream ss(value);
+                            std::string token;
+                            int dim = 0;
+                            while (std::getline(ss, token, ',') && dim < MAX_DIM)
+                            {
+                                trim(token);
+                                current.value[dim] = std::stod(token);
+                                size_t index = static_cast<size_t>(current.side);
+                                Boundary::BCMap.val[index][dim] = std::stod(token);
+                                dim++;
+                            }
+                        }
                         else if (key == "ifRefine")
                             current.ifRefine = (value == "true" || value == "1");
                     }
@@ -179,7 +218,7 @@ namespace clip
             }
         }
 
-        // ✅ Validate that all required sides are defined
+        // Validate that all required sides are defined
         std::set<clip::Boundary::Objects> expectedSides = {
             clip::Boundary::Objects::XMinus,
             clip::Boundary::Objects::XPlus,

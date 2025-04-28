@@ -23,8 +23,6 @@ namespace clip
         struct SimParams
         {
             // Time and output control
-
-            CLIP_REAL D;
             CLIP_REAL tFinal;
             CLIP_UINT finalStep;
             CLIP_UINT outputInterval;
@@ -34,7 +32,7 @@ namespace clip
        
 
             CLIP_REAL N[MAX_DIM];
-            CLIP_REAL C[MAX_DIM];
+            CLIP_REAL referenceLength;
 
             CLIP_REAL Bo;
             CLIP_REAL Re;

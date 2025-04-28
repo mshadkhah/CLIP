@@ -15,7 +15,6 @@ namespace clip
     {
 
         read("case", params.caseType);
-        read("D", params.D);
         read("tFinal", params.tFinal);
         read("finalStep", params.finalStep);
         read("outputInterval", params.outputInterval);
@@ -23,7 +22,7 @@ namespace clip
         read("checkpointCopy", params.checkpointCopy);
         read("reportInterval", params.reportInterval);
         read("N", params.N);
-        read("C", params.C);
+        read("referenceLength", params.referenceLength);
         read("interfaceWidth", params.interfaceWidth);
         read("gravity", params.gravity);
         read("mobility", params.mobility);
@@ -41,8 +40,8 @@ namespace clip
             read("Re", params.Re);
 
             // params.sigma = (params.gravity * (params.RhoH - params.RhoL) * params.D * params.D) / params.Bo;
-            params.sigma = (params.RhoH * params.gravity * params.D * params.D) / params.We;
-            params.muH = sqrt(params.gravity * params.RhoH * (params.RhoH - params.RhoL) * params.D * params.D * params.D) / params.Re;
+            params.sigma = (params.RhoH * params.gravity * params.referenceLength * params.referenceLength) / params.We;
+            params.muH = sqrt(params.gravity * params.RhoH * (params.RhoH - params.RhoL) * params.referenceLength * params.referenceLength * params.referenceLength) / params.Re;
 
         }
 
@@ -53,9 +52,9 @@ namespace clip
             read("Re", params.Re);
 
 
-            params.muH = (params.RhoH * sqrt(params.gravity * params.N[IDX_X]) * params.N[IDX_X]) / params.Re;
-            params.sigma = (params.muH * sqrt(params.gravity * params.N[IDX_X])) / params.Ca;
-            params.mobility = (sqrt(params.gravity * params.N[IDX_X]) * params.N[IDX_X]) / params.Pe;
+            params.muH = (params.RhoH * sqrt(params.gravity * params.referenceLength) * params.referenceLength) / params.Re;
+            params.sigma = (params.muH * sqrt(params.gravity * params.referenceLength)) / params.Ca;
+            params.mobility = (sqrt(params.gravity * params.referenceLength) * params.referenceLength) / params.Pe;
 
 
 

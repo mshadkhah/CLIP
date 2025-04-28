@@ -30,6 +30,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/include/domain
   ${CMAKE_SOURCE_DIR}/include/solver
   ${CMAKE_SOURCE_DIR}/include/io
+  ${CMAKE_SOURCE_DIR}/include/geometry
 )
 
 
@@ -48,6 +49,7 @@ set(CLIP_INC
   include/domain/Domain.cuh
   include/io/VTSwriter.cuh
   include/io/CheckPointer.cuh
+  include/geometry/Geometry.cuh
 )
 
 
@@ -63,6 +65,7 @@ set(CLIP_SRC
   src/domain/Domain.cu
   src/io/VTSwriter.cu
   src/io/CheckPointer.cu
+  src/geometry/Geometry.cu
 )
 
 
