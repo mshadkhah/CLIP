@@ -1,28 +1,29 @@
-case = drop
+case = jet
 
-finalStep = 1000
-outputInterval = 10
-reportInterval = 10
-checkpointInterval = 10
+finalStep = 100000
+outputInterval = 1000
+reportInterval = 1000
+checkpointInterval = 10000
 checkpointCopy = 1
 
-N = [64, 128, 64]
-referenceLength = 25
+N = [64, 32, 64]
+referenceLength = 14
+referenceVelocity = 0.01
 
-We = 5
-Re = 1000
-gravity = 1e-6
-mobility = 0.05
-interfaceWidth = 4
-muRatio = 50
-rhoRatio = 1000
+We = 4
+Re = 20
+gravity = 1e-9
+mobility = 0.02
+interfaceWidth = 6
+muRatio = 10
+rhoRatio = 100
 
 
 geometry = [
   {
     type = "sphere"
-    center = [32, 128, 32]
-    radius = 15
+    center = [32, 32, 32]
+    radius = 7
     id = 0
   }
 ]
@@ -43,13 +44,13 @@ boundary = [
   },
     {
     side = "y-"
-    type = "wall"
+    type = "free convect"
 
   },
   {
     side = "y+"
     type = "velocity"
-    value = [0, -0.1, 0]
+    value = [0, -0.01, 0]
 
   },
   {

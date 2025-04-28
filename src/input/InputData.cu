@@ -33,7 +33,6 @@ namespace clip
         params.RhoH = 1.0;
         params.RhoL = params.RhoH / params.rhoRatio;
 
-        
         if (params.caseType == CaseType::Bubble || params.caseType == CaseType::Drop)
         {
             read("We", params.We);
@@ -42,7 +41,6 @@ namespace clip
             // params.sigma = (params.gravity * (params.RhoH - params.RhoL) * params.D * params.D) / params.Bo;
             params.sigma = (params.RhoH * params.gravity * params.referenceLength * params.referenceLength) / params.We;
             params.muH = sqrt(params.gravity * params.RhoH * (params.RhoH - params.RhoL) * params.referenceLength * params.referenceLength * params.referenceLength) / params.Re;
-
         }
 
         else if (params.caseType == CaseType::RTI)
@@ -51,23 +49,26 @@ namespace clip
             read("Pe", params.Pe);
             read("Re", params.Re);
 
-
             params.muH = (params.RhoH * sqrt(params.gravity * params.referenceLength) * params.referenceLength) / params.Re;
             params.sigma = (params.muH * sqrt(params.gravity * params.referenceLength)) / params.Ca;
             params.mobility = (sqrt(params.gravity * params.referenceLength) * params.referenceLength) / params.Pe;
-
-
-
         }
+        else if (params.caseType == CaseType::Jet)
+        {
 
+            read("We", params.We);
+            read("Re", params.Re);
+            read("referenceVelocity", params.referenceVelocity);
+
+            params.sigma = (params.RhoH * params.referenceVelocity * params.referenceVelocity * params.referenceLength) / params.We;
+            params.muH = (params.RhoH * params.referenceVelocity * params.referenceLength) / params.Re;
+        }
 
         params.muL = params.muH / params.muRatio;
         params.tauH = 3.0 * (params.muH / params.RhoH);
         params.tauL = 3.0 * (params.muL / params.RhoL);
         params.kConstant = 1.50 * params.sigma * params.interfaceWidth;
         params.betaConstant = 8.0 * params.sigma / params.interfaceWidth;
-
-
     }
 
     InputData::CaseType InputData::caseTypeFromString(const std::string &str)

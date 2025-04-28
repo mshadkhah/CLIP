@@ -470,10 +470,10 @@ namespace clip
 
     // template <typname T, typename Q, typename R, typename S>
     __global__ void JetBoundary(const Domain::DomainInfo domain, const Geometry::GeometryDevice geom, const Boundary::BCTypeMap BCmap,
-                                const WMRT::WMRTvelSet velSet, const WMRT::slipWallBCMap wallBCMap, CLIP_REAL *dev_c, CLIP_REAL *dev_f, CLIP_REAL *dev_g)
+                                const WMRT::WMRTvelSet velSet, const WMRT::wallBCMap wallBCMap, CLIP_REAL *dev_c, CLIP_REAL *dev_f, CLIP_REAL *dev_g)
     {
         // const WMRT::velocityBCMap velocityBCMap
-        float feq[19], geq[19];
+        CLIP_REAL feq[19], geq[19];
         // int FStop[10] = {4, 8, 9, 16, 18, 3, 10, 7, 17, 15};
 
 
@@ -506,6 +506,11 @@ namespace clip
                     CLIP_REAL Mx = 0;
                     CLIP_REAL Mz = 0;
                     CLIP_REAL N = 0;
+
+                    // if(dev_c[idx_SCALAR] > 0.7)
+                    // printf("val: %f \n",  dev_c[idx_SCALAR]);
+
+
 #pragma unroll
                     for (int q = 1; q < 19; q++)
                     {
@@ -513,18 +518,20 @@ namespace clip
                         const CLIP_REAL fa_wa = Solver::Equilibrium_new(velSet, q, BCmap.val[object::YPlus][IDX_X],
                                                                          BCmap.val[object::YPlus][IDX_Y], BCmap.val[object::YPlus][IDX_Z]);
 
-                                                                         
+                    
+                            //  printf("val: %f \n",   fa_wa);                                            
                         feq[q] = 0.0 * velSet.wa[q] + fa_wa;
                         geq[q] = dev_c[idx_SCALAR] * (fa_wa + velSet.wa[q]);
 
                         if (velSet.ey[q] == 0)
                         {
+                            // printf("val: %d \n",  q);
                             Mx += velSet.ex[q] * (dev_f[Domain::getIndex<Q>(domain, i, j, k, q)] - feq[q]);
+                            Mz += velSet.ez[q] * (dev_f[Domain::getIndex<Q>(domain, i, j, k, q)] - feq[q]);
+
                             N += (dev_g[Domain::getIndex<Q>(domain, i, j, k, q)] - geq[q]);
                         }
-
-                        if (velSet.ex[q] == 0)
-                            Mz += velSet.ez[q] * (dev_f[Domain::getIndex<Q>(domain, i, j, k, q)] - feq[q]);
+                            
                     }
 
                     for (int q = 0; q < 5; q++)
@@ -746,7 +753,7 @@ namespace clip
     void Solver::velocityBoundary(CLIP_REAL *dev_c, CLIP_REAL *dev_f, CLIP_REAL *dev_g)
     {
         // if (m_boundary->isNeumann)
-            JetBoundary<<<dimGrid, dimBlock>>>(m_info, m_geomPool, m_BCMap, m_velSet, m_slipWallBCMap, dev_c, dev_f, dev_g);
+            JetBoundary<<<dimGrid, dimBlock>>>(m_info, m_geomPool, m_BCMap, m_velSet, m_wallBCMap, dev_c, dev_f, dev_g);
 
 
     }

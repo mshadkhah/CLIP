@@ -33,6 +33,7 @@ namespace clip
 
             CLIP_REAL N[MAX_DIM];
             CLIP_REAL referenceLength;
+            CLIP_REAL referenceVelocity;
 
             CLIP_REAL Bo;
             CLIP_REAL Re;

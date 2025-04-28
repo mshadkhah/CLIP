@@ -23,7 +23,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    clip::InputData input("/home/mehdi/projects/CLIP/tests/3D/Jet/config.txt");
+    clip::InputData input("/home/mehdi/projects/CLIP/examples/3D/Jet/config.txt");
+    
     // clip::InputData input("config.txt");
 
     clip::Domain domain(input);

@@ -1,4 +1,4 @@
 # Summary Info
 CurrentTime: 0
-CurrentStep: 1000
-DomainSize (N): 64, 128, 64
+CurrentStep: 10000
+DomainSize (N): 64, 32, 64
