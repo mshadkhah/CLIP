@@ -1,21 +1,35 @@
 case = RTI
 
 finalStep = 100000
-outputInterval = 1000 
+outputInterval = 1000
 reportInterval = 1000
+checkpointInterval = 1000
+checkpointCopy = 0
 
-N = [128, 256, 32]
-C = [64.5, 128.5, 16.5]
-D = 15
+N = [64, 256, 32]
+referenceLength = 64
+
 
 Re = 3000
 Pe = 1000
 Ca = 0.26
-amplitude = 0.1
-gravity = 1e-6
+gravity = [0, 1e-7, 0]
 interfaceWidth = 4
 muRatio = 1
 rhoRatio = 3
+
+
+geometry = [
+  {
+    type = "perturbation"
+    center = [0, 128, 0]
+    length = [64, 0, 0]
+    amplitude = 0.1         
+    id = 0
+  }
+]
+
+
 
 
 boundary = [

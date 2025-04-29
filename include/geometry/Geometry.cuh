@@ -96,11 +96,12 @@ public:
                 case static_cast<CLIP_INT>(Type::Perturbation):
                 {
     #ifdef ENABLE_2D
-                    const CLIP_REAL perturbation = geo.amplitude[i] * geo.center[i][IDX_X] * cos(2.0 * M_PI * x / geo.center[i][IDX_X]);
+                    const CLIP_REAL perturbation = geo.amplitude[i] * geo.length[i][IDX_X] * cos(2.0 * M_PI * x / geo.length[i][IDX_X]);
+
     #elif defined(ENABLE_3D)
-                    const CLIP_REAL perturbation = geo.amplitude[i] * geo.center[i][IDX_X] * (cos(2.0 * M_PI * x / geo.center[i][IDX_X]) + cos(2.0 * M_PI * z / geo.center[i][IDX_Z]));
+                    const CLIP_REAL perturbation = geo.amplitude[i] * geo.length[i][IDX_X] * (cos(2.0 * M_PI * x /  geo.length[i][IDX_X]) + cos(2.0 * M_PI * z /  geo.length[i][IDX_X]));
     #endif
-                    const CLIP_REAL yShift = geo.center[i][IDX_Y] - perturbation;
+                    const CLIP_REAL yShift = perturbation + geo.center[i][IDX_Y];
                     return y - yShift;
                 }
                 }

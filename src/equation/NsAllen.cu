@@ -916,7 +916,8 @@ namespace clip
                     {
                         // Assume ID=0 corresponds to perturbation field
                         sdf_val = Geometry::sdf(m_geomPool, 0, x, y, z);
-                        m_DA->hostDA.host_c[idx_SCALAR] = 0.50 + 0.50 * tanh(2.0 * sdf_val / m_params.interfaceWidth);
+                        // printf("sdf: %f \n", sdf_val);
+                        m_DA->hostDA.host_c[idx_SCALAR] = 0.5 + 0.5 * tanh(2.0 * sdf_val / m_params.interfaceWidth);
                         break;
                     }
                     default:
