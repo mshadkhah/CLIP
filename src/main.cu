@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
         }
     }
 
-    clip::InputData input("/home/mehdi/projects/CLIP/examples/2D/Bubble/config.txt");
+    // clip::InputData input("/home/mehdi/projects/CLIP/examples/2D/Bubble/config.txt");
     
-    // clip::InputData input("config.txt");
+    clip::InputData input("config.txt");
 
     clip::Domain domain(input);
     clip::Geometry geom(input);

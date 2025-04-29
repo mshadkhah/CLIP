@@ -122,39 +122,35 @@ namespace clip
     {
         boundaries.resize(20);
         boundaryObjects = 0;
-
         std::ifstream inputFile(m_idata->getConfig());
         if (!inputFile.is_open())
         {
-            std::cerr << "Error opening config file: " << m_idata->getConfig() << std::endl;
+            Logger::Error("Error opening config file: " + m_idata->getConfig());
             return false;
         }
-
+    
         std::string line;
         bool inBoundaryList = false;
         bool inBlock = false;
         clip::Boundary::Entry current;
-
+    
         while (std::getline(inputFile, line))
         {
-            trim(line);
+            trim(line);  // << ✅ unified cleanup
+            
             if (line.empty() || line[0] == '#')
                 continue;
-
+    
             if (!inBoundaryList && line.find("boundary") != std::string::npos && line.find('=') != std::string::npos)
             {
                 inBoundaryList = true;
                 continue;
             }
-
+    
             if (inBoundaryList)
             {
                 if (line == "[")
                     continue;
-
-                if (line == "]")
-                    break;
-
                 if (line == "{")
                 {
                     inBlock = true;
@@ -164,19 +160,12 @@ namespace clip
                 if (line == "}" || line == "},")
                 {
                     inBlock = false;
-
-                    // ✅ check unknown type
-                    if (current.BCtype == Type::Unknown)
-                    {
-                        Logger::Error("Encountered boundary with unknown type during parsing.");
-                    }
-
                     size_t index = static_cast<size_t>(current.side);
                     boundaries[index] = current;
                     boundaryObjects++;
                     continue;
                 }
-
+    
                 if (inBlock)
                 {
                     std::size_t pos = line.find('=');
@@ -187,7 +176,7 @@ namespace clip
                         trim(key);
                         trim(value);
                         value.erase(std::remove(value.begin(), value.end(), '"'), value.end());
-
+    
                         if (key == "side")
                             current.side = clip::Boundary::sideFromString(value);
                         else if (key == "type")
@@ -198,21 +187,15 @@ namespace clip
                         }
                         else if (key == "value")
                         {
-                            if (value.front() == '[')
-                                value.erase(0, 1);
-                            if (value.back() == ']')
-                                value.pop_back();
-
+                            if (value.front() == '[') value.erase(0, 1);
+                            if (value.back() == ']') value.pop_back();
                             std::stringstream ss(value);
                             std::string token;
                             int dim = 0;
                             while (std::getline(ss, token, ',') && dim < MAX_DIM)
                             {
                                 trim(token);
-                                current.value[dim] = std::stod(token);
-                                size_t index = static_cast<size_t>(current.side);
-                                Boundary::BCMap.val[index][dim] = std::stod(token);
-                                dim++;
+                                current.value[dim++] = std::stod(token);
                             }
                         }
                         else if (key == "ifRefine")
@@ -221,25 +204,26 @@ namespace clip
                 }
             }
         }
-
-        // Validate that all required sides are defined
+    
+        // Check if all sides are defined
         std::set<clip::Boundary::Objects> expectedSides = {
             clip::Boundary::Objects::XMinus,
             clip::Boundary::Objects::XPlus,
             clip::Boundary::Objects::YMinus,
-            clip::Boundary::Objects::YPlus};
+            clip::Boundary::Objects::YPlus
+        };
         if (DIM == 3)
         {
             expectedSides.insert(clip::Boundary::Objects::ZMinus);
             expectedSides.insert(clip::Boundary::Objects::ZPlus);
         }
-
+    
         std::set<clip::Boundary::Objects> foundSides;
         for (const auto &bc : boundaries)
         {
             foundSides.insert(bc.side);
         }
-
+    
         std::vector<std::string> missing;
         for (const auto &side : expectedSides)
         {
@@ -248,7 +232,7 @@ namespace clip
                 missing.push_back(clip::Boundary::toString(side));
             }
         }
-
+    
         if (!missing.empty())
         {
             std::ostringstream oss;
@@ -261,24 +245,18 @@ namespace clip
             }
             throw std::runtime_error(oss.str());
         }
-
+    
         return !boundaries.empty();
     }
-
+    
     void Boundary::trim(std::string &s)
     {
-        size_t start = s.find_first_not_of(" \t");
-        size_t end = s.find_last_not_of(" \t");
-        if (start == std::string::npos)
-        {
-            s.clear();
-        }
-        else
-        {
-            s = s.substr(start, end - start + 1);
-        }
+        // Remove spaces, tabs, and carriage returns everywhere
+        s.erase(std::remove_if(s.begin(), s.end(), [](unsigned char c) {
+            return c == ' ' || c == '\t' || c == '\r';
+        }), s.end());
     }
-
+    
     void Boundary::updateFlags()
     {
 

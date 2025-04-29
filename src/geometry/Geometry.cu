@@ -48,10 +48,10 @@ bool Geometry::readGeometries(std::vector<Entry>& geometries)
             continue;
         }
 
-        // ✅ NEW: End of geometry list
+        // ✅ End of geometry block
         if (inGeometryList && line == "]")
         {
-            break; // Stop reading once geometry block ends
+            break;
         }
 
         if (inGeometryList)
@@ -131,6 +131,7 @@ bool Geometry::readGeometries(std::vector<Entry>& geometries)
     return !geometries.empty();
 }
 
+
 void Geometry::fillDeviceGeometry()
 {
     m_deviceGeometry.numGeometries = geometries.size();
@@ -158,13 +159,11 @@ std::string Geometry::toLower(const std::string& s)
 
 void Geometry::trim(std::string& s)
 {
-    size_t start = s.find_first_not_of(" \t");
-    size_t end = s.find_last_not_of(" \t");
-    if (start == std::string::npos)
-        s.clear();
-    else
-        s = s.substr(start, end - start + 1);
+    s.erase(std::remove_if(s.begin(), s.end(), [](unsigned char c) {
+        return c == ' ' || c == '\t' || c == '\r';
+    }), s.end());
 }
+
 
 Geometry::Type Geometry::typeFromString(const std::string& str)
 {
