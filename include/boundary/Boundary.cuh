@@ -46,8 +46,9 @@ namespace clip
             Periodic = 3,
             Neumann = 4,
             Velocity = 5,
-            Unknown = 6,
-            MAX = 7
+            DoNothing = 6,
+            Unknown = 7,
+            MAX = 8
         };
 
 
@@ -74,7 +75,8 @@ namespace clip
             return (type == Boundary::Type::Wall || 
                     type == Boundary::Type::FreeConvect ||
                     type == Boundary::Type::Neumann ||
-                    type == Boundary::Type::SlipWall);
+                    type == Boundary::Type::SlipWall ||
+                    type == Boundary::Type::DoNothing);
         }
 
 
@@ -86,6 +88,7 @@ namespace clip
         bool isSlipWall = false;
         bool isFreeConvect = false;
         bool isNeumann = false;
+        bool isVelocity = false;
 
 
 

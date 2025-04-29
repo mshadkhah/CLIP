@@ -466,9 +466,7 @@ namespace clip
         }
     }
 
-    /////////////////////////////////////////////////////// start
 
-    // template <typname T, typename Q, typename R, typename S>
     __global__ void JetBoundary(const Domain::DomainInfo domain, const Geometry::GeometryDevice geom, const Boundary::BCTypeMap BCmap,
                                 const WMRT::WMRTvelSet velSet, const WMRT::wallBCMap wallBCMap, CLIP_REAL *dev_c, CLIP_REAL *dev_f, CLIP_REAL *dev_g)
     {
@@ -723,7 +721,7 @@ namespace clip
 
 #ifdef ENABLE_3D
 
-#endif
+
 
             /// ZMinus
             if (BCmap.types[object::ZMinus] == Boundary::Type::Velocity && k == domain.ghostDomainMinIdx[IDX_Z])
@@ -827,10 +825,11 @@ namespace clip
                     }
                 }
             }
+#endif
         }
     }
 
-    //////////////////////////////////////////////////////// end
+
 
     __global__ void kernelMirrorBoundary(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap, CLIP_REAL *dev_a)
     {
@@ -928,7 +927,7 @@ namespace clip
 
     void Solver::velocityBoundary(CLIP_REAL *dev_c, CLIP_REAL *dev_f, CLIP_REAL *dev_g)
     {
-        // if (m_boundary->isNeumann)
+        if (m_boundary->isVelocity)
         JetBoundary<<<dimGrid, dimBlock>>>(m_info, m_geomPool, m_BCMap, m_velSet, m_wallBCMap, dev_c, dev_f, dev_g);
     }
 

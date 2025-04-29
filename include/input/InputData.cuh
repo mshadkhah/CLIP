@@ -45,7 +45,7 @@ namespace clip
             CLIP_REAL rhoRatio;
             CLIP_REAL muRatio;
 
-            CLIP_REAL gravity;
+            CLIP_REAL gravity[MAX_DIM];
             CLIP_REAL interfaceWidth;
             CLIP_REAL mobility;
 

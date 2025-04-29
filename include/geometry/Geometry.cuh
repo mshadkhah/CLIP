@@ -60,21 +60,21 @@ public:
                 {
                 case static_cast<CLIP_INT>(Type::Circle):
                 {
-                    CLIP_REAL dx = x - geo.center[i][0];
-                    CLIP_REAL dy = y - geo.center[i][1];
+                    CLIP_REAL dx = x - geo.center[i][IDX_X];
+                    CLIP_REAL dy = y - geo.center[i][IDX_Y];
                     return sqrt(dx * dx + dy * dy) - geo.radius[i];
                 }
                 case static_cast<CLIP_INT>(Type::Sphere):
                 {
-                    CLIP_REAL dx = x - geo.center[i][0];
-                    CLIP_REAL dy = y - geo.center[i][1];
-                    CLIP_REAL dz = z - geo.center[i][2];
+                    CLIP_REAL dx = x - geo.center[i][IDX_X];
+                    CLIP_REAL dy = y - geo.center[i][IDX_Y];
+                    CLIP_REAL dz = z - geo.center[i][IDX_Z];
                     return sqrt(dx * dx + dy * dy + dz * dz) - geo.radius[i];
                 }
                 case static_cast<CLIP_INT>(Type::Square):
                 {
-                    CLIP_REAL dx = fabs(x - geo.center[i][0]) - geo.length[i][0] * 0.5;
-                    CLIP_REAL dy = fabs(y - geo.center[i][1]) - geo.length[i][1] * 0.5;
+                    CLIP_REAL dx = fabs(x - geo.center[i][IDX_X]) - geo.length[i][IDX_X] * 0.5;
+                    CLIP_REAL dy = fabs(y - geo.center[i][IDX_Y]) - geo.length[i][IDX_Y] * 0.5;
                     CLIP_REAL ax = max(dx, 0.0);
                     CLIP_REAL ay = max(dy, 0.0);
                     CLIP_REAL outside = sqrt(ax * ax + ay * ay);
@@ -83,9 +83,9 @@ public:
                 }
                 case static_cast<CLIP_INT>(Type::Cube):
                 {
-                    CLIP_REAL dx = fabs(x - geo.center[i][0]) - geo.length[i][0] * 0.5;
-                    CLIP_REAL dy = fabs(y - geo.center[i][1]) - geo.length[i][1] * 0.5;
-                    CLIP_REAL dz = fabs(z - geo.center[i][2]) - geo.length[i][2] * 0.5;
+                    CLIP_REAL dx = fabs(x - geo.center[i][IDX_X]) - geo.length[i][IDX_X] * 0.5;
+                    CLIP_REAL dy = fabs(y - geo.center[i][1]) - geo.length[i][IDX_Y] * 0.5;
+                    CLIP_REAL dz = fabs(z - geo.center[i][2]) - geo.length[i][IDX_Z] * 0.5;
                     CLIP_REAL ax = max(dx, 0.0);
                     CLIP_REAL ay = max(dy, 0.0);
                     CLIP_REAL az = max(dz, 0.0);
@@ -96,11 +96,11 @@ public:
                 case static_cast<CLIP_INT>(Type::Perturbation):
                 {
     #ifdef ENABLE_2D
-                    const CLIP_REAL perturbation = geo.amplitude[i] * geo.center[i][0] * cos(2.0 * M_PI * x / geo.center[i][0]);
+                    const CLIP_REAL perturbation = geo.amplitude[i] * geo.center[i][IDX_X] * cos(2.0 * M_PI * x / geo.center[i][IDX_X]);
     #elif defined(ENABLE_3D)
-                    const CLIP_REAL perturbation = geo.amplitude[i] * geo.center[i][0] * (cos(2.0 * M_PI * x / geo.center[i][0]) + cos(2.0 * M_PI * z / geo.center[i][2]));
+                    const CLIP_REAL perturbation = geo.amplitude[i] * geo.center[i][IDX_X] * (cos(2.0 * M_PI * x / geo.center[i][IDX_X]) + cos(2.0 * M_PI * z / geo.center[i][IDX_Z]));
     #endif
-                    const CLIP_REAL yShift = geo.center[i][1] - perturbation;
+                    const CLIP_REAL yShift = geo.center[i][IDX_Y] - perturbation;
                     return y - yShift;
                 }
                 }

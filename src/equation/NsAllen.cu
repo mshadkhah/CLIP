@@ -385,15 +385,15 @@ namespace clip
             CLIP_REAL Fgy = 0.0;
             if (params.caseType == InputData::CaseType::RTI)
             {
-                Fgy = -(dev_rho[idx_SCALAR]) * params.gravity;
+                Fgy = -(dev_rho[idx_SCALAR]) * params.gravity[IDX_Y];
             }
             else if (params.caseType == InputData::CaseType::Bubble)
             {
-                Fgy = -(dev_rho[idx_SCALAR] - params.RhoH) * params.gravity;
+                Fgy = -(dev_rho[idx_SCALAR] - params.RhoH) * params.gravity[IDX_Y];
             }
             else if (params.caseType == InputData::CaseType::Drop)
             {
-                Fgy = -(dev_rho[idx_SCALAR] - params.RhoL) * params.gravity;
+                Fgy = -(dev_rho[idx_SCALAR] - params.RhoL) * params.gravity[IDX_Y];
             }
 
             const CLIP_REAL Fpx = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_X];
@@ -584,16 +584,17 @@ namespace clip
             CLIP_REAL Fgy = 0.0;
             if (params.caseType == InputData::CaseType::RTI)
             {
-                Fgy = -(dev_rho[idx_SCALAR]) * params.gravity;
+                Fgy = -(dev_rho[idx_SCALAR]) * params.gravity[IDX_Y];
             }
             else if (params.caseType == InputData::CaseType::Bubble)
             {
-                Fgy = -(dev_rho[idx_SCALAR] - params.RhoH) * params.gravity;
+                Fgy = -(dev_rho[idx_SCALAR] - params.RhoH) * params.gravity[IDX_Y];
             }
             else if (params.caseType == InputData::CaseType::Drop)
             {
-                Fgy = -(dev_rho[idx_SCALAR] - params.RhoL) * params.gravity;
+                Fgy = -(dev_rho[idx_SCALAR] - params.RhoL) * params.gravity[IDX_Y];
             }
+
 
             const CLIP_REAL Fpx = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_X];
             const CLIP_REAL Fpy = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_Y];
@@ -824,15 +825,15 @@ namespace clip
             CLIP_REAL Fgy = 0.0;
             if (params.caseType == InputData::CaseType::RTI)
             {
-                Fgy = -(dev_rho[idx_SCALAR]) * params.gravity;
+                Fgy = -(dev_rho[idx_SCALAR]) * params.gravity[IDX_Y];
             }
             else if (params.caseType == InputData::CaseType::Bubble)
             {
-                Fgy = -(dev_rho[idx_SCALAR] - params.RhoH) * params.gravity;
+                Fgy = -(dev_rho[idx_SCALAR] - params.RhoH) * params.gravity[IDX_Y];
             }
             else if (params.caseType == InputData::CaseType::Drop)
             {
-                Fgy = -(dev_rho[idx_SCALAR] - params.RhoL) * params.gravity;
+                Fgy = -(dev_rho[idx_SCALAR] - params.RhoL) * params.gravity[IDX_Y];
             }
 
             const CLIP_REAL Fpx = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_X];
@@ -1032,15 +1033,11 @@ namespace clip
     {
         collision();
         applyPeriodicBoundary();
-        // velocityBoundary(m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g);
+        velocityBoundary(m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g);
         streaming();
-               
         applyWallBoundary();
         applyFreeConvectBoundary();
         applyNeumannBoundary();
-
- 
-
         macroscopic();
         cudaDeviceSynchronize();
     }

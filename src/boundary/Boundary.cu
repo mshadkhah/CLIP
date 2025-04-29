@@ -48,6 +48,8 @@ namespace clip
             return Type::Neumann;
         if (lowerStr == "velocity")
             return Type::Velocity;
+        if (lowerStr == "do nothing")
+            return Type::DoNothing;
         return Type::Unknown;
     }
 
@@ -88,6 +90,8 @@ namespace clip
             return "neumann";
         case Type::Velocity:
             return "velocity";
+        case Type::DoNothing:
+            return "do nothing";
         default:
             return "unknown";
         }
@@ -297,6 +301,9 @@ namespace clip
                 break;
             case Type::Periodic:
                 isPeriodic = true;
+                break;
+            case Type::Velocity:
+                isVelocity = true;
                 break;
             }
         }
