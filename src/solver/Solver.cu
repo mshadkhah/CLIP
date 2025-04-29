@@ -685,6 +685,7 @@ namespace clip
                             N += (dev_g[Domain::getIndex<Q>(domain, i, j, k, q)] - geq[q]);
                         }
                     }
+                    // printf("inside %f  \n ", BCmap.val[object::YPlus][IDX_Y]);
 #pragma unroll
                     for (int q = 0; q < A; q++)
                     {

@@ -195,7 +195,10 @@ namespace clip
                             while (std::getline(ss, token, ',') && dim < MAX_DIM)
                             {
                                 trim(token);
-                                current.value[dim++] = std::stod(token);
+                                current.value[dim] = std::stod(token);
+                                size_t index = static_cast<size_t>(current.side);
+                                Boundary::BCMap.val[index][dim] = std::stod(token);
+                                dim++;
                             }
                         }
                         else if (key == "ifRefine")
