@@ -152,6 +152,7 @@ namespace clip
         {
 
 #ifdef ENABLE_2D
+            static constexpr CLIP_UINT weight = 2;
             static constexpr CLIP_UINT Q = 3;
             const CLIP_INT XMinus[Q] = {1, 5, 8};
             const CLIP_INT XPlus[Q] = {3, 7, 6};
@@ -160,6 +161,7 @@ namespace clip
 
 #elif defined(ENABLE_3D)
 
+            static constexpr CLIP_UINT weight = 4;
             static constexpr CLIP_UINT Q = 5;
             const CLIP_INT XMinus[Q] = {1, 9, 7, 13, 11};
             const CLIP_INT XPlus[Q] = {2, 10, 8, 14, 12};
@@ -194,6 +196,130 @@ namespace clip
 #endif
         };
 
+        /*
+                struct WMRTvelSet
+                {
+        #ifdef ENABLE_2D
+                    static constexpr CLIP_UINT Q = 9;
+
+                    const CLIP_INT e[Q][DIM] = {
+                        { 0,  0},
+                        { 1,  0},
+                        { 0,  1},
+                        {-1,  0},
+                        { 0, -1},
+                        { 1,  1},
+                        {-1,  1},
+                        {-1, -1},
+                        { 1, -1}
+                    };
+
+                    const CLIP_REAL wa[Q] = {
+                        4.0/9.0,
+                        1.0/9.0, 1.0/9.0, 1.0/9.0, 1.0/9.0,
+                        1.0/36.0, 1.0/36.0, 1.0/36.0, 1.0/36.0
+                    };
+
+        #elif defined(ENABLE_3D)
+                    static constexpr CLIP_UINT Q = 19;
+
+                    const CLIP_INT e[Q][DIM] = {
+                        { 0,  0,  0},
+                        { 1,  0,  0},
+                        {-1,  0,  0},
+                        { 0,  1,  0},
+                        { 0, -1,  0},
+                        { 0,  0,  1},
+                        { 0,  0, -1},
+                        { 1,  1,  0},
+                        {-1,  1,  0},
+                        { 1, -1,  0},
+                        {-1, -1,  0},
+                        { 1,  0,  1},
+                        {-1,  0,  1},
+                        { 1,  0, -1},
+                        {-1,  0, -1},
+                        { 0,  1,  1},
+                        { 0, -1,  1},
+                        { 0,  1, -1},
+                        { 0, -1, -1}
+                    };
+
+                    const CLIP_REAL wa[Q] = {
+                        1.0/3.0,
+                        1.0/18.0, 1.0/18.0, 1.0/18.0, 1.0/18.0, 1.0/18.0, 1.0/18.0,
+                        1.0/36.0, 1.0/36.0, 1.0/36.0, 1.0/36.0,
+                        1.0/36.0, 1.0/36.0, 1.0/36.0, 1.0/36.0,
+                        1.0/36.0, 1.0/36.0, 1.0/36.0, 1.0/36.0
+                    };
+                #endif
+                };
+
+
+
+
+                struct wallBCMap
+        {
+        #ifdef ENABLE_2D
+            static constexpr CLIP_UINT numQ = 3;
+            static constexpr CLIP_UINT numBoundaries = 4; // X-, X+, Y-, Y+
+
+            // Boundary order: { XMinus, XPlus, YMinus, YPlus }
+            const CLIP_INT sides[numBoundaries][numQ] = {
+                { 1, 5, 8 }, // XMinus
+                { 3, 7, 6 }, // XPlus
+                { 2, 5, 6 }, // YMinus
+                { 4, 7, 8 }  // YPlus
+            };
+
+        #elif defined(ENABLE_3D)
+            static constexpr CLIP_UINT numQ = 5;
+            static constexpr CLIP_UINT numBoundaries = 6; // X-, X+, Y-, Y+, Z-, Z+
+
+            // Boundary order: { XMinus, XPlus, YMinus, YPlus, ZMinus, ZPlus }
+            const CLIP_INT sides[numBoundaries][numQ] = {
+                {  1,  9,  7, 13, 11 }, // XMinus
+                {  2, 10,  8, 14, 12 }, // XPlus
+                {  3, 10,  7, 17, 15 }, // YMinus
+                {  4,  9,  8, 18, 16 }, // YPlus
+                {  5, 14, 11, 18, 15 }, // ZMinus
+                {  6, 13, 12, 17, 16 }  // ZPlus
+            };
+        #endif
+        };
+
+                struct slipWallBCMap
+        {
+        #ifdef ENABLE_2D
+            static constexpr CLIP_UINT numQ = 3;
+            static constexpr CLIP_UINT numBoundaries = 4; // X-, X+, Y-, Y+
+
+            // Boundary order: { XMinus, XPlus, YMinus, YPlus }
+            const CLIP_INT sideds[numBoundaries][numQ] = {
+                { 1, 5, 8 }, // XMinus
+                { 3, 6, 7 }, // XPlus
+                { 2, 5, 6 }, // YMinus
+                { 4, 8, 7 }  // YPlus
+            };
+
+        #elif defined(ENABLE_3D)
+            static constexpr CLIP_UINT numQ = 5;
+            static constexpr CLIP_UINT numBoundaries = 6; // X-, X+, Y-, Y+, Z-, Z+
+
+            // Boundary order: { XMinus, XPlus, YMinus, YPlus, ZMinus, ZPlus }
+            const CLIP_INT sides[numBoundaries][numQ] = {
+                {  1,  9,  7, 13, 11 }, // XMinus
+                {  2,  8, 10, 12, 14 }, // XPlus
+                {  3, 10,  7, 17, 15 }, // YMinus
+                {  4,  8,  9, 16, 18 }, // YPlus
+                {  5, 14, 11, 18, 15 }, // ZMinus
+                {  6, 12, 13, 16, 17 }  // ZPlus
+            };
+        #endif
+        };
+
+
+        */
 
         struct velocityBCMap
         {
@@ -214,11 +340,6 @@ namespace clip
 
 #endif
         };
-
-
-
-
-
 
         struct wallCornerBCMap
         {
@@ -242,10 +363,6 @@ namespace clip
 
 #endif
         };
-
-
-
-
     };
 
 }

@@ -1,8 +1,8 @@
 case = jet
 
 finalStep = 100000
-outputInterval = 1000
-reportInterval = 1000
+outputInterval = 100
+reportInterval = 10
 checkpointInterval = 10000
 checkpointCopy = 1
 

@@ -78,12 +78,21 @@ add_executable(clip
 add_library(clip_lib STATIC ${CLIP_SRC} ${CLIP_INC})
 
 
+
+if (ENABLE_2D)
+  set(ENABLE_3D OFF CACHE BOOL "Disabled 3D mode" FORCE)
+elseif (ENABLE_3D)
+  set(ENABLE_2D OFF CACHE BOOL "Disabled 2D mode" FORCE)
+endif()
+
+
 if (ENABLE_2D AND ENABLE_3D)
   message(FATAL_ERROR "You cannot enable both ENABLE_2D and ENABLE_3D.")
 elseif (NOT ENABLE_2D AND NOT ENABLE_3D)
   message(STATUS "No mode specified — defaulting to 2D.")
   set(ENABLE_2D ON)
 endif()
+
 
 if (ENABLE_2D)
 message(STATUS "Compiling in 2D mode.")

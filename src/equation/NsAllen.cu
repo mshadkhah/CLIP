@@ -1032,7 +1032,7 @@ namespace clip
     {
         collision();
         applyPeriodicBoundary();
-        velocityBoundary(m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g);
+        // velocityBoundary(m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_f, m_DA->deviceDA.dev_g);
         streaming();
                
         applyWallBoundary();

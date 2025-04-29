@@ -149,7 +149,7 @@ namespace clip
                     continue;
 
                 if (line == "]")
-                    break; // ✅ End of boundary list parsing
+                    break;
 
                 if (line == "{")
                 {
