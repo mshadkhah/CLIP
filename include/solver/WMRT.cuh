@@ -1,3 +1,8 @@
+// Copyright (c) 2020–2025 Mehdi Shadkhah
+// SPDX-License-Identifier: BSD-3-Clause
+// Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
+
+
 #pragma once
 #include <includes.h>
 #include <InputData.cuh>
