@@ -44,6 +44,37 @@ namespace clip
 #endif
     };
 
+     /// Destructor
+    DataArray::~DataArray() {
+        // Free device memory safely
+        SAFE_CUDA_FREE(deviceDA.dev_f);
+        SAFE_CUDA_FREE(deviceDA.dev_f_post);
+        SAFE_CUDA_FREE(deviceDA.dev_g);
+        SAFE_CUDA_FREE(deviceDA.dev_g_post);
+        SAFE_CUDA_FREE(deviceDA.dev_rho);
+        SAFE_CUDA_FREE(deviceDA.dev_p);
+        SAFE_CUDA_FREE(deviceDA.dev_c);
+        SAFE_CUDA_FREE(deviceDA.dev_dc);
+        SAFE_CUDA_FREE(deviceDA.dev_vel);
+        SAFE_CUDA_FREE(deviceDA.dev_mu);
+        SAFE_CUDA_FREE(deviceDA.dev_normal);
+        SAFE_CUDA_FREE(deviceDA.dev_f_prev);
+        SAFE_CUDA_FREE(deviceDA.dev_g_prev);
+    
+        // Free host memory safely
+        SAFE_FREE(hostDA.host_c);
+        SAFE_FREE(hostDA.host_rho);
+        SAFE_FREE(hostDA.host_p);
+        SAFE_FREE(hostDA.host_vel);
+        SAFE_FREE(hostDA.host_f);
+        SAFE_FREE(hostDA.host_f_post);
+        SAFE_FREE(hostDA.host_g);
+        SAFE_FREE(hostDA.host_g_post);
+        SAFE_FREE(hostDA.host_f_prev);
+        SAFE_FREE(hostDA.host_g_prev);
+    }
+
+
     // Allocates all required host and device vectors based on simulation configuration
     void DataArray::createVectors()
     {

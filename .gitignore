@@ -4,6 +4,7 @@
 /build3D
 /CMakeFiles
 /CMakeCache.txt
+/Checkpoint*
 cmake_install.cmake
 Makefile
 

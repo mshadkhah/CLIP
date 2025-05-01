@@ -41,6 +41,10 @@
         }                                                      \
     } while (0)
 
+/// helper macro to free up the memory.
+#define SAFE_CUDA_FREE(ptr) if (ptr) { cudaFree(ptr); ptr = nullptr; }
+#define SAFE_FREE(ptr) if (ptr) { free(ptr); ptr = nullptr; }
+
 /// 1D thread indexing macros
 #define THREAD_IDX_X (threadIdx.x + blockIdx.x * blockDim.x)
 #define THREAD_IDX_Y (threadIdx.y + blockIdx.y * blockDim.y)
@@ -66,6 +70,10 @@ namespace clip
          * @param boundary Boundary condition object
          */
         explicit DataArray(const InputData &idata, const Domain &domain, const Boundary &boundary);
+
+
+         /// Destructor
+        ~DataArray();
 
         /**
          * @brief Allocates device memory on GPU for a given pointer.
