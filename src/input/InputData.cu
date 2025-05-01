@@ -1,8 +1,46 @@
+// Copyright (c) 2020–2025 Mehdi Shadkhah
+// SPDX-License-Identifier: BSD-3-Clause
+// Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
+
+/**
+ * @file InputData.cu
+ * @brief Parses and stores simulation configuration parameters from a user-defined config file.
+ *
+ * @details
+ * This file defines the `InputData` class, which reads simulation parameters such as
+ * Reynolds number, Weber number, grid size, time control, and boundary condition settings.
+ * It handles type conversion, default handling, and special logic depending on the simulation case.
+ *
+ * Supported parameter types:
+ * - Scalars (e.g., `tFinal`, `Re`, `We`, `referenceLength`)
+ * - Vectors (e.g., `gravity`, `N`)
+ * - Arrays (e.g., `[tauL, tauH]`)
+ * - Enums (e.g., `caseType` as Drop, Bubble, Jet, RTI)
+ *
+ * ## Key Responsibilities
+ * - Parse key-value pairs from config
+ * - Apply case-specific physics initialization (e.g., compute `muH`, `sigma`, `tau`)
+ * - Convert strings to enums and typed arrays
+ * - Provide access to parsed data via the `params` struct
+ *
+ * Used throughout the solver to configure LBM model parameters, geometry scaling, time stepping, and more.
+ *
+ * @author
+ * Mehdi Shadkhah
+ *
+ * @date
+ * 2025
+ */
+
 #include <InputData.cuh>
 
 namespace clip
 {
 
+    /**
+     * @brief Constructs an InputData object and loads simulation parameters from a config file.
+     * @param filename Path to the configuration file
+     */
     InputData::InputData(const std::string &filename)
         : m_filename(filename)
     {
@@ -11,6 +49,12 @@ namespace clip
         Logger::Success("Input parameters loaded successfully.");
     }
 
+    /**
+     * @brief Reads all simulation parameters from the config file and fills the `params` structure.
+     *
+     * Initializes derived quantities based on the selected case type (e.g., `Drop`, `Bubble`, `RTI`, `Jet`),
+     * including `muH`, `muL`, `sigma`, `tauH`, `tauL`, and phase-field constants.
+     */
     void InputData::read_config()
     {
 
@@ -71,6 +115,12 @@ namespace clip
         params.betaConstant = 8.0 * params.sigma / params.interfaceWidth;
     }
 
+    /**
+     * @brief Converts a string to the corresponding CaseType enum.
+     * @param str Case name as lowercase string
+     * @return Corresponding CaseType enum value
+     * @throws std::invalid_argument if the case name is unknown
+     */
     InputData::CaseType InputData::caseTypeFromString(const std::string &str)
     {
         if (str == "drop")
@@ -84,6 +134,14 @@ namespace clip
         throw std::invalid_argument("Unknown case type: " + str);
     }
 
+    /**
+     * @brief Reads an array of N values from the config file and stores them in a fixed-size array.
+     * @tparam T Type of elements (CLIP_REAL or CLIP_UINT)
+     * @tparam N Size of the array
+     * @param varName Name of the variable to read
+     * @param arr Output array
+     * @return true if the value was successfully read
+     */
     template <typename T, std::size_t N>
     bool InputData::read_array(const std::string &varName, T (&arr)[N]) const
     {
@@ -152,6 +210,13 @@ namespace clip
         return false;
     }
 
+    /**
+     * @brief Reads a vector of values from the config file.
+     * @tparam T Type of elements (CLIP_REAL or CLIP_UINT)
+     * @param varName Name of the variable to read
+     * @param arr Output vector
+     * @return true if the value was successfully read
+     */
     template <typename T>
     bool InputData::read_vector(const std::string &varName, std::vector<T> &arr) const
     {
@@ -210,6 +275,13 @@ namespace clip
         return false;
     }
 
+    /**
+     * @brief Reads a scalar value from the config file.
+     * @tparam T Type of the variable (CLIP_REAL, CLIP_UINT, etc.)
+     * @param varName Name of the variable to read
+     * @param var Output value
+     * @return true if the value was successfully read
+     */
     template <typename T>
     bool InputData::read_value(const std::string &varName, T &var) const
     {
@@ -248,6 +320,10 @@ namespace clip
         return false;
     }
 
+    /**
+     * @brief Trims whitespace from the beginning and end of a string.
+     * @param s String to be trimmed (modified in-place)
+     */
     void InputData::trim(std::string &s)
     {
         size_t start = s.find_first_not_of(" \t");
@@ -262,16 +338,34 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Reads a CLIP_REAL variable from the config file.
+     * @param varName Name of the variable
+     * @param var Output value
+     * @return true if successful
+     */
     bool InputData::read(const std::string &varName, CLIP_REAL &var) const
     {
         return read_value(varName, var);
     }
 
+    /**
+     * @brief Reads a CLIP_UINT variable from the config file.
+     * @param varName Name of the variable
+     * @param var Output value
+     * @return true if successful
+     */
     bool InputData::read(const std::string &varName, CLIP_UINT &var) const
     {
         return read_value(varName, var);
     }
 
+    /**
+     * @brief Reads a boolean variable from the config file (expects "true"/"false" or "1"/"0").
+     * @param varName Name of the variable
+     * @param var Output value
+     * @return true if successful
+     */
     bool InputData::read(const std::string &varName, bool &var) const
     {
         std::string valueStr;
@@ -296,12 +390,26 @@ namespace clip
         return true;
     }
 
+    /**
+     * @brief Reads a fixed-size array of values from the config file.
+     * @tparam T Type of array elements
+     * @tparam N Array size
+     * @param varName Name of the variable
+     * @param arr Output array
+     * @return true if successful
+     */
     template <typename T, std::size_t N>
     bool InputData::read(const std::string &varName, T (&arr)[N]) const
     {
         return read_array(varName, arr);
     }
 
+    /**
+     * @brief Reads the simulation case type as a string and converts it to a CaseType enum.
+     * @param varName Should be "case"
+     * @param caseType Output CaseType value
+     * @return true if successful
+     */
     bool InputData::read(const std::string &varName, CaseType &caseType) const
     {
         std::string str;
@@ -318,6 +426,10 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Returns the path to the currently loaded config file.
+     * @return File path as a string
+     */
     std::string InputData::getConfig() const
     {
         return m_filename;

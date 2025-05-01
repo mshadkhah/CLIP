@@ -1,22 +1,41 @@
+// Copyright (c) 2020–2025 Mehdi Shadkhah
+// SPDX-License-Identifier: BSD-3-Clause
+// Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
+
+/**
+ * @file
+ * @brief Implements the DataArray class, responsible for memory management and data synchronization
+ *        between host and device in the CLIP framework.
+ *
+ * Core responsibilities:
+ * - Allocates and manages GPU/CPU memory for simulation fields
+ * - Provides utility methods to copy data between host/device
+ * - Initializes thread block and grid dimensions based on domain size
+ * - Handles conditional memory allocation for boundary-related fields
+ */
+
 #include "DataArray.cuh"
 
 namespace clip
 {
 
+    // Constructor: Initializes device grid and block size based on domain extent
     DataArray::DataArray(const InputData &idata, const Domain &domain, const Boundary &boundary)
         : m_idata(&idata), m_domain(&domain), m_boundary(&boundary)
     {
 
+#ifdef ENABLE_2D
+
         CLIP_INT threadsAlongX = 8, threadsAlongY = 8, threadsAlongZ = 1;
         dimBlock = dim3(threadsAlongX, threadsAlongY, threadsAlongZ);
-
-#ifdef ENABLE_2D
         CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(CLIP_REAL(m_domain->info.extent[IDX_X]) / threadsAlongX));
         CLIP_INT gridY = static_cast<CLIP_INT>(std::ceil(CLIP_REAL(m_domain->info.extent[IDX_Y]) / threadsAlongY));
         dimGrid = dim3(gridX, gridY);
 
 #elif defined(ENABLE_3D)
 
+        CLIP_INT threadsAlongX = 8, threadsAlongY = 8, threadsAlongZ = 4;
+        dimBlock = dim3(threadsAlongX, threadsAlongY, threadsAlongZ);
         CLIP_INT gridX = static_cast<CLIP_INT>(std::ceil(CLIP_REAL(m_domain->info.extent[IDX_X]) / threadsAlongX));
         CLIP_INT gridY = static_cast<CLIP_INT>(std::ceil(CLIP_REAL(m_domain->info.extent[IDX_Y]) / threadsAlongY));
         CLIP_INT gridZ = static_cast<CLIP_INT>(std::ceil(CLIP_REAL(m_domain->info.extent[IDX_Z]) / threadsAlongZ));
@@ -25,6 +44,7 @@ namespace clip
 #endif
     };
 
+    // Allocates all required host and device vectors based on simulation configuration
     void DataArray::createVectors()
     {
         const CLIP_UINT Q = WMRT::WMRTvelSet::Q;
@@ -69,12 +89,14 @@ namespace clip
         Logger::Success("Host vectors are allocated successfully.");
     }
 
+    // Copies concentration field (c) from host to device
     void DataArray::updateDevice()
     {
 
         copyToDevice(deviceDA.dev_c, hostDA.host_c, "dev_c", SCALAR_FIELD);
     }
 
+    // Copies fields from device to host for output or postprocessing
     void DataArray::updateHost()
     {
 

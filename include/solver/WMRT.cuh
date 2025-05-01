@@ -3,6 +3,20 @@
 // Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
 
 
+/**
+ * @file
+ * @brief Implements the Weighted Multiple Relaxation Time (WMRT) conversion and reconstruction
+ *        operators for the CLIP LBM framework.
+ *
+ * This file includes:
+ * - Conversion and inverse conversion between distribution and moment space for D2Q9 and D3Q19
+ * - Velocity set definitions for 2D and 3D
+ * - Boundary condition mappings for wall, slip wall, and velocity boundaries
+ *
+ * These transformations enable more stable and accurate multiphase simulations using LBM.
+ */
+
+
 #pragma once
 #include <includes.h>
 #include <InputData.cuh>
@@ -10,16 +24,33 @@
 namespace clip
 {
 
+
+    /**
+ * @brief Weighted MRT conversion and utility definitions for Lattice Boltzmann Method.
+ *
+ * The WMRT class contains conversion matrices for D2Q9 and D3Q19 lattices, mapping distribution
+ * functions to weighted moment space and back. It also stores velocity set definitions and
+ * structured maps for applying different types of boundary conditions.
+ */
     class WMRT
     {
 
     public:
-        // explicit WMRT();
 
+           /// Constructor
         WMRT() {}
 
+            /// Destructor
         virtual ~WMRT();
 
+
+            // --------------------------- Conversion Operators ---------------------------
+
+    /**
+     * @brief Converts a D2Q9 distribution function to weighted moment space.
+     * @param in Input distribution function (size 9)
+     * @param out Output in moment space (size 9)
+     */
         __device__ __forceinline__ static void convertD2Q9Weighted(const CLIP_REAL in[9], CLIP_REAL out[9])
         {
             const CLIP_REAL in0 = in[0], in1 = in[1], in2 = in[2];
@@ -37,6 +68,12 @@ namespace clip
             out[8] = in5 - in6 + in7 - in8;
         }
 
+
+            /**
+     * @brief Reconstructs the D2Q9 distribution function from weighted moments.
+     * @param in Input moment vector (size 9)
+     * @param out Output distribution function (size 9)
+     */
         __device__ __forceinline__ static void reconvertD2Q9Weighted(const CLIP_REAL in[9], CLIP_REAL out[9])
         {
             const CLIP_REAL in0 = in[0], in1 = in[1], in2 = in[2];
@@ -54,6 +91,12 @@ namespace clip
             out[8] = (4.0 * in0 + 2.0 * in1 + in2 + 6.0 * in3 + 3.0 * in4 - 6.0 * in5 - 3.0 * in6 - 9.0 * in8) / 36.0;
         }
 
+
+            /**
+     * @brief Converts a D3Q19 distribution function to weighted moment space.
+     * @param in Input distribution function (size 19)
+     * @param out Output in moment space (size 19)
+     */
         __device__ __forceinline__ static void convertD3Q19Weighted(const CLIP_REAL in[19], CLIP_REAL out[19])
         {
             const CLIP_REAL in0 = in[0], in1 = in[1], in2 = in[2], in3 = in[3], in4 = in[4],
@@ -82,6 +125,12 @@ namespace clip
             out[18] = -in3 - in4 + in5 + in6 + in7 + in8 + in9 + in10 - in11 - in12 - in13 - in14;
         }
 
+
+            /**
+     * @brief Reconstructs the D3Q19 distribution function from weighted moments.
+     * @param in Input moment vector (size 19)
+     * @param out Output distribution function (size 19)
+     */
         __device__ __forceinline__ static void reconvertD3Q19Weighted(const CLIP_REAL in[19], CLIP_REAL out[19])
         {
             const CLIP_REAL in0 = in[0], in1 = in[1], in2 = in[2], in3 = in[3], in4 = in[4];
@@ -134,6 +183,9 @@ namespace clip
                       144.0;
         }
 
+            /**
+     * @brief Defines the discrete velocity set and weights for the WMRT model.
+     */
         struct WMRTvelSet
         {
 
@@ -153,6 +205,12 @@ namespace clip
 #endif
         };
 
+
+            // ------------------------ Boundary Condition Maps ------------------------
+
+    /**
+     * @brief Mapping of wall boundary directions for bounce-back in 2D/3D.
+     */
         struct wallBCMap
         {
 
@@ -178,6 +236,10 @@ namespace clip
 #endif
         };
 
+
+            /**
+     * @brief Mapping of slip wall boundary directions for specular reflection.
+     */
         struct slipWallBCMap
         {
 
@@ -325,7 +387,10 @@ namespace clip
 
 
         */
-
+       
+    /**
+     * @brief Mapping of velocity inlet/outlet directions for custom boundary handling.
+     */
         struct velocityBCMap
         {
 

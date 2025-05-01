@@ -1,5 +1,6 @@
-# Copyright (c) 2025
-# Author: Mehdi Shadkhah
+# Copyright (c) 2020–2025 Mehdi Shadkhah
+# SPDX-License-Identifier: BSD-3-Clause
+# Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
 
 cmake_minimum_required(VERSION 3.18)
 project(CLIP LANGUAGES CXX CUDA)

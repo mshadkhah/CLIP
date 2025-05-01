@@ -1,9 +1,27 @@
+// Copyright (c) 2020–2025 Mehdi Shadkhah
+// SPDX-License-Identifier: BSD-3-Clause
+// Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
+
+/**
+ * @file
+ * @brief Implements the Boundary class methods responsible for reading, parsing, and managing
+ *        boundary conditions in the CLIP LBM framework.
+ *
+ * Key functionalities:
+ * - Parses structured boundary blocks from the config file
+ * - Maps user-defined types and sides to enums
+ * - Fills boundary condition maps used in solver kernels
+ * - Prints parsed boundary configuration
+ * - Sets internal flags for BC types for fast checking
+ */
+
 #include <Boundary.cuh>
 #include <includes.h>
 
 namespace clip
 {
 
+    // Constructor: Initializes Boundary from input and domain, then reads and prints boundaries.
     Boundary::Boundary(const InputData &idata, const Domain &domain)
         : m_idata(&idata), m_domain(&domain)
     {
@@ -13,8 +31,10 @@ namespace clip
         print();
     }
 
+    // Destructor
     Boundary::~Boundary() {}
 
+    // Converts string to Boundary::Objects enum
     Boundary::Objects Boundary::sideFromString(const std::string &str)
     {
         std::string lowerStr = toLower(str); // << make it lowercase
@@ -33,6 +53,7 @@ namespace clip
         return Objects::Unknown;
     }
 
+    // Converts string to Boundary::Type enum
     Boundary::Type Boundary::typeFromString(const std::string &str)
     {
         std::string lowerStr = toLower(str); // << make it lowercase
@@ -53,6 +74,7 @@ namespace clip
         return Type::Unknown;
     }
 
+    // Converts enum side to string
     std::string Boundary::toString(Objects side)
     {
         switch (side)
@@ -74,6 +96,7 @@ namespace clip
         }
     }
 
+    // Converts enum type to string
     std::string Boundary::toString(Type type)
     {
         switch (type)
@@ -97,6 +120,7 @@ namespace clip
         }
     }
 
+    // Prints all parsed boundary entries to console
     void Boundary::print()
     {
         std::cout << "\nParsed Boundary Conditions:\n";
@@ -118,6 +142,7 @@ namespace clip
         }
     }
 
+    // Reads boundary blocks from the config file and populates BCMap
     bool Boundary::readBoundaries(std::vector<Entry> &boundaries)
     {
         boundaries.resize(20);
@@ -128,25 +153,25 @@ namespace clip
             Logger::Error("Error opening config file: " + m_idata->getConfig());
             return false;
         }
-    
+
         std::string line;
         bool inBoundaryList = false;
         bool inBlock = false;
         clip::Boundary::Entry current;
-    
+
         while (std::getline(inputFile, line))
         {
-            trim(line);  // << ✅ unified cleanup
-            
+            trim(line); // << ✅ unified cleanup
+
             if (line.empty() || line[0] == '#')
                 continue;
-    
+
             if (!inBoundaryList && line.find("boundary") != std::string::npos && line.find('=') != std::string::npos)
             {
                 inBoundaryList = true;
                 continue;
             }
-    
+
             if (inBoundaryList)
             {
                 if (line == "[")
@@ -165,7 +190,7 @@ namespace clip
                     boundaryObjects++;
                     continue;
                 }
-    
+
                 if (inBlock)
                 {
                     std::size_t pos = line.find('=');
@@ -176,7 +201,7 @@ namespace clip
                         trim(key);
                         trim(value);
                         value.erase(std::remove(value.begin(), value.end(), '"'), value.end());
-    
+
                         if (key == "side")
                             current.side = clip::Boundary::sideFromString(value);
                         else if (key == "type")
@@ -187,8 +212,10 @@ namespace clip
                         }
                         else if (key == "value")
                         {
-                            if (value.front() == '[') value.erase(0, 1);
-                            if (value.back() == ']') value.pop_back();
+                            if (value.front() == '[')
+                                value.erase(0, 1);
+                            if (value.back() == ']')
+                                value.pop_back();
                             std::stringstream ss(value);
                             std::string token;
                             int dim = 0;
@@ -207,26 +234,25 @@ namespace clip
                 }
             }
         }
-    
+
         // Check if all sides are defined
         std::set<clip::Boundary::Objects> expectedSides = {
             clip::Boundary::Objects::XMinus,
             clip::Boundary::Objects::XPlus,
             clip::Boundary::Objects::YMinus,
-            clip::Boundary::Objects::YPlus
-        };
+            clip::Boundary::Objects::YPlus};
         if (DIM == 3)
         {
             expectedSides.insert(clip::Boundary::Objects::ZMinus);
             expectedSides.insert(clip::Boundary::Objects::ZPlus);
         }
-    
+
         std::set<clip::Boundary::Objects> foundSides;
         for (const auto &bc : boundaries)
         {
             foundSides.insert(bc.side);
         }
-    
+
         std::vector<std::string> missing;
         for (const auto &side : expectedSides)
         {
@@ -235,7 +261,7 @@ namespace clip
                 missing.push_back(clip::Boundary::toString(side));
             }
         }
-    
+
         if (!missing.empty())
         {
             std::ostringstream oss;
@@ -248,18 +274,20 @@ namespace clip
             }
             throw std::runtime_error(oss.str());
         }
-    
+
         return !boundaries.empty();
     }
-    
+
+    // Removes whitespace characters from a string (used in config parsing)
     void Boundary::trim(std::string &s)
     {
         // Remove spaces, tabs, and carriage returns everywhere
-        s.erase(std::remove_if(s.begin(), s.end(), [](unsigned char c) {
-            return c == ' ' || c == '\t' || c == '\r';
-        }), s.end());
+        s.erase(std::remove_if(s.begin(), s.end(), [](unsigned char c)
+                               { return c == ' ' || c == '\t' || c == '\r'; }),
+                s.end());
     }
-    
+
+    // Updates boundary flags (e.g., isWall, isPeriodic) after parsing
     void Boundary::updateFlags()
     {
 
@@ -290,6 +318,7 @@ namespace clip
         }
     }
 
+    // Converts a string to lowercase
     std::string Boundary::toLower(const std::string &s)
     {
         std::string result = s;

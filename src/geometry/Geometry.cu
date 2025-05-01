@@ -1,3 +1,38 @@
+// Copyright (c) 2020–2025 Mehdi Shadkhah
+// SPDX-License-Identifier: BSD-3-Clause
+// Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
+
+
+/**
+ * @file Geometry.cu
+ * @brief Reads, parses, and manages user-defined geometries for use in LBM simulations.
+ * 
+ * @details
+ * This file implements the Geometry class, which reads geometry configurations from the input 
+ * config file and prepares the geometry data (type, position, size) for both host and device use.
+ * 
+ * Supported geometry types include:
+ * - Circle, Sphere
+ * - Square, Cube
+ * - Perturbation fields (e.g., for RTI)
+ * 
+ * Main responsibilities:
+ * - Parse `[geometry]` blocks from the config file
+ * - Populate `Entry` structs for each geometry
+ * - Prepare a flat device-usable structure (`m_deviceGeometry`)
+ * - Provide human-readable type names for debug/logging
+ * 
+ * Used by initialization routines to apply geometry-aware phase field conditions (e.g., SDF-based drop/bubble).
+ * 
+ * @author
+ * Mehdi Shadkhah
+ * 
+ * @date
+ * 2025
+ */
+
+
+
 #include "Geometry.cuh"
 #include <fstream>
 #include <sstream>
@@ -7,6 +42,10 @@
 namespace clip
 {
 
+    /**
+ * @brief Constructs a Geometry object and initializes geometry data from config.
+ * @param idata Reference to input configuration data
+ */
 Geometry::Geometry(const InputData& idata)
     : m_idata(&idata)
 {
@@ -17,8 +56,18 @@ Geometry::Geometry(const InputData& idata)
     Logger::Success("Successfully read " + std::to_string(geometries.size()) + " geometries.");
 }
 
+/**
+ * @brief Default destructor for Geometry.
+ */
 Geometry::~Geometry() {}
 
+
+/**
+ * @brief Reads geometry definitions from the input config file and populates the `geometries` vector.
+ * 
+ * @param geometries Reference to the vector where parsed geometry entries are stored.
+ * @return true if at least one geometry was successfully read, false otherwise.
+ */
 bool Geometry::readGeometries(std::vector<Entry>& geometries)
 {
     geometryObjects = 0;
@@ -132,6 +181,9 @@ bool Geometry::readGeometries(std::vector<Entry>& geometries)
 }
 
 
+/**
+ * @brief Fills the device-side geometry structure (`m_deviceGeometry`) with data parsed from the config file.
+ */
 void Geometry::fillDeviceGeometry()
 {
     m_deviceGeometry.numGeometries = geometries.size();
@@ -149,6 +201,11 @@ void Geometry::fillDeviceGeometry()
     }
 }
 
+/**
+ * @brief Converts a string to lowercase.
+ * @param s Input string
+ * @return Lowercase version of the string
+ */
 std::string Geometry::toLower(const std::string& s)
 {
     std::string result = s;
@@ -157,6 +214,11 @@ std::string Geometry::toLower(const std::string& s)
     return result;
 }
 
+
+/**
+ * @brief Removes whitespace, tabs, and carriage returns from a string.
+ * @param s String to be trimmed (modified in-place)
+ */
 void Geometry::trim(std::string& s)
 {
     s.erase(std::remove_if(s.begin(), s.end(), [](unsigned char c) {
@@ -165,6 +227,11 @@ void Geometry::trim(std::string& s)
 }
 
 
+/**
+ * @brief Converts a string into a geometry type (e.g., "circle" → Type::Circle).
+ * @param str Geometry type as string
+ * @return Corresponding Geometry::Type enum value
+ */
 Geometry::Type Geometry::typeFromString(const std::string& str)
 {
     std::string lowerStr = toLower(str);
@@ -183,6 +250,11 @@ Geometry::Type Geometry::typeFromString(const std::string& str)
     return Type::Unknown;
 }
 
+/**
+ * @brief Converts a Geometry::Type enum value into its string representation.
+ * @param t Type enum value
+ * @return Human-readable type name
+ */
 std::string Geometry::typeToString(Type t) const
 {
     switch (t)
@@ -196,6 +268,10 @@ std::string Geometry::typeToString(Type t) const
     }
 }
 
+
+/**
+ * @brief Prints the parsed geometry list to standard output.
+ */
 void Geometry::print() const
 {
     std::cout << "\nParsed Geometries:\n";

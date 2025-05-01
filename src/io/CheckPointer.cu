@@ -1,15 +1,56 @@
+// Copyright (c) 2020–2025 Mehdi Shadkhah
+// SPDX-License-Identifier: BSD-3-Clause
+// Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
+
+/**
+ * @file CheckPointer.cu
+ * @brief Handles checkpointing functionality for saving and restoring LBM simulation state.
+ *
+ * @details
+ * This module defines the `CheckPointer` class, responsible for:
+ * - Saving the full simulation state (`f`, `g`, time, domain) at specified intervals
+ * - Supporting multiple rotated checkpoint copies (e.g., Checkpoint_1, Checkpoint_2, ...)
+ * - Restoring simulation state from checkpoint folders for continuation
+ *
+ * Stored components:
+ * - Distribution functions: `f`, `g`, `f_post`, `g_post`, optionally `f_prev`, `g_prev`
+ * - Time information (`currentStep`, `currentTime`)
+ * - Domain size to ensure checkpoint compatibility
+ * - Summary info for logging/resume validation
+ *
+ * @author
+ * Mehdi Shadkhah
+ *
+ * @date
+ * 2025
+ */
+
 #include <CheckPointer.cuh>
 
 namespace clip
 {
 
+    /**
+     * @brief Constructs a CheckPointer instance with references to simulation data and parameters.
+     * @param DA Reference to data array object
+     * @param idata Reference to input data
+     * @param domain Reference to computational domain
+     * @param ti Reference to time tracking object
+     * @param boundary Reference to boundary condition configuration
+     */
     CheckPointer::CheckPointer(DataArray &DA, const InputData &idata, const Domain &domain, TimeInfo &ti, const Boundary &boundary)
         : m_DA(&DA), m_idata(&idata), m_domain(&domain), m_ti(&ti), m_boundary(&boundary)
     {
     }
 
+    /**
+     * @brief Destructor for CheckPointer.
+     */
     CheckPointer::~CheckPointer() = default;
 
+    /**
+     * @brief Saves the current simulation state to disk if checkpointing is enabled and interval is reached.
+     */
     void CheckPointer::save()
     {
 
@@ -38,6 +79,9 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Loads a previously saved checkpoint from disk and restores simulation state.
+     */
     void CheckPointer::load()
     {
         const CLIP_UINT Q = WMRT::WMRTvelSet::Q;
@@ -58,6 +102,10 @@ namespace clip
         Logger::Success("Checkpoint successfully loaded.");
     }
 
+    /**
+     * @brief Rotates checkpoint folders to maintain a fixed number of saved copies.
+     * @param folder Base folder name for checkpoints (e.g., "Checkpoint")
+     */
     void CheckPointer::rotateFolders(const std::string &folder)
     {
         if (std::filesystem::exists(folder))
@@ -90,6 +138,15 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Loads a field from file into device memory via host.
+     * @tparam T Data type
+     * @param devPtr Device pointer to load into
+     * @param hostPtr Temporary host pointer for reading
+     * @param ndof Number of degrees of freedom (Q)
+     * @param folder Checkpoint folder path
+     * @param name Field name (used for filename construction)
+     */
     template <typename T>
     void CheckPointer::loadFromFile(T *&devPtr, T *&hostPtr, CLIP_UINT ndof, const std::string &folder, const std::string &name)
     {
@@ -98,6 +155,15 @@ namespace clip
         m_DA->copyToDevice(devPtr, hostPtr, name, ndof);
     }
 
+    /**
+     * @brief Saves a field from device to disk through host memory.
+     * @tparam T Data type
+     * @param hostPtr Temporary host pointer
+     * @param devPtr Device pointer to read from
+     * @param ndof Number of degrees of freedom (Q)
+     * @param folder Checkpoint folder path
+     * @param name Field name (used for filename construction)
+     */
     template <typename T>
     void CheckPointer::saveToFile(T *&hostPtr, const T *devPtr, CLIP_UINT ndof, const std::string &folder, const std::string &name)
     {
@@ -111,6 +177,11 @@ namespace clip
         m_DA->writeHostToFile(hostPtr, filename, ndof * m_domain->domainSize);
     }
 
+    /**
+     * @brief Saves the current time step and simulation time to file.
+     * @param folder Destination folder
+     * @param name Filename (without extension)
+     */
     void CheckPointer::saveTimeInfo(const std::string &folder, const std::string &name)
     {
 
@@ -121,6 +192,11 @@ namespace clip
         m_DA->writeHostToFile(&m_ti->getSimInfo(), filename, SCALAR_FIELD);
     }
 
+    /**
+     * @brief Loads simulation time information (step and time) from file.
+     * @param folder Source folder
+     * @param name Filename (without extension)
+     */
     void CheckPointer::loadTimeInfo(const std::string &folder, const std::string &name)
     {
 
@@ -133,6 +209,11 @@ namespace clip
         m_ti->getSimInfo().currentTime = tempInfo.currentTime;
     }
 
+    /**
+     * @brief Saves domain size (`N`) to a file to validate future checkpoint compatibility.
+     * @param folder Destination folder
+     * @param filename Filename (without extension)
+     */
     void CheckPointer::saveDomainSize(const std::string &folder, const std::string &filename)
     {
 
@@ -142,6 +223,11 @@ namespace clip
         m_DA->writeHostToFile(&m_idata->params.N[0], filepath, MAX_DIM);
     }
 
+    /**
+     * @brief Checks that the loaded domain size matches the currently configured simulation domain.
+     * @param folder Checkpoint folder path
+     * @param filename Filename to read domain size from
+     */
     void CheckPointer::checkDomainSize(const std::string &folder, const std::string &filename)
     {
         std::string filepath = folder + "/" + filename + ".bin";
@@ -162,6 +248,11 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Writes summary information (time, step, domain size) into a human-readable `.txt` file.
+     * @param folder Destination folder
+     * @param filename Output filename (without extension)
+     */
     void CheckPointer::saveSummaryInfo(const std::string &folder, const std::string &filename)
     {
         std::filesystem::create_directories(folder);

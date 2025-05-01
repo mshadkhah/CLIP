@@ -1,9 +1,54 @@
+// Copyright (c) 2020–2025 Mehdi Shadkhah
+// SPDX-License-Identifier: BSD-3-Clause
+// Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
+
+
+/**
+ * @file NSAllen.cu
+ * @brief Implementation of a two-phase Lattice Boltzmann Method (LBM) solver using the Allen–Cahn phase-field model.
+ *
+ * This file contains the CUDA kernels and host-side logic for simulating interfacial flows
+ * such as bubbles, drops, jets, and Rayleigh–Taylor instability using the weighted MRT collision operator.
+ *
+ * @author Mehdi
+ * @date 2025
+ *
+ * @details
+ * The solver supports:
+ * - Phase-field Allen–Cahn interface tracking
+ * - Gravity and capillary forces
+ * - Variable viscosity and density
+ * - Free-convective, wall, slip, Neumann, and periodic boundaries
+ * - MRT-based force coupling
+ * - Conservative mass-preserving Allen–Cahn scheme
+ *
+ * Key Components:
+ * - `initialCondition()` initializes `c` based on geometry.
+ * - `deviceInitializer()` prepares initial fields like `rho`, `mu`, `vel`, etc.
+ * - `solve()` runs one LBM time step with streaming, collision, and BCs.
+ * - `collision()`, `streaming()`, and `macroscopic()` implement core solver steps.
+ * - CUDA kernels implement equilibrium computation, force coupling, gradients, and chemical potential.
+ *
+ * Assumes usage of compile-time macros: `ENABLE_2D` or `ENABLE_3D`, and user-defined `InputData`, `Boundary`, `Geometry`, `Domain`, and `DataArray` classes.
+ */
+
+
+
 #include <NsAllen.cuh>
 #include <Solver.cuh>
+
 
 namespace clip
 {
 
+    /**
+     * @brief Initializes fields and prepares velocity set, grid/block dimensions, and geometry pool.
+     * @param idata Simulation input data
+     * @param domain Computational domain
+     * @param DA Data storage object (host/device)
+     * @param boundary Boundary condition handler
+     * @param geom Geometry object defining physical shapes (via SDF)
+     */
     NSAllen::NSAllen(const InputData &idata, const Domain &domain, DataArray &DA, const Boundary &boundary, const Geometry &geom)
         : Solver(idata, domain, DA, boundary, geom), m_boundary(&boundary), m_geom(&geom)
     {
@@ -15,6 +60,9 @@ namespace clip
         m_geomPool = m_geom->getDeviceStruct();
     };
 
+    /**
+     * @brief Initializes host-side phase field variable `c` based on geometry and case type.
+     */
     void NSAllen::initialization()
     {
     }
@@ -23,6 +71,13 @@ namespace clip
     {
     }
 
+    /**
+     * @brief Computes equilibrium distribution for a given direction and velocity.
+     * @param velSet Lattice velocity set
+     * @param q Direction index
+     * @param Ux, Uy, Uz Local fluid velocity components
+     * @return Equilibrium value for direction q
+     */
     __device__ __forceinline__ CLIP_REAL NSAllen::Equilibrium_new(const WMRT::WMRTvelSet velSet, CLIP_UINT q, CLIP_REAL Ux, CLIP_REAL Uy, CLIP_REAL Uz)
     {
         // using namespace nsAllen;
@@ -42,6 +97,13 @@ namespace clip
         return waq * (3.0 * eU + 4.5 * eU * eU - 1.5 * U2);
     }
 
+    /**
+     * @brief Calculates body force contributions from non-equilibrium parts of `f`.
+     * @tparam q Number of directions
+     * @tparam dim Spatial dimension
+     * @param gneq Non-equilibrium components
+     * @param fv Output force vector
+     */
     template <CLIP_UINT q, size_t dim>
     __device__ __forceinline__ void NSAllen::calculateVF(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, CLIP_REAL gneq[q], CLIP_REAL fv[dim], CLIP_REAL tau, CLIP_REAL dcdx, CLIP_REAL dcdy, CLIP_REAL dcdz)
     {
@@ -74,6 +136,9 @@ namespace clip
 #endif
     }
 
+    /**
+     * @brief Initializes device-side distributions, density, pressure, velocity, and normals.
+     */
     __global__ void KernelInitializeDistributions(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, const Domain::DomainInfo domain, CLIP_REAL *dev_f, CLIP_REAL *dev_g, CLIP_REAL *dev_f_post, CLIP_REAL *dev_g_post,
                                                   CLIP_REAL *dev_c, CLIP_REAL *dev_rho, CLIP_REAL *dev_p, CLIP_REAL *dev_vel, CLIP_REAL *dev_normal)
     {
@@ -141,6 +206,9 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Computes chemical potential from current phase field using Allen–Cahn model.
+     */
     __global__ void Chemical_Potential(const InputData::SimParams params, const Domain::DomainInfo domain, double *dev_c, double *dev_mu)
     {
 
@@ -172,6 +240,9 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Computes normalized interface normals using finite difference of `c`.
+     */
     __global__ void normal_FD(const Domain::DomainInfo domain, CLIP_REAL *dev_dc, CLIP_REAL *dev_normal)
     {
 
@@ -208,6 +279,9 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Computes isotropic central difference gradient of phase field `c`.
+     */
     __global__ void Isotropic_Gradient(const Domain::DomainInfo domain, CLIP_REAL *dev_c, CLIP_REAL *dev_dc)
     {
 
@@ -252,6 +326,9 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Streams lattice values from neighboring nodes to current node for `f` or `g`.
+     */
     __global__ void kernelStreaming(const WMRT::WMRTvelSet velSet, const Domain::DomainInfo domain, CLIP_REAL *f, CLIP_REAL *f_post)
     {
 
@@ -291,6 +368,9 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Computes macroscopic velocity and pressure from `f_post`, including body forces.
+     */
     __global__ void kernelMacroscopicf(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, const Domain::DomainInfo domain,
                                        CLIP_REAL *dev_p, CLIP_REAL *dev_rho, CLIP_REAL *dev_c, CLIP_REAL *dev_f_post, CLIP_REAL *dev_dc, CLIP_REAL *dev_vel, CLIP_REAL *dev_mu)
     {
@@ -431,6 +511,9 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Computes phase field `c` and density `rho` from `g_post`.
+     */
     __global__ void kernelMacroscopicg(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, const Domain::DomainInfo domain,
                                        CLIP_REAL *dev_g_post, CLIP_REAL *dev_rho, CLIP_REAL *dev_c)
     {
@@ -457,6 +540,9 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Applies MRT collision operator for phase field distribution `g`.
+     */
     __global__ void kernelCollisionMRTg(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, const Domain::DomainInfo domain,
                                         CLIP_REAL *dev_g, CLIP_REAL *dev_g_post, CLIP_REAL *dev_c, CLIP_REAL *dev_rho, CLIP_REAL *dev_vel, CLIP_REAL *dev_normal)
     {
@@ -498,6 +584,9 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Applies MRT collision operator for momentum distribution `f`, including force correction.
+     */
     __global__ void kernelCollisionMRTf(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, const Domain::DomainInfo domain,
                                         CLIP_REAL *dev_f, CLIP_REAL *dev_f_post, CLIP_REAL *dev_p, CLIP_REAL *dev_c, CLIP_REAL *dev_dc,
                                         CLIP_REAL *dev_mu, CLIP_REAL *dev_rho, CLIP_REAL *dev_vel, CLIP_REAL *dev_normal)
@@ -595,7 +684,6 @@ namespace clip
                 Fgy = -(dev_rho[idx_SCALAR] - params.RhoL) * params.gravity[IDX_Y];
             }
 
-
             const CLIP_REAL Fpx = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_X];
             const CLIP_REAL Fpy = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_Y];
 
@@ -673,204 +761,9 @@ namespace clip
         }
     }
 
-    __global__ void OutConvect(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, const Domain::DomainInfo domain, CLIP_REAL *dev_p, CLIP_REAL *dev_rho, CLIP_REAL *dev_c, CLIP_REAL *dev_f_post, CLIP_REAL *dev_g_post, CLIP_REAL *dev_f_temp, CLIP_REAL *dev_g_temp,
-                               CLIP_REAL *dev_c_prev, CLIP_REAL *dev_dc, CLIP_REAL *dev_vel, CLIP_REAL *dev_mu)
-    {
-
-        int velsetY[3] = {6, 2, 5};
-
-        constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
-        CLIP_REAL gneq[Q], tmp[Q], ga_wa[Q], hlp[Q], fv[DIM], tau;
-        const CLIP_REAL drho3 = (params.RhoH - params.RhoL) / 3.0;
-        const CLIP_UINT i = THREAD_IDX_X;
-        // const CLIP_UINT j = THREAD_IDX_Y;
-        const CLIP_UINT j = 1;
-        const CLIP_UINT k = (DIM == 3) ? THREAD_IDX_Z : 0;
-
-        const CLIP_UINT idx_SCALAR = Domain::getIndex(domain, i, j, k);
-        const CLIP_UINT idx_X = Domain::getIndex<DIM>(domain, i, j, k, IDX_X);
-        const CLIP_UINT idx_Y = Domain::getIndex<DIM>(domain, i, j, k, IDX_Y);
-
-#ifdef ENABLE_3D
-        const CLIP_UINT idx_Z = Domain::getIndex<DIM>(domain, i, j, k, IDX_Z);
-#endif
-
-        if (Domain::isInside<DIM>(domain, i, j, k))
-        {
-
-#pragma unroll
-            for (int q = 0; q < 3; q++)
-            {
-                // dev_g[getIndexf(i, 0, k, q)] = (dev_g[getIndexf(i, 0, k, q)] + (fabs(dev_uy[getIndex(i, 2, k)]) * dev_g_post[getIndexf(i, 2, k, q)])) / (1 + fabs(dev_uy[getIndex(i, 2, k)]));
-                // dev_h[getIndexf(i, 0, k, q)] = (dev_h[getIndexf(i, 0, k, q)] + (fabs(dev_uy[getIndex(i, 2, k)]) * dev_h_post[getIndexf(i, 2, k, q)])) / (1 + fabs(dev_uy[getIndex(i, 2, k)]));
-
-                // dev_f_post[Domain::getIndex<Q>(domain, i, 1, k, q)] = (dev_f_temp[Domain::getIndex<Q>(domain, i, 1, k, q)] + (fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]) *
-                //                                                                                                               dev_f_post[Domain::getIndex<Q>(domain, i, 2, k, q)])) /
-                //                                                       (1 + fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]));
-
-                // dev_g_post[Domain::getIndex<Q>(domain, i, 1, k, q)] = (dev_g_temp[Domain::getIndex<Q>(domain, i, 1, k, q)] + (fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]) *
-                //                                                                                                               dev_g_post[Domain::getIndex<Q>(domain, i, 2, k, q)])) /
-                //                                                       (1 + fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]));
-
-                dev_f_post[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])] = (dev_f_temp[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])] + (fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]) *
-                                                                                                                                                dev_f_post[Domain::getIndex<Q>(domain, i, 2, k, velsetY[q])])) /
-                                                                               (1 + fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]));
-
-                dev_g_post[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])] = (dev_g_temp[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])] + (fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]) *
-                                                                                                                                                dev_g_post[Domain::getIndex<Q>(domain, i, 2, k, velsetY[q])])) /
-                                                                               (1 + fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]));
-
-                //    printf("vel = %f \n", fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 2, k, IDX_Y)]));
-
-                // dev_f_post[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])] = dev_f_temp[Domain::getIndex<Q>(domain, i, 2, k, velsetY[q])];
-
-                // dev_g_post[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])] = dev_g_temp[Domain::getIndex<Q>(domain, i, 2, k, velsetY[q])];
-
-                // dev_f_post[Domain::getIndex<Q>(domain, i, 0, k, velsetY[q])] = dev_f_temp[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])];
-
-                // dev_g_post[Domain::getIndex<Q>(domain, i, 0, k, velsetY[q])] = dev_g_temp[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])];
-
-                // dev_f_post[Domain::getIndex<Q>(domain, i, 0, k, velsetY[q])] = (dev_f_temp[Domain::getIndex<Q>(domain, i, 0, k, velsetY[q])] + (fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 1, k, IDX_Y)]) *
-                //                                                                                                                                 dev_f_post[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])])) /
-                //                                                                (1 + fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 1, k, IDX_Y)]));
-
-                // dev_g_post[Domain::getIndex<Q>(domain, i, 0, k, velsetY[q])] = (dev_g_temp[Domain::getIndex<Q>(domain, i, 0, k, velsetY[q])] + (fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 1, k, IDX_Y)]) *
-                //                                                                                                                                 dev_g_post[Domain::getIndex<Q>(domain, i, 1, k, velsetY[q])])) /
-                //                                                                (1 + fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 1, k, IDX_Y)]));
-            }
-
-            // dev_c[idx_SCALAR] = 0;
-#pragma unroll
-            for (CLIP_UINT q = 0; q < Q; q++)
-            {
-                // dev_c[idx_SCALAR] += dev_g_post[Domain::getIndex<Q>(domain, i, j, k, q)];
-                // dev_c[idx_SCALAR] = 6;
-            }
-
-            // dev_c[Domain::getIndex(domain, i, 0, k)] = (dev_c_prev[Domain::getIndex(domain, i, 0, k)] + ( fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 1, k, IDX_Y)]) *
-            //                                                                                                                                 dev_c[Domain::getIndex(domain, i, 1, k)])) /
-            //                                                                (1 + fabs(dev_vel[Domain::getIndex<DIM>(domain, i, 1, k, IDX_Y)]));
-
-            // dev_rho[idx_SCALAR] = (params.RhoL + (dev_c[idx_SCALAR] * (params.RhoH - params.RhoL)));
-
-            // dev_p[idx_SCALAR] = 0;
-#pragma unroll
-            for (int q = 0; q < Q; q++)
-            {
-                // dev_p[idx_SCALAR] += dev_f_post[Domain::getIndex<Q>(domain, i, j, k, q)];
-            }
-
-#pragma unroll
-
-            for (int q = 0; q < Q; q++)
-            {
-
-#ifdef ENABLE_2D
-                const CLIP_REAL ga_wa = NSAllen::Equilibrium_new(velSet, q, dev_vel[idx_X], dev_vel[idx_Y]);
-
-#elif defined(ENABLE_3D)
-                const CLIP_REAL ga_wa = NSAllen::Equilibrium_new(velSet, q, dev_vel[idx_X], dev_vel[idx_Y], dev_vel[idx_Z]);
-#endif
-
-                const CLIP_REAL geq = dev_p[idx_SCALAR] * velSet.wa[q] + ga_wa;
-                gneq[q] = dev_f_post[Domain::getIndex<Q>(domain, i, j, k, q)] - geq;
-            }
-
-#ifdef ENABLE_2D
-
-            WMRT::convertD2Q9Weighted(gneq, tmp);
-
-            if (dev_c[idx_SCALAR] < 0.0)
-                tau = params.tauL;
-            else if (dev_c[idx_SCALAR] > 1.0)
-                tau = params.tauH;
-            else
-            {
-                tau = params.tauL + dev_c[idx_SCALAR] * (params.tauH - params.tauL);
-            }
-            const CLIP_REAL s9 = 1.0 / (tau + 0.50);
-
-            tmp[7] = tmp[7] * s9;
-            tmp[8] = tmp[8] * s9;
-
-            WMRT::reconvertD2Q9Weighted(tmp, gneq);
-
-            NSAllen::calculateVF<Q, DIM>(velSet, params, gneq, fv, tau, dev_dc[idx_X], dev_dc[idx_Y]);
-#elif defined(ENABLE_3D)
-            WMRT::convertD3Q19Weighted(gneq, tmp);
-
-            if (dev_c[idx_SCALAR] < 0.0)
-                tau = params.tauL;
-            else if (dev_c[idx_SCALAR] > 1.0)
-                tau = params.tauH;
-            else
-            {
-                tau = params.tauL + dev_c[idx_SCALAR] * (params.tauH - params.tauL);
-            }
-
-            const CLIP_REAL s9 = 1.0 / (tau + 0.50);
-
-            tmp[4] = tmp[4] * s9;
-            tmp[5] = tmp[5] * s9;
-            tmp[6] = tmp[6] * s9;
-            tmp[7] = tmp[7] * s9;
-            tmp[8] = tmp[8] * s9;
-
-            WMRT::reconvertD3Q19Weighted(tmp, gneq);
-
-            NSAllen::calculateVF<Q, DIM>(velSet, params, gneq, fv, tau, dev_dc[idx_X], dev_dc[idx_Y], dev_dc[idx_Z]);
-
-#endif
-
-            CLIP_REAL Fgy = 0.0;
-            if (params.caseType == InputData::CaseType::RTI)
-            {
-                Fgy = -(dev_rho[idx_SCALAR]) * params.gravity[IDX_Y];
-            }
-            else if (params.caseType == InputData::CaseType::Bubble)
-            {
-                Fgy = -(dev_rho[idx_SCALAR] - params.RhoH) * params.gravity[IDX_Y];
-            }
-            else if (params.caseType == InputData::CaseType::Drop)
-            {
-                Fgy = -(dev_rho[idx_SCALAR] - params.RhoL) * params.gravity[IDX_Y];
-            }
-
-            const CLIP_REAL Fpx = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_X];
-            const CLIP_REAL Fpy = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_Y];
-
-            const CLIP_REAL Fx = dev_mu[idx_SCALAR] * dev_dc[idx_X] + Fpx + fv[0];
-            const CLIP_REAL Fy = dev_mu[idx_SCALAR] * dev_dc[idx_Y] + Fpy + Fgy + fv[1];
-
-#ifdef ENABLE_3D
-            const CLIP_REAL Fpz = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_Z];
-            const CLIP_REAL Fz = dev_mu[idx_SCALAR] * dev_dc[idx_Z] + Fpz + fv[2];
-#endif
-
-            //             dev_vel[idx_X] = 0;
-            //             dev_vel[idx_Y] = 0;
-            // #ifdef ENABLE_3D
-            //             dev_vel[idx_Z] = 0;
-            // #endif
-
-            // #pragma unroll
-            //             for (int q = 0; q < Q; q++)
-            //             {
-            //                 dev_vel[idx_X] += velSet.ex[q] * dev_f_post[Domain::getIndex<Q>(domain, i, j, k, q)];
-            //                 dev_vel[idx_Y] += velSet.ey[q] * dev_f_post[Domain::getIndex<Q>(domain, i, j, k, q)];
-            // #ifdef ENABLE_3D
-            //                 dev_vel[idx_Z] += velSet.ez[q] * dev_f_post[Domain::getIndex<Q>(domain, i, j, k, q)];
-            // #endif
-            //             }
-
-            //             dev_vel[idx_X] = dev_vel[idx_X] + 0.50 * Fx / dev_rho[idx_SCALAR];
-            //             dev_vel[idx_Y] = dev_vel[idx_Y] + 0.50 * Fy / dev_rho[idx_SCALAR];
-            // #ifdef ENABLE_3D
-            //             dev_vel[idx_Z] = dev_vel[idx_Z] + 0.50 * Fz / dev_rho[idx_SCALAR];
-            // #endif
-        }
-    }
-
+    /**
+     * @brief Initializes host-side phase field variable `c` based on geometry and case type.
+     */
     void NSAllen::initialCondition()
     {
         using namespace clip;
@@ -929,65 +822,10 @@ namespace clip
         }
     }
 
-    //     void NSAllen::initialCondition()
-    //     {
-
-    //         const CLIP_REAL radius = m_params.D / 2;
-
-    //         for (CLIP_UINT i = m_info.ghostDomainMinIdx[IDX_X]; i <= m_info.ghostDomainMaxIdx[IDX_X]; i++)
-    //         {
-    //             for (CLIP_UINT j = m_info.ghostDomainMinIdx[IDX_Y]; j <= m_info.ghostDomainMaxIdx[IDX_Y]; j++)
-    //             {
-    //                 for (CLIP_UINT k = m_info.ghostDomainMinIdx[IDX_Z]; k <= m_info.ghostDomainMaxIdx[IDX_Z]; k++)
-    //                 {
-
-    //                     const CLIP_UINT idx_SCALAR = Domain::getIndex(m_info, i, j, k);
-
-    //                     // Compute coordinates relative to center
-    //                     const CLIP_REAL X0 = i - m_params.C[IDX_X];
-    //                     const CLIP_REAL Y0 = j - m_params.C[IDX_Y];
-    //                     const CLIP_REAL Z0 = (DIM == 3) ? (k - m_params.C[IDX_Z]) : 0;
-    //                     const CLIP_REAL Ri = sqrt(X0 * X0 + Y0 * Y0 + Z0 * Z0);
-
-    //                     // Handle different initialization cases
-    //                     switch (m_params.caseType)
-    //                     {
-    //                     case InputData::CaseType::Bubble:
-    //                         m_DA->hostDA.host_c[idx_SCALAR] = 0.50 - 0.50 * tanh(2.0 * (radius - Ri) / m_params.interfaceWidth);
-    //                         break;
-
-    //                     case InputData::CaseType::Drop:
-    //                         m_DA->hostDA.host_c[idx_SCALAR] = 0.50 + 0.50 * tanh(2.0 * (radius - Ri) / m_params.interfaceWidth);
-    //                         break;
-
-    //                     case InputData::CaseType::RTI:
-    //                     {
-    //                         // Rayleigh-Taylor perturbation: cosine pattern on x/z plane
-    // #ifdef ENABLE_2D
-    //                         const CLIP_REAL perturbation = m_params.amplitude * m_params.N[IDX_X] * (cos(2.0 * M_PI * i / m_params.N[IDX_X]));
-    // #elif defined(ENABLE_3D)
-    //                         const CLIP_REAL perturbation = m_params.amplitude * m_params.N[IDX_X] * (cos(2.0 * M_PI * i / m_params.N[IDX_X]) + cos(2.0 * pi * k / m_params.N[IDX_Z]));
-    // #endif
-    //                         const CLIP_REAL yShift = Y0 - perturbation;
-    //                         m_DA->hostDA.host_c[idx_SCALAR] = 0.50 + 0.50 * tanh(2.0 * yShift / m_params.interfaceWidth);
-    //                         break;
-    //                     }
-
-    //                     default:
-    //                         m_DA->hostDA.host_c[idx_SCALAR] = 0.0;
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    struct NSAllen::inletGeom
-    {
-
-        double a;
-    };
-
+    /**
+     * @brief Performs MRT collision for both momentum and phase fields.
+     * Applies Allen–Cahn interface tracking and force coupling.
+     */
     void NSAllen::collision()
     {
 
@@ -1002,6 +840,9 @@ namespace clip
         cudaDeviceSynchronize();
     }
 
+    /**
+     * @brief Performs the streaming step for both `f` and `g` distributions using lattice velocities.
+     */
     void NSAllen::streaming()
     {
         constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
@@ -1017,6 +858,9 @@ namespace clip
         cudaDeviceSynchronize();
     }
 
+    /**
+     * @brief Updates macroscopic fields: density, pressure, velocity, chemical potential, and gradients.
+     */
     void NSAllen::macroscopic()
     {
 
@@ -1030,6 +874,9 @@ namespace clip
         cudaDeviceSynchronize();
     }
 
+    /**
+     * @brief Runs one full LBM timestep: collision, boundary conditions, streaming, and macroscopic update.
+     */
     void NSAllen::solve()
     {
         collision();
@@ -1043,6 +890,9 @@ namespace clip
         cudaDeviceSynchronize();
     }
 
+    /**
+     * @brief Initializes device-side fields including `rho`, `p`, `c`, `f`, `g`, and gradients.
+     */
     void NSAllen::deviceInitializer()
     {
 
@@ -1056,6 +906,9 @@ namespace clip
                                                              m_DA->deviceDA.dev_c, m_DA->deviceDA.dev_rho, m_DA->deviceDA.dev_p, m_DA->deviceDA.dev_vel, m_DA->deviceDA.dev_normal);
     }
 
+    /**
+     * @brief Applies periodic boundary conditions to all fields.
+     */
     void NSAllen::applyPeriodicBoundary()
     {
 
@@ -1066,6 +919,9 @@ namespace clip
         cudaDeviceSynchronize();
     }
 
+    /**
+     * @brief Applies wall boundary condition using bounce-back and mirror for `c`.
+     */
     void NSAllen::applyWallBoundary()
     {
         constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
@@ -1075,6 +931,9 @@ namespace clip
         cudaDeviceSynchronize();
     }
 
+    /**
+     * @brief Applies free-convective outlet boundary condition using extrapolation and mirroring.
+     */
     void NSAllen::applyFreeConvectBoundary()
     {
         constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
@@ -1084,6 +943,9 @@ namespace clip
         cudaDeviceSynchronize();
     }
 
+    /**
+     * @brief Applies Neumann (zero-gradient) boundary condition to distributions and phase field.
+     */
     void NSAllen::applyNeumannBoundary()
     {
         constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;

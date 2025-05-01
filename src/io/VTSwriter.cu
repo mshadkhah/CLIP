@@ -1,15 +1,56 @@
+// Copyright (c) 2020–2025 Mehdi Shadkhah
+// SPDX-License-Identifier: BSD-3-Clause
+// Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
+
+/**
+ * @file VTSwriter.cu
+ * @brief Writes scalar and vector fields to `.vts` (VTK structured grid) files for ParaView visualization.
+ *
+ * @details
+ * Implements the `VTSwriter` class responsible for exporting simulation data (e.g., velocity, phase field, pressure)
+ * in VTK XML structured format. Outputs 2D and 3D snapshots of the simulation grid using ASCII encoding.
+ *
+ * Fields written:
+ * - Scalar fields: `C` (phase field), `P` (pressure), `Rho` (density)
+ * - Vector field: `Velocity`
+ *
+ * The writer is triggered at specified intervals and supports 2D/3D output, using domain info from `Domain` and data from `DataArray`.
+ *
+ * @author
+ * Mehdi Shadkhah
+ *
+ * @date
+ * 2025
+ */
+
 #include <VTSwriter.cuh>
 
 namespace clip
 {
 
+    /**
+     * @brief Constructor for VTSwriter.
+     * @param DA Reference to DataArray holding simulation data
+     * @param idata Reference to input parameters
+     * @param domain Simulation domain information
+     * @param ti Time tracking object
+     * @param folder Output folder path
+     * @param baseName Base name for output file (e.g., "test")
+     */
     VTSwriter::VTSwriter(DataArray &DA, const InputData &idata, const Domain &domain, const TimeInfo &ti, const std::string &folder, const std::string &baseName)
         : m_DA(&DA), m_idata(&idata), m_domain(&domain), m_ti(&ti), m_folder(folder), m_baseName(baseName)
     {
     }
 
+    /**
+     * @brief Destructor for VTSwriter.
+     */
     VTSwriter::~VTSwriter() = default;
 
+    /**
+     * @brief Writes scalar fields (C, P, Rho) to the current `.vts` file stream.
+     * @param file Open output file stream
+     */
     void VTSwriter::writeScalar(std::ofstream &file)
     {
         writeScalarArray(file, m_DA->hostDA.host_c, "C");
@@ -17,11 +58,18 @@ namespace clip
         writeScalarArray(file, m_DA->hostDA.host_rho, "Rho");
     }
 
+    /**
+     * @brief Writes vector field (Velocity) to the current `.vts` file stream.
+     * @param file Open output file stream
+     */
     void VTSwriter::writeField(std::ofstream &file)
     {
         writeFieldArray(file, m_DA->hostDA.host_vel, "Velocity");
     }
 
+    /**
+     * @brief Triggers VTS output if the current step is a multiple of the output interval.
+     */
     void VTSwriter::writeToFile()
     {
         m_DA->updateHost();
@@ -31,12 +79,14 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Writes the full structured grid `.vts` file, including geometry and data fields.
+     */
     void VTSwriter::writeVTSBinaryFile()
     {
-        // Create output directory if it doesn't exist
+
         std::filesystem::create_directory(m_folder);
 
-        // Construct full path to the output file
         std::ostringstream filename;
         filename << m_folder << "/" << m_baseName << "_t" << std::fixed << std::setprecision(4) << m_ti->getCurrentStep() << ".vts";
 
@@ -90,6 +140,12 @@ namespace clip
         file.close();
     }
 
+    /**
+     * @brief Writes a scalar field (e.g., C, P, Rho) to the VTK XML file.
+     * @param file Open output file stream
+     * @param data Pointer to scalar field array
+     * @param name Name of the field (e.g., "C")
+     */
     void VTSwriter::writeScalarArray(std::ofstream &file, CLIP_REAL *data, const std::string &name)
     {
 
@@ -110,6 +166,12 @@ namespace clip
         file << "</DataArray>\n";
     }
 
+    /**
+     * @brief Writes a vector field (e.g., Velocity) to the VTK XML file.
+     * @param file Open output file stream
+     * @param data Pointer to vector field array
+     * @param name Name of the field (e.g., "Velocity")
+     */
     void VTSwriter::writeFieldArray(std::ofstream &file, CLIP_REAL *data, const std::string &name)
     {
 

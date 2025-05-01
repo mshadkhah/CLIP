@@ -1,3 +1,32 @@
+// Copyright (c) 2020–2025 Mehdi Shadkhah
+// SPDX-License-Identifier: BSD-3-Clause
+// Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
+
+/**
+ * @file main.cpp
+ * @brief Main entry point for CLIP: CUDA Lattice Boltzmann Solver for Interfacial Phenomena.
+ *
+ * @details
+ * This file initializes all components of the CLIP framework, including:
+ * - Reading input configuration
+ * - Setting up domain, geometry, boundary conditions, and data arrays
+ * - Initializing the solver and I/O utilities (e.g., reporters, checkpointing, output)
+ * - Executing the main simulation loop
+ * 
+ * It supports both fresh runs and resuming from checkpoint using the `-resume` flag.
+ *
+ * Example usage:
+ * @code
+ * ./CLIP_simulation                // fresh run
+ * ./CLIP_simulation -resume       // resume from last checkpoint
+ * @endcode
+ *
+ * @author Mehdi Shadkhah
+ * @date 2025
+ */
+
+
+
 #include <InputData.cuh>
 #include "includes.h"
 #include <TimeInfo.cuh>

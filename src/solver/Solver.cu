@@ -1,7 +1,45 @@
+// Copyright (c) 2020–2025 Mehdi Shadkhah
+// SPDX-License-Identifier: BSD-3-Clause
+// Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
+
+/**
+ * @file Solver.cu
+ * @brief Core LBM solver class with all CUDA boundary condition kernels.
+ *
+ * @details
+ * This file defines the `Solver` class and implements the main GPU kernels used in the CLIP framework
+ * for handling various boundary conditions in 2D and 3D:
+ * - Periodic
+ * - Wall (full and half bounce-back)
+ * - Slip wall
+ * - Neumann (zero-gradient)
+ * - Free-convective (natural outflow)
+ * - Velocity inlet (e.g., jet)
+ * - Mirror (for scalar field extrapolation)
+
+ * The kernels apply per-boundary updates and are launched inside solver member functions.
+ * This file also defines helper methods for launching these kernels conditionally.
+ *
+ * @author
+ * Mehdi Shadkhah
+ *
+ * @date
+ * 2025
+ */
+
 #include <Solver.cuh>
 
 namespace clip
 {
+
+    /**
+     * @brief Constructor for the LBM solver.
+     * @param idata Input parameters
+     * @param domain Domain grid structure
+     * @param DA Data arrays for fields (device & host)
+     * @param boundary Boundary condition manager
+     * @param geom Geometry handler for SDF evaluation
+     */
 
     Solver::Solver(const InputData &idata, const Domain &domain, DataArray &DA, const Boundary &boundary, const Geometry &geom)
         : m_idata(&idata), m_domain(&domain), m_DA(&DA), m_boundary(&boundary), m_geom(&geom)
@@ -20,9 +58,20 @@ namespace clip
 #endif
     }
 
+    /** @brief Default destructor. */
+
     Solver::~Solver()
     {
     }
+
+    /**
+     * @brief Applies periodic boundary conditions in X, Y (and Z if 3D).
+     * @tparam dof Number of degrees of freedom
+     * @param domain Simulation domain info
+     * @param BCmap Boundary condition map
+     * @param dev_a Primary field array
+     * @param dev_b Optional secondary field (e.g., for MRT collision)
+     */
 
     template <int dof = 1>
     __global__ void kernelPeriodicBoundary(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap,
@@ -91,6 +140,12 @@ namespace clip
             }
         }
     }
+
+    /**
+     * @brief Applies full bounce-back for walls (legacy implementation).
+     * @tparam Q Number of discrete velocities
+     * @tparam dof Degrees of freedom
+     */
 
     template <CLIP_UINT Q, CLIP_UINT dof>
     __global__ void kernelFullBouncBack(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap, const WMRT::wallBCMap wallBCMap,
@@ -184,6 +239,13 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Applies half-way bounce-back for wall and slip boundaries.
+     * @tparam Q Number of discrete velocities
+     * @tparam dof Degrees of freedom
+     * @tparam T Bounce-back map type (wall/slip)
+     */
+
     template <CLIP_UINT Q, CLIP_UINT dof, typename T>
     __global__ void kernelHalfBounceBack(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap,
                                          const T wallMap, CLIP_REAL *dev_a, CLIP_REAL *dev_a_post, CLIP_REAL *dev_b, CLIP_REAL *dev_b_post)
@@ -270,6 +332,13 @@ namespace clip
             }
         }
     }
+
+    /**
+     * @brief Implements free-convective outlet boundary (do-nothing).
+     * @tparam Q Number of discrete velocities
+     * @tparam dof Degrees of freedom
+     * @tparam T Wall bounce-back map
+     */
 
     template <CLIP_UINT Q, CLIP_UINT dof, typename T>
     __global__ void kernelFreeConvect(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap,
@@ -384,6 +453,13 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Applies zero-gradient Neumann boundary conditions.
+     * @tparam Q Number of discrete velocities
+     * @tparam dof Degrees of freedom
+     * @tparam T Bounce-back map (typically wallBCMap)
+     */
+
     template <CLIP_UINT Q, CLIP_UINT dof, typename T>
     __global__ void kernelNeumann(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap,
                                   const T wallMap, CLIP_REAL *dev_a, CLIP_REAL *dev_b)
@@ -466,6 +542,11 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Enforces velocity inlet boundaries using equilibrium-based reflection.
+     * @details Evaluates SDF to restrict application to jet regions.
+     * Uses second-order momentum compensation based on target velocity.
+     */
 
     __global__ void JetBoundary(const Domain::DomainInfo domain, const Geometry::GeometryDevice geom, const Boundary::BCTypeMap BCmap,
                                 const WMRT::WMRTvelSet velSet, const WMRT::wallBCMap wallBCMap, CLIP_REAL *dev_c, CLIP_REAL *dev_f, CLIP_REAL *dev_g)
@@ -722,8 +803,6 @@ namespace clip
 
 #ifdef ENABLE_3D
 
-
-
             /// ZMinus
             if (BCmap.types[object::ZMinus] == Boundary::Type::Velocity && k == domain.ghostDomainMinIdx[IDX_Z])
             {
@@ -830,7 +909,9 @@ namespace clip
         }
     }
 
-
+    /**
+     * @brief Applies mirror boundary for scalar fields (copies inner value to ghost).
+     */
 
     __global__ void kernelMirrorBoundary(const Domain::DomainInfo domain, const Boundary::BCTypeMap BCmap, CLIP_REAL *dev_a)
     {
@@ -885,12 +966,23 @@ namespace clip
         }
     }
 
+    /**
+     * @brief Launches periodic boundary kernel if enabled.
+     * @tparam Q Number of discrete velocities
+     */
+
     template <CLIP_UINT Q>
     void Solver::periodicBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_b)
     {
         if (m_boundary->isPeriodic)
             kernelPeriodicBoundary<Q><<<dimGrid, dimBlock>>>(m_info, m_BCMap, dev_a, dev_b);
     }
+
+    /**
+     * @brief Launches half bounce-back wall kernel if wall is active.
+     * @tparam Q Number of discrete velocities
+     * @tparam dof Number of DOFs
+     */
 
     template <CLIP_UINT Q, CLIP_UINT dof>
     void Solver::wallBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_a_post, CLIP_REAL *dev_b, CLIP_REAL *dev_b_post)
@@ -899,12 +991,24 @@ namespace clip
             kernelHalfBounceBack<Q, dof, WMRT::wallBCMap><<<dimGrid, dimBlock>>>(m_info, m_BCMap, m_wallBCMap, dev_a, dev_a_post, dev_b, dev_b_post);
     }
 
+    /**
+     * @brief Launches bounce-back for slip-wall BC using slipWallBCMap.
+     * @tparam Q Number of discrete velocities
+     * @tparam dof Number of DOFs
+     */
+
     template <CLIP_UINT Q, CLIP_UINT dof>
     void Solver::slipWallBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_a_post, CLIP_REAL *dev_b, CLIP_REAL *dev_b_post)
     {
         if (m_boundary->isSlipWall)
             kernelHalfBounceBack<Q, dof, WMRT::slipWallBCMap><<<dimGrid, dimBlock>>>(m_info, m_BCMap, m_slipWallBCMap, dev_a, dev_a_post, dev_b, dev_b_post);
     }
+
+    /**
+     * @brief Launches convective boundary kernel for open flow exits.
+     * @tparam Q Number of discrete velocities
+     * @tparam dof Number of DOFs
+     */
 
     template <CLIP_UINT Q, CLIP_UINT dof>
     void Solver::freeConvectBoundary(CLIP_REAL *dev_vel, CLIP_REAL *dev_a, CLIP_REAL *dev_a_prev, CLIP_REAL *dev_b, CLIP_REAL *dev_b_prev)
@@ -913,6 +1017,12 @@ namespace clip
             kernelFreeConvect<Q, dof, WMRT::wallBCMap><<<dimGrid, dimBlock>>>(m_info, m_BCMap, m_wallBCMap, dev_vel, dev_a, dev_a_prev, dev_b, dev_b_prev);
     }
 
+    /**
+     * @brief Launches Neumann boundary condition kernel.
+     * @tparam Q Number of discrete velocities
+     * @tparam dof Number of DOFs
+     */
+
     template <CLIP_UINT Q, CLIP_UINT dof>
     void Solver::NeumannBoundary(CLIP_REAL *dev_a, CLIP_REAL *dev_b)
     {
@@ -920,16 +1030,24 @@ namespace clip
             kernelNeumann<Q, dof, WMRT::wallBCMap><<<dimGrid, dimBlock>>>(m_info, m_BCMap, m_wallBCMap, dev_a, dev_b);
     }
 
+    /**
+     * @brief Applies scalar mirror extrapolation to ghost layers for all active BC types.
+     */
+
     void Solver::mirrorBoundary(CLIP_REAL *dev_a)
     {
         if (m_boundary->isWall || m_boundary->isFreeConvect || m_boundary->isSlipWall || m_boundary->isNeumann)
             kernelMirrorBoundary<<<dimGrid, dimBlock>>>(m_info, m_BCMap, dev_a);
     }
 
+    /**
+     * @brief Launches velocity boundary kernel (e.g., jet inlet) if enabled.
+     */
+
     void Solver::velocityBoundary(CLIP_REAL *dev_c, CLIP_REAL *dev_f, CLIP_REAL *dev_g)
     {
         if (m_boundary->isVelocity)
-        JetBoundary<<<dimGrid, dimBlock>>>(m_info, m_geomPool, m_BCMap, m_velSet, m_wallBCMap, dev_c, dev_f, dev_g);
+            JetBoundary<<<dimGrid, dimBlock>>>(m_info, m_geomPool, m_BCMap, m_velSet, m_wallBCMap, dev_c, dev_f, dev_g);
     }
 
     template void clip::Solver::periodicBoundary<9>(CLIP_REAL *, CLIP_REAL *);
