@@ -62,7 +62,7 @@ Moreover, **CLIP is highly optimized**, allowing users to run many simulations â
 
 <h3 align="center"><strong> Liquid Jet Simulation</strong></h3>
 <p align="center">
-  <img src="assets/Jet3D.gif" width="700">
+  <img src="https://raw.githubusercontent.com/mshadkhah/CLIP/gh-pages/assets/Jet3D.gif" width="700">
 </p>
 
 
