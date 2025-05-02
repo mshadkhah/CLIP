@@ -18,16 +18,16 @@ Moreover, **CLIP is highly optimized**, allowing users to run many simulations â
 
 ## Table of Contents
 - [Key Features](#key-features)
+- [Documentation](https://mshadkhah.github.io/CLIP/)
 - [Examples](#examples)
 - [Build Instructions](#build-instructions)
 - [Running a Case](#running-a-case)
 - [Configuration Format](#configuration-format)
 - [Capabilities](#capabilities)
-<!-- - [Citation](#citation) -->
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [Contact](#contact)
-
+<!-- - [Citation](#citation) -->
 
 
 
