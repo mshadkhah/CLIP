@@ -1,9 +1,5 @@
-// Copyright (c) 2020–2025 Mehdi Shadkhah
-// SPDX-License-Identifier: BSD-3-Clause
-// Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
-
 /**
- * @file
+ * @file Geometry.cuh
  * @brief Defines the Geometry class for managing embedded objects and generating signed distance functions (SDFs)
  *        used in the CLIP LBM simulation framework.
  *
@@ -15,6 +11,11 @@
  *
  * This class enables complex boundary embedding and domain-aware initial conditions.
  */
+
+ 
+// Copyright (c) 2020–2025 Mehdi Shadkhah
+// SPDX-License-Identifier: BSD-3-Clause
+// Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
 
 #pragma once
 

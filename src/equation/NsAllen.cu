@@ -4,7 +4,7 @@
 
 
 /**
- * @file NSAllen.cu
+ * @file NsAllen.cu
  * @brief Implementation of a two-phase Lattice Boltzmann Method (LBM) solver using the Allen–Cahn phase-field model.
  *
  * This file contains the CUDA kernels and host-side logic for simulating interfacial flows
@@ -41,14 +41,13 @@
 namespace clip
 {
 
-    /**
-     * @brief Initializes fields and prepares velocity set, grid/block dimensions, and geometry pool.
-     * @param idata Simulation input data
-     * @param domain Computational domain
-     * @param DA Data storage object (host/device)
-     * @param boundary Boundary condition handler
-     * @param geom Geometry object defining physical shapes (via SDF)
-     */
+/// Initializes fields and prepares velocity set, grid/block dimensions, and geometry pool.
+///  idata Simulation input data
+///  domain Computational domain
+///  DA Data storage object (host/device)
+///  boundary Boundary condition handler
+///  geom Geometry object defining physical shapes (via SDF)
+
     NSAllen::NSAllen(const InputData &idata, const Domain &domain, DataArray &DA, const Boundary &boundary, const Geometry &geom)
         : Solver(idata, domain, DA, boundary, geom), m_boundary(&boundary), m_geom(&geom)
     {
@@ -71,13 +70,14 @@ namespace clip
     {
     }
 
-    /**
-     * @brief Computes equilibrium distribution for a given direction and velocity.
-     * @param velSet Lattice velocity set
-     * @param q Direction index
-     * @param Ux, Uy, Uz Local fluid velocity components
-     * @return Equilibrium value for direction q
-     */
+/// Computes equilibrium distribution for a given direction and velocity.
+///  velSet Lattice velocity set
+///  q Direction index
+///  Ux Local velocity in x-direction
+///  Uy Local velocity in y-direction
+///  Uz Local velocity in z-direction
+///  Equilibrium value for direction q
+
     __device__ __forceinline__ CLIP_REAL NSAllen::Equilibrium_new(const WMRT::WMRTvelSet velSet, CLIP_UINT q, CLIP_REAL Ux, CLIP_REAL Uy, CLIP_REAL Uz)
     {
         // using namespace nsAllen;
@@ -97,13 +97,12 @@ namespace clip
         return waq * (3.0 * eU + 4.5 * eU * eU - 1.5 * U2);
     }
 
-    /**
-     * @brief Calculates body force contributions from non-equilibrium parts of `f`.
-     * @tparam q Number of directions
-     * @tparam dim Spatial dimension
-     * @param gneq Non-equilibrium components
-     * @param fv Output force vector
-     */
+/// Calculates body force contributions from non-equilibrium parts of `f`.
+///  q Number of directions
+///  dim Spatial dimension
+///  gneq Non-equilibrium components
+///  fv Output force vector
+
     template <CLIP_UINT q, size_t dim>
     __device__ __forceinline__ void NSAllen::calculateVF(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, CLIP_REAL gneq[q], CLIP_REAL fv[dim], CLIP_REAL tau, CLIP_REAL dcdx, CLIP_REAL dcdy, CLIP_REAL dcdz)
     {

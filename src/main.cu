@@ -3,7 +3,7 @@
 // Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
 
 /**
- * @file main.cpp
+ * @file main.cu
  * @brief Main entry point for CLIP: CUDA Lattice Boltzmann Solver for Interfacial Phenomena.
  *
  * @details

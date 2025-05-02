@@ -22,10 +22,8 @@
 namespace clip
 {
 
-    /**
-     * @brief Constructor for TimeInfo.
-     * @param idata InputData object containing simulation parameters.
-     */
+    /// Constructor for TimeInfo.
+    /// idata InputData object containing simulation parameters.
 
     TimeInfo::TimeInfo(InputData idata)
         : m_idata(idata) {}
@@ -50,10 +48,8 @@ namespace clip
         return m_info.currentStep * m_info.dt;
     }
 
-    /**
-     * @brief Sets the simulation time step (dt).
-     * @param dt The desired time step.
-     */
+    /// Sets the simulation time step (dt).
+    /// dt The desired time step.
 
     void TimeInfo::setTimeStep(double dt)
     {

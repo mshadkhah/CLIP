@@ -32,14 +32,13 @@
 namespace clip
 {
 
-    /**
-     * @brief Constructor for the LBM solver.
-     * @param idata Input parameters
-     * @param domain Domain grid structure
-     * @param DA Data arrays for fields (device & host)
-     * @param boundary Boundary condition manager
-     * @param geom Geometry handler for SDF evaluation
-     */
+/// Constructor for the LBM solver.
+///  idata Input parameters
+///  domain Domain grid structure
+///  DA Data arrays for fields (device & host)
+///  boundary Boundary condition manager
+///  geom Geometry handler for SDF evaluation
+
 
     Solver::Solver(const InputData &idata, const Domain &domain, DataArray &DA, const Boundary &boundary, const Geometry &geom)
         : m_idata(&idata), m_domain(&domain), m_DA(&DA), m_boundary(&boundary), m_geom(&geom)

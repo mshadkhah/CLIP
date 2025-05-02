@@ -37,10 +37,9 @@
 namespace clip
 {
 
-    /**
-     * @brief Constructs an InputData object and loads simulation parameters from a config file.
-     * @param filename Path to the configuration file
-     */
+/// Constructs an InputData object and loads simulation parameters from a config file.
+/// filename Path to the configuration file
+
     InputData::InputData(const std::string &filename)
         : m_filename(filename)
     {

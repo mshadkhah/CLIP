@@ -42,10 +42,11 @@
 namespace clip
 {
 
-    /**
- * @brief Constructs a Geometry object and initializes geometry data from config.
- * @param idata Reference to input configuration data
- */
+
+/// Constructs the Geometry manager using simulation input parameters.
+/// @param idata Reference to input configuration
+
+ 
 Geometry::Geometry(const InputData& idata)
     : m_idata(&idata)
 {

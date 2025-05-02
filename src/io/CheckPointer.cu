@@ -30,14 +30,13 @@
 namespace clip
 {
 
-    /**
-     * @brief Constructs a CheckPointer instance with references to simulation data and parameters.
-     * @param DA Reference to data array object
-     * @param idata Reference to input data
-     * @param domain Reference to computational domain
-     * @param ti Reference to time tracking object
-     * @param boundary Reference to boundary condition configuration
-     */
+    /// Constructs the CheckPointer and links required components.
+    /// @param DA Reference to data array manager
+    /// @param idata Reference to simulation input
+    /// @param domain Reference to simulation domain
+    /// @param ti Reference to time-tracking object
+    /// @param boundary Reference to boundary condition data
+
     CheckPointer::CheckPointer(DataArray &DA, const InputData &idata, const Domain &domain, TimeInfo &ti, const Boundary &boundary)
         : m_DA(&DA), m_idata(&idata), m_domain(&domain), m_ti(&ti), m_boundary(&boundary)
     {

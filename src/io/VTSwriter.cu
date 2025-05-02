@@ -28,15 +28,14 @@
 namespace clip
 {
 
-    /**
-     * @brief Constructor for VTSwriter.
-     * @param DA Reference to DataArray holding simulation data
-     * @param idata Reference to input parameters
-     * @param domain Simulation domain information
-     * @param ti Time tracking object
-     * @param folder Output folder path
-     * @param baseName Base name for output file (e.g., "test")
-     */
+    /// Constructor for VTSwriter.
+    /// DA Reference to DataArray holding simulation data
+    /// idata Reference to input parameters
+    /// domain Simulation domain information
+    /// ti Time tracking object
+    /// folder Output folder path
+    /// baseName Base name for output file (e.g., "test")
+
     VTSwriter::VTSwriter(DataArray &DA, const InputData &idata, const Domain &domain, const TimeInfo &ti, const std::string &folder, const std::string &baseName)
         : m_DA(&DA), m_idata(&idata), m_domain(&domain), m_ti(&ti), m_folder(folder), m_baseName(baseName)
     {
