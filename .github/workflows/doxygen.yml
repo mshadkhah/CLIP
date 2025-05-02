@@ -5,11 +5,17 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   deploy-docs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Clean output directory
+        run: rm -rf ./build_docs
+
       - name: Checkout source
         uses: actions/checkout@v3
 
