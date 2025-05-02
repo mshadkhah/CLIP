@@ -73,8 +73,8 @@ Figure: 3D simulation of a liquid jet undergoing primary and secondary breakup d
 <h3 align="center"><strong> Rayleigh–Taylor Instability</strong></h3>
 
 <p align="center">
-  <img src="assets/RTI2D.gif" width="300" style="margin-right: 0px;">
-  <img src="assets/RTI3D.gif" width="350">
+  <img src="https://raw.githubusercontent.com/mshadkhah/CLIP/gh-pages/assets/RTI2D.gif" width="300" style="margin-right: 0px;">
+  <img src="https://raw.githubusercontent.com/mshadkhah/CLIP/gh-pages/assets/RTI3D.gif" width="350">
 </p>
 
 <p align="center">
@@ -86,11 +86,11 @@ Figure: Visualization of 2D and 3D Rayleigh–Taylor instability simulations per
 
 
 <p align="center">
-  <img src="assets/drop.gif" width="700">
+  <img src="https://raw.githubusercontent.com/mshadkhah/CLIP/gh-pages/assets/drop.gif" width="700">
 </p>
 
 <p align="center">
-  <img src="assets/bubble.gif" width="700">
+  <img src="https://raw.githubusercontent.com/mshadkhah/CLIP/gh-pages/assets/bubble.gif" width="700">
 </p>
 
 <p align="center">
