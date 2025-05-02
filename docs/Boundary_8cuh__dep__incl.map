@@ -1,0 +1,40 @@
+<map id="/home/runner/work/CLIP/CLIP/include/boundary/Boundary.cuh" name="/home/runner/work/CLIP/CLIP/include/boundary/Boundary.cuh">
+<area shape="rect" id="Node000001" title="Defines the Boundary class for handling physical and computational boundary conditions in the CLIP LB..." alt="" coords="472,5,650,60"/>
+<area shape="rect" id="Node000002" href="$DataArray_8cuh.html" title="Defines the DataArray class for managing all host/device memory allocation, data transfer,..." alt="" coords="444,108,678,148"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="564,74,564,108,558,108,558,74"/>
+<area shape="rect" id="Node000005" href="$main_8cu.html" title="Main entry point for CLIP: CUDA Lattice Boltzmann Solver for Interfacial Phenomena." alt="" coords="408,387,586,427"/>
+<area shape="poly" id="edge23_Node000001_Node000005" title=" " alt="" coords="459,53,339,77,209,110,148,129,94,150,51,173,23,198,12,218,11,237,14,258,16,284,9,314,9,325,15,337,41,356,79,371,128,383,183,391,301,401,408,404,408,409,300,406,182,397,127,388,78,376,38,360,11,340,4,326,4,313,10,284,9,258,6,237,7,216,19,194,48,169,92,146,146,124,207,105,338,72,458,48"/>
+<area shape="rect" id="Node000006" href="$CheckPointer_8cuh.html" title="Defines the CheckPointer class for saving and restoring simulation state in the CLIP LBM framework." alt="" coords="33,196,270,236"/>
+<area shape="poly" id="edge20_Node000001_Node000006" title=" " alt="" coords="490,68,196,198,193,193,488,63"/>
+<area shape="rect" id="Node000010" href="$Solver_8cuh.html" title="Declares the base Solver class that implements common boundary condition logic and field&#45;level utilit..." alt="" coords="1104,196,1324,236"/>
+<area shape="poly" id="edge21_Node000001_Node000010" title=" " alt="" coords="624,64,692,106,717,128,727,137,742,145,1105,197,1104,202,740,151,724,141,713,132,689,110,621,69"/>
+<area shape="rect" id="Node000015" href="$Boundary_8cu.html" title="Implements the Boundary class methods responsible for reading, parsing, and managing boundary conditi..." alt="" coords="752,108,978,148"/>
+<area shape="poly" id="edge22_Node000001_Node000015" title=" " alt="" coords="660,62,805,105,803,111,659,67"/>
+<area shape="rect" id="Node000003" href="$NsAllen_8cuh.html" title="Defines the NSAllen class, a Navier–Stokes solver using the Allen–Cahn phase&#45;field approach within th..." alt="" coords="975,284,1152,339"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="692,145,1042,194,1058,214,1066,238,1069,284,1064,284,1060,239,1053,217,1040,198,691,150"/>
+<area shape="poly" id="edge19_Node000002_Node000005" title=" " alt="" coords="441,154,375,173,350,185,335,198,323,224,325,250,336,277,356,302,410,349,464,384,461,389,407,354,352,306,332,279,319,251,318,223,331,194,348,180,373,168,439,149"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="459,153,242,199,241,193,458,148"/>
+<area shape="rect" id="Node000008" href="$VTSwriter_8cuh.html" title="Defines the VTSwriter class, which writes CLIP simulation output in VTK Structured Grid (...." alt="" coords="814,196,1028,236"/>
+<area shape="poly" id="edge8_Node000002_Node000008" title=" " alt="" coords="654,149,843,193,842,199,652,154"/>
+<area shape="poly" id="edge11_Node000002_Node000010" title=" " alt="" coords="691,145,697,145,1085,193,1105,196,1104,201,1085,199,697,151,691,150"/>
+<area shape="rect" id="Node000012" href="$Reporter_8cuh_source.html" title=" " alt="" coords="567,196,790,236"/>
+<area shape="poly" id="edge15_Node000002_Node000012" title=" " alt="" coords="600,154,654,194,651,198,597,158"/>
+<area shape="rect" id="Node000014" href="$DataArray_8cu.html" title="Implements the DataArray class, responsible for memory management and data synchronization between ho..." alt="" coords="345,196,542,236"/>
+<area shape="poly" id="edge18_Node000002_Node000014" title=" " alt="" coords="526,158,471,198,468,194,522,154"/>
+<area shape="rect" id="Node000004" href="$NsAllen_8cu.html" title="Implementation of a two&#45;phase Lattice Boltzmann Method (LBM) solver using the Allen–Cahn phase&#45;field ..." alt="" coords="1125,387,1336,427"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="1124,343,1198,384,1195,389,1121,348"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="962,341,756,376,586,398,586,393,755,371,961,336"/>
+<area shape="poly" id="edge7_Node000006_Node000005" title=" " alt="" coords="190,242,240,282,268,311,281,324,298,336,357,364,416,384,414,389,355,369,296,341,277,328,265,315,237,286,187,246"/>
+<area shape="rect" id="Node000007" href="$CheckPointer_8cu.html" title="Handles checkpointing functionality for saving and restoring LBM simulation state." alt="" coords="26,291,227,331"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="146,250,134,292,129,291,140,249"/>
+<area shape="poly" id="edge10_Node000008_Node000005" title=" " alt="" coords="855,243,808,263,761,286,724,314,708,327,685,341,624,368,565,389,563,384,622,363,682,336,704,323,720,310,758,282,806,258,853,239"/>
+<area shape="rect" id="Node000009" href="$VTSwriter_8cu.html" title="Writes scalar and vector fields to .vts (VTK structured grid) files for ParaView visualization." alt="" coords="772,291,950,331"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="904,249,875,293,871,290,899,246"/>
+<area shape="poly" id="edge12_Node000010_Node000003" title=" " alt="" coords="1174,245,1108,286,1105,282,1171,241"/>
+<area shape="poly" id="edge13_Node000010_Node000004" title=" " alt="" coords="1321,239,1351,257,1375,282,1383,297,1386,311,1383,325,1375,340,1362,356,1346,370,1310,389,1308,384,1343,365,1359,353,1371,337,1378,323,1380,311,1378,299,1371,286,1348,261,1318,244"/>
+<area shape="rect" id="Node000011" href="$Solver_8cu.html" title="Core LBM solver class with all CUDA boundary condition kernels." alt="" coords="1177,291,1361,331"/>
+<area shape="poly" id="edge14_Node000010_Node000011" title=" " alt="" coords="1235,247,1260,290,1256,293,1230,249"/>
+<area shape="poly" id="edge16_Node000012_Node000005" title=" " alt="" coords="682,250,676,295,668,319,655,340,621,370,581,389,578,384,618,365,651,337,663,317,671,294,677,249"/>
+<area shape="rect" id="Node000013" href="$Reporter_8cu.html" title="Reporting and diagnostics for CLIP simulations." alt="" coords="454,291,641,331"/>
+<area shape="poly" id="edge17_Node000012_Node000013" title=" " alt="" coords="642,246,576,293,573,289,639,242"/>
+</map>

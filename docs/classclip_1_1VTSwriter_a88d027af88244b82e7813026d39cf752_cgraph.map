@@ -1,0 +1,9 @@
+<map id="clip::VTSwriter::writeToFile" name="clip::VTSwriter::writeToFile">
+<area shape="rect" id="Node000001" title="Writes the current state of the simulation to a .vts file." alt="" coords="5,31,200,56"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1TimeInfo.html#a5234fefe54a7e7cadde351dacc44c409" title="Returns the current time step index." alt="" coords="248,5,465,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="200,31,234,28,235,33,200,36"/>
+<area shape="rect" id="Node000003" href="$classclip_1_1DataArray.html#a40ab776122c1ae67d827eb06cc85186a" title="Copy all device&#45;side fields to host." alt="" coords="256,55,457,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="200,50,243,54,242,59,200,55"/>
+<area shape="rect" id="Node000004" href="$classclip_1_1DataArray.html#af31724dcf1ee75538cd6045b0ce0b5e6" title="Copies data from device to host." alt="" coords="513,47,704,87"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="458,65,499,65,499,70,458,70"/>
+</map>

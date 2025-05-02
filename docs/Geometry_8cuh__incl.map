@@ -1,0 +1,48 @@
+<map id="/home/runner/work/CLIP/CLIP/include/geometry/Geometry.cuh" name="/home/runner/work/CLIP/CLIP/include/geometry/Geometry.cuh">
+<area shape="rect" id="Node000001" title="Defines the Geometry class for managing embedded objects and generating signed distance functions (SD..." alt="" coords="717,5,894,60"/>
+<area shape="rect" id="Node000002" href="$InputData_8cuh.html" title="Defines the InputData class responsible for reading and storing simulation parameters in the CLIP LBM..." alt="" coords="762,181,876,207"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="816,60,826,108,826,133,824,168,818,168,820,133,820,108,811,61"/>
+<area shape="rect" id="Node000003" href="$includes_8h.html" title="Common include header that provides core system libraries, CUDA headers, and project&#45;level dependenci..." alt="" coords="655,255,743,280"/>
+<area shape="poly" id="edge22_Node000001_Node000003" title=" " alt="" coords="750,62,723,83,703,109,691,143,688,178,690,212,695,241,690,242,685,213,683,178,686,142,698,107,719,79,747,58"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="1547,401,1606,427"/>
+<area shape="poly" id="edge26_Node000001_Node000006" title=" " alt="" coords="895,39,1099,61,1341,94,1452,115,1543,138,1606,163,1623,177,1630,192,1630,269,1626,303,1617,336,1592,390,1588,388,1612,334,1621,302,1624,269,1624,193,1619,181,1603,168,1541,143,1451,120,1340,100,1098,66,894,45"/>
+<area shape="rect" id="Node000020" href="$Domain_8cuh.html" title="Defines the Domain class for managing spatial extents, indexing, and boundary checks in the CLIP LBM ..." alt="" coords="712,108,812,133"/>
+<area shape="poly" id="edge23_Node000001_Node000020" title=" " alt="" coords="795,61,776,97,772,94,790,59"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="801,209,732,250,729,245,798,204"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="287,401,367,427"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="655,272,499,275,295,284,196,292,110,302,46,314,25,322,13,330,8,341,13,352,30,365,55,376,124,392,203,403,273,408,273,413,202,408,123,398,53,381,27,369,9,355,3,341,9,326,23,317,44,309,109,296,195,286,294,279,499,270,654,266"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="68,328,141,353"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="655,274,444,293,302,309,155,331,154,325,301,304,443,288,655,269"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="743,266,931,269,1186,277,1311,285,1422,295,1505,308,1534,317,1553,326,1564,339,1572,355,1579,387,1573,388,1567,356,1560,342,1549,330,1532,321,1504,314,1421,300,1311,290,1185,282,930,274,743,272"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="166,328,240,353"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="655,276,483,296,254,331,254,325,482,291,654,271"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="265,328,328,353"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="655,277,519,298,342,331,341,325,518,293,654,272"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="352,328,419,353"/>
+<area shape="poly" id="edge8_Node000003_Node000009" title=" " alt="" coords="655,281,433,330,432,325,654,275"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="443,328,518,353"/>
+<area shape="poly" id="edge9_Node000003_Node000010" title=" " alt="" coords="665,283,530,326,528,321,663,277"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="542,328,632,353"/>
+<area shape="poly" id="edge10_Node000003_Node000011" title=" " alt="" coords="682,282,618,323,616,318,680,278"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="1088,401,1174,427"/>
+<area shape="poly" id="edge11_Node000003_Node000012" title=" " alt="" coords="655,272,508,276,318,286,147,303,87,315,68,322,57,330,52,341,57,351,71,358,100,364,199,375,496,392,827,403,1074,409,1073,414,827,409,496,398,198,380,99,369,69,363,53,355,47,341,53,326,66,318,86,310,146,298,318,280,508,271,655,267"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="656,328,742,353"/>
+<area shape="poly" id="edge12_Node000003_Node000013" title=" " alt="" coords="702,280,702,314,696,314,696,280"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="766,328,832,353"/>
+<area shape="poly" id="edge13_Node000003_Node000014" title=" " alt="" coords="717,278,773,318,770,322,713,282"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="856,328,899,353"/>
+<area shape="poly" id="edge14_Node000003_Node000015" title=" " alt="" coords="729,278,844,323,842,328,727,283"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="923,328,1046,353"/>
+<area shape="poly" id="edge15_Node000003_Node000016" title=" " alt="" coords="744,277,926,322,924,327,743,282"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="1070,328,1280,353"/>
+<area shape="poly" id="edge16_Node000003_Node000017" title=" " alt="" coords="744,273,1085,323,1084,329,743,278"/>
+<area shape="rect" id="Node000018" href="$DataTypes_8cuh.html" title="Core type definitions and macros for precision control, dimensionality, and indexing in CLIP." alt="" coords="1304,328,1422,353"/>
+<area shape="poly" id="edge17_Node000003_Node000018" title=" " alt="" coords="743,270,973,290,1291,325,1290,331,973,295,743,275"/>
+<area shape="rect" id="Node000019" href="$Logger_8cuh.html" title="Defines the Logger class for standardized colored console output and error handling in the CLIP frame..." alt="" coords="1446,328,1538,353"/>
+<area shape="poly" id="edge18_Node000003_Node000019" title=" " alt="" coords="743,268,1029,285,1227,302,1433,325,1433,331,1227,307,1029,290,743,273"/>
+<area shape="poly" id="edge19_Node000019_Node000004" title=" " alt="" coords="1447,354,1434,356,1280,373,1122,386,817,404,557,412,381,415,381,410,557,407,817,398,1122,381,1279,367,1433,351,1446,349"/>
+<area shape="poly" id="edge20_Node000019_Node000006" title=" " alt="" coords="1507,351,1554,390,1550,394,1504,355"/>
+<area shape="poly" id="edge21_Node000019_Node000012" title=" " alt="" coords="1447,354,1188,404,1187,399,1446,348"/>
+<area shape="poly" id="edge25_Node000020_Node000002" title=" " alt="" coords="773,132,803,169,799,172,769,135"/>
+<area shape="poly" id="edge24_Node000020_Node000003" title=" " alt="" coords="759,135,712,243,707,241,754,133"/>
+</map>

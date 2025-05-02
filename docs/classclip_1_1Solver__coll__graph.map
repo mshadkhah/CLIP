@@ -1,0 +1,34 @@
+<map id="clip::Solver" name="clip::Solver">
+<area shape="rect" id="Node000001" title="Base class providing reusable boundary condition and solver infrastructure for CLIP." alt="" coords="988,337,1083,362"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Domain.html" title="Represents the simulation domain and provides indexing and boundary utility functions." alt="" coords="667,111,771,137"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="785,113,829,113,876,118,924,131,966,155,985,175,1001,199,1022,250,1033,300,1036,336,1031,337,1027,301,1017,252,996,201,981,179,962,159,922,136,875,123,829,118,785,118"/>
+<area shape="rect" id="Node000003" href="$structclip_1_1Domain_1_1DomainInfo.html" title="Holds global domain metadata, including extent and boundaries." alt="" coords="311,57,499,82"/>
+<area shape="poly" id="edge10_Node000001_Node000003" title=" " alt="" coords="460,51,564,28,629,20,698,17,769,21,840,33,906,57,937,75,966,95,980,113,992,140,1013,210,1035,336,1030,337,1008,212,987,142,975,116,962,99,934,79,904,62,838,38,769,26,698,22,630,26,565,34,462,56"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="493,82,668,112,667,118,492,87"/>
+<area shape="rect" id="Node000004" href="$classclip_1_1InputData.html" title="Reads simulation parameters from a configuration file and stores them in a structured format." alt="" coords="347,143,464,169"/>
+<area shape="poly" id="edge5_Node000001_Node000004" title=" " alt="" coords="478,160,598,172,741,192,873,219,926,236,965,254,988,272,1006,294,1030,335,1026,337,1002,297,984,276,963,258,925,241,872,225,740,198,598,178,478,165"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="477,146,667,127,667,132,478,151"/>
+<area shape="rect" id="Node000005" href="$structclip_1_1InputData_1_1SimParams.html" title="Struct holding all simulation parameters, parsed from input." alt="" coords="5,143,204,169"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="218,153,347,153,347,159,218,159"/>
+<area shape="rect" id="Node000006" href="$classclip_1_1Boundary.html" title="Class for handling boundary condition definitions and utilities in a simulation domain." alt="" coords="662,287,777,313"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="791,304,874,313,965,328,990,334,989,339,963,333,873,319,790,309"/>
+<area shape="rect" id="Node000007" href="$structclip_1_1Boundary_1_1BCTypeMap.html" title="Struct used for device&#45;side access to all boundary types and values." alt="" coords="306,257,505,282"/>
+<area shape="poly" id="edge11_Node000001_Node000007" title=" " alt="" coords="518,260,529,260,654,252,752,245,799,246,849,253,903,268,965,291,998,311,1024,334,1020,338,995,316,963,296,901,273,848,259,799,252,752,250,654,257,529,265,519,266"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="519,278,662,292,661,297,518,283"/>
+<area shape="rect" id="Node000008" href="$classclip_1_1Geometry.html" title="Represents one or more geometric objects for level&#45;set&#45;based boundary embedding." alt="" coords="660,337,779,362"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="792,347,988,347,988,352,792,352"/>
+<area shape="rect" id="Node000009" href="$structclip_1_1Geometry_1_1GeometryDevice.html" title="Device&#45;side flattened structure storing all geometry info used in kernels." alt="" coords="624,387,815,427"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="828,391,963,367,992,359,993,365,965,372,829,396"/>
+<area shape="rect" id="Node000010" href="$structclip_1_1WMRT_1_1wallBCMap.html" title="Mapping of wall boundary directions for bounce&#45;back in 2D/3D." alt="" coords="632,451,807,477"/>
+<area shape="poly" id="edge12_Node000001_Node000010" title=" " alt="" coords="820,452,892,436,928,425,963,410,996,386,1022,360,1025,364,1000,390,965,414,930,430,893,442,821,457"/>
+<area shape="rect" id="Node000011" href="$structclip_1_1WMRT_1_1slipWallBCMap.html" title="Mapping of slip wall boundary directions for specular reflection." alt="" coords="620,501,819,526"/>
+<area shape="poly" id="edge13_Node000001_Node000011" title=" " alt="" coords="832,511,900,498,933,485,962,469,988,444,1007,414,1028,361,1033,363,1011,417,992,447,966,473,935,490,901,503,833,516"/>
+<area shape="rect" id="Node000012" href="$structclip_1_1WMRT_1_1WMRTvelSet.html" title="Defines the discrete velocity set and weights for the WMRT model." alt="" coords="628,550,811,575"/>
+<area shape="poly" id="edge14_Node000001_Node000012" title=" " alt="" coords="824,571,860,568,897,562,931,550,962,531,981,513,996,492,1016,443,1027,397,1031,362,1036,362,1032,398,1021,445,1000,494,985,517,966,535,934,555,898,567,861,574,825,576"/>
+<area shape="rect" id="Node000013" href="$classclip_1_1DataArray.html" title="Manages all host and device memory allocations for the CLIP LBM solver." alt="" coords="660,599,779,625"/>
+<area shape="poly" id="edge15_Node000001_Node000013" title=" " alt="" coords="793,624,835,627,880,624,924,613,962,591,975,575,987,550,1007,483,1030,362,1035,363,1012,485,992,552,980,578,966,595,926,618,881,629,835,632,792,629"/>
+<area shape="rect" id="Node000014" href="$structclip_1_1DataArray_1_1deviceDataArray.html" title="Struct holding all device&#45;side (GPU) pointers for LBM fields." alt="" coords="305,560,505,600"/>
+<area shape="poly" id="edge16_Node000013_Node000014" title=" " alt="" coords="519,589,660,603,659,609,519,594"/>
+<area shape="rect" id="Node000015" href="$structclip_1_1DataArray_1_1hostDataArray.html" title="Struct holding all host&#45;side (CPU) pointers for LBM fields." alt="" coords="313,624,498,664"/>
+<area shape="poly" id="edge17_Node000013_Node000015" title=" " alt="" coords="512,631,659,615,660,621,512,636"/>
+</map>

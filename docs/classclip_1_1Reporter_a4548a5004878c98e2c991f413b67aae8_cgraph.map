@@ -1,0 +1,9 @@
+<map id="clip::Reporter::print" name="clip::Reporter::print">
+<area shape="rect" id="Node000001" title="Prints simulation progress and scalar diagnostics at regular intervals." alt="" coords="5,55,152,80"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Logger.html#aca10474f9539f6b7bf3b9251e972122f" title="Prints an error message to stderr and optionally throws an exception." alt="" coords="241,5,377,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="138,52,235,31,236,36,139,57"/>
+<area shape="rect" id="Node000003" href="$classclip_1_1TimeInfo.html#a5234fefe54a7e7cadde351dacc44c409" title="Returns the current time step index." alt="" coords="200,55,417,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="153,65,186,65,186,70,153,70"/>
+<area shape="rect" id="Node000004" href="$classclip_1_1Logger.html#ab64c522dd5e3e1d7fd6aa235c00bcf9d" title="Prints an informational message to stdout." alt="" coords="243,104,374,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="139,77,236,98,235,104,138,83"/>
+</map>

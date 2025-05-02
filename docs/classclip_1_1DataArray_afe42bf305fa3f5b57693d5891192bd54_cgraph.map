@@ -1,0 +1,5 @@
+<map id="clip::DataArray::writeHostToFile" name="clip::DataArray::writeHostToFile">
+<area shape="rect" id="Node000001" title="Writes a host&#45;side array to a binary file." alt="" coords="5,5,195,45"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Logger.html#aca10474f9539f6b7bf3b9251e972122f" title="Prints an error message to stderr and optionally throws an exception." alt="" coords="243,13,379,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="195,23,229,23,229,28,195,28"/>
+</map>

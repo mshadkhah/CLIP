@@ -1,0 +1,5 @@
+<map id="clip::NSAllen::macroscopic" name="clip::NSAllen::macroscopic">
+<area shape="rect" id="Node000001" title="Computes macroscopic quantities (rho, u) from distribution functions." alt="" coords="201,5,396,31"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1NSAllen.html#ac3f4e0282f31b937012776a9f842c9d9" title="(Optional) Placeholder or user&#45;defined inlet structure" alt="" coords="5,5,153,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="188,21,154,21,154,15,188,15"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="clip::InputData::read_config" name="clip::InputData::read_config">
+<area shape="rect" id="Node000001" title="Parses the configuration file and fills the SimParams structure." alt="" coords="243,5,397,45"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1InputData.html#a76f672f8ebc161d1d1ff557007c44a7a" title="Constructs the InputData object and optionally sets the config file path." alt="" coords="5,13,195,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="229,28,195,28,195,23,229,23"/>
+</map>

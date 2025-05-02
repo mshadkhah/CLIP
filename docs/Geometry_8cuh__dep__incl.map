@@ -1,0 +1,18 @@
+<map id="/home/runner/work/CLIP/CLIP/include/geometry/Geometry.cuh" name="/home/runner/work/CLIP/CLIP/include/geometry/Geometry.cuh">
+<area shape="rect" id="Node000001" title="Defines the Geometry class for managing embedded objects and generating signed distance functions (SD..." alt="" coords="167,5,344,60"/>
+<area shape="rect" id="Node000002" href="$NsAllen_8cuh.html" title="Defines the NSAllen class, a Navier–Stokes solver using the Allen–Cahn phase&#45;field approach within th..." alt="" coords="115,196,292,251"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="228,73,210,109,202,154,203,196,198,196,197,154,205,107,223,70"/>
+<area shape="rect" id="Node000004" href="$main_8cu.html" title="Main entry point for CLIP: CUDA Lattice Boltzmann Solver for Interfacial Phenomena." alt="" coords="5,299,183,339"/>
+<area shape="poly" id="edge9_Node000001_Node000004" title=" " alt="" coords="210,71,152,126,125,160,104,197,96,223,93,251,94,298,89,298,88,250,91,222,100,195,121,157,148,122,206,67"/>
+<area shape="rect" id="Node000005" href="$Solver_8cuh.html" title="Declares the base Solver class that implements common boundary condition logic and field&#45;level utilit..." alt="" coords="220,108,440,148"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="287,69,317,106,313,110,283,72"/>
+<area shape="rect" id="Node000007" href="$Geometry_8cu.html" title="Reads, parses, and manages user&#45;defined geometries for use in LBM simulations." alt="" coords="464,108,695,148"/>
+<area shape="poly" id="edge8_Node000001_Node000007" title=" " alt="" coords="358,61,514,105,513,110,357,66"/>
+<area shape="rect" id="Node000003" href="$NsAllen_8cu.html" title="Implementation of a two&#45;phase Lattice Boltzmann Method (LBM) solver using the Allen–Cahn phase&#45;field ..." alt="" coords="215,299,426,339"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="249,257,299,297,295,301,246,262"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="164,262,118,301,114,297,160,258"/>
+<area shape="poly" id="edge5_Node000005_Node000002" title=" " alt="" coords="295,158,241,198,237,194,292,154"/>
+<area shape="poly" id="edge6_Node000005_Node000003" title=" " alt="" coords="331,162,324,298,319,298,326,162"/>
+<area shape="rect" id="Node000006" href="$Solver_8cu.html" title="Core LBM solver class with all CUDA boundary condition kernels." alt="" coords="367,203,551,243"/>
+<area shape="poly" id="edge7_Node000005_Node000006" title=" " alt="" coords="369,154,435,201,432,205,366,158"/>
+</map>

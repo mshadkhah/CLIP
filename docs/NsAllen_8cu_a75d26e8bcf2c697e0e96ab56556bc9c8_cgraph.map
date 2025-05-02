@@ -1,0 +1,6 @@
+<map id="clip::Chemical_Potential" name="clip::Chemical_Potential">
+<area shape="rect" id="Node000001" title="Computes chemical potential from current phase field using Allen–Cahn model." alt="" coords="5,29,184,55"/>
+<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="59,31,51,21,55,11,70,5,95,3,125,6,138,15,134,20,123,11,95,8,71,10,58,15,56,20,63,28"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Domain.html#aefd93098e1eb64eab548417bdb281ebf" title="Computes a flattened 1D index for multi&#45;DOF data." alt="" coords="232,29,401,55"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="185,39,218,39,218,45,185,45"/>
+</map>

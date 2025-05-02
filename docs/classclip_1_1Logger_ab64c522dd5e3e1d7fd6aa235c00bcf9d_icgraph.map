@@ -1,0 +1,9 @@
+<map id="clip::Logger::Info" name="clip::Logger::Info">
+<area shape="rect" id="Node000001" title="Prints an informational message to stdout." alt="" coords="244,55,375,80"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Geometry.html#ab35d3f3713aa7001eff031b00cf11e05" title="Constructs the Geometry manager using simulation input parameters." alt="" coords="5,5,196,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="241,54,155,33,156,28,242,49"/>
+<area shape="rect" id="Node000003" href="$classclip_1_1InputData.html#a76f672f8ebc161d1d1ff557007c44a7a" title="Constructs the InputData object and optionally sets the config file path." alt="" coords="6,55,195,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="230,70,196,70,196,65,230,65"/>
+<area shape="rect" id="Node000004" href="$classclip_1_1Reporter.html#a4548a5004878c98e2c991f413b67aae8" title="Prints simulation progress and scalar diagnostics at regular intervals." alt="" coords="27,104,174,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="242,86,156,107,155,101,241,81"/>
+</map>

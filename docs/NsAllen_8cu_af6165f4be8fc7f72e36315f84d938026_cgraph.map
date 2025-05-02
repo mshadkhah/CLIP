@@ -1,0 +1,6 @@
+<map id="clip::normal_FD" name="clip::normal_FD">
+<area shape="rect" id="Node000001" title="Computes normalized interface normals using finite difference of c." alt="" coords="5,29,129,55"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="35,31,28,21,32,11,45,5,67,3,94,6,105,15,102,19,92,11,67,8,47,10,36,15,34,20,39,28"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Domain.html#aefd93098e1eb64eab548417bdb281ebf" title="Computes a flattened 1D index for multi&#45;DOF data." alt="" coords="177,29,347,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="129,39,164,39,164,45,129,45"/>
+</map>

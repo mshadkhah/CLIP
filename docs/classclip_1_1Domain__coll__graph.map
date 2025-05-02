@@ -1,0 +1,9 @@
+<map id="clip::Domain" name="clip::Domain">
+<area shape="rect" id="Node000001" title="Represents the simulation domain and provides indexing and boundary utility functions." alt="" coords="77,181,181,207"/>
+<area shape="rect" id="Node000002" href="$structclip_1_1Domain_1_1DomainInfo.html" title="Holds global domain metadata, including extent and boundaries." alt="" coords="5,93,193,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="110,131,127,180,122,182,105,132"/>
+<area shape="rect" id="Node000003" href="$classclip_1_1InputData.html" title="Reads simulation parameters from a configuration file and stores them in a structured format." alt="" coords="218,93,335,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="246,128,150,183,147,179,244,123"/>
+<area shape="rect" id="Node000004" href="$structclip_1_1InputData_1_1SimParams.html" title="Struct holding all simulation parameters, parsed from input." alt="" coords="177,5,376,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="279,45,279,93,274,93,274,45"/>
+</map>

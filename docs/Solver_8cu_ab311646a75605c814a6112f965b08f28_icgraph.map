@@ -1,0 +1,4 @@
+<map id="clip::JetBoundary" name="clip::JetBoundary">
+<area shape="rect" id="Node000001" title="Enforces velocity inlet boundaries using equilibrium&#45;based reflection." alt="" coords="5,29,137,55"/>
+<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="93,18,87,11,71,8,58,10,51,14,50,20,54,28,49,30,44,21,47,11,56,5,71,3,89,6,97,14"/>
+</map>

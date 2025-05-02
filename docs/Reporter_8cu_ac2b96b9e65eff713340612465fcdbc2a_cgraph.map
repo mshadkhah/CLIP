@@ -1,0 +1,6 @@
+<map id="clip::sumReductionKernel" name="clip::sumReductionKernel">
+<area shape="rect" id="Node000001" title="CUDA kernel for parallel sum reduction over a scalar field." alt="" coords="5,29,192,55"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="62,31,54,21,58,11,74,5,99,3,130,7,142,16,139,20,128,11,99,8,75,10,62,15,59,20,66,27"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Domain.html#aefd93098e1eb64eab548417bdb281ebf" title="Computes a flattened 1D index for multi&#45;DOF data." alt="" coords="240,29,409,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="192,39,226,39,226,45,192,45"/>
+</map>

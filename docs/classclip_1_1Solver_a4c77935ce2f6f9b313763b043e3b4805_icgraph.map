@@ -1,0 +1,5 @@
+<map id="clip::Solver::velocityBoundary" name="clip::Solver::velocityBoundary">
+<area shape="rect" id="Node000001" title="Applies prescribed velocity boundary conditions on inlet/outlet surfaces." alt="" coords="201,5,417,31"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1NSAllen.html#ac3f4e0282f31b937012776a9f842c9d9" title="(Optional) Placeholder or user&#45;defined inlet structure" alt="" coords="5,5,153,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="187,21,153,21,153,15,187,15"/>
+</map>

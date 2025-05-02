@@ -1,0 +1,7 @@
+<map id="/home/runner/work/CLIP/CLIP/include/io/CheckPointer.cuh" name="/home/runner/work/CLIP/CLIP/include/io/CheckPointer.cuh">
+<area shape="rect" id="Node000001" title="Defines the CheckPointer class for saving and restoring simulation state in the CLIP LBM framework." alt="" coords="94,5,331,45"/>
+<area shape="rect" id="Node000002" href="$CheckPointer_8cu.html" title="Handles checkpointing functionality for saving and restoring LBM simulation state." alt="" coords="5,93,207,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="180,56,131,95,128,91,177,52"/>
+<area shape="rect" id="Node000003" href="$main_8cu.html" title="Main entry point for CLIP: CUDA Lattice Boltzmann Solver for Interfacial Phenomena." alt="" coords="231,93,408,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="249,52,297,91,294,95,245,56"/>
+</map>

@@ -1,0 +1,56 @@
+<map id="clip::Domain::getIndex" name="clip::Domain::getIndex">
+<area shape="rect" id="Node000001" title="Computes a flattened 1D index for multi&#45;DOF data." alt="" coords="287,629,456,655"/>
+<area shape="rect" id="Node000002" href="$NsAllen_8cu.html#a75d26e8bcf2c697e0e96ab56556bc9c8" title="Computes chemical potential from current phase field using Allen–Cahn model." alt="" coords="33,29,211,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="365,616,352,498,327,332,310,248,289,172,265,109,251,86,237,68,210,52,213,47,240,64,255,83,269,107,294,170,315,247,332,331,357,497,370,615"/>
+<area shape="rect" id="Node000003" href="$classclip_1_1NSAllen.html#aade5ed277f55de9d81fcdd5640e9d2d6" title="Sets the initial state of the simulation." alt="" coords="16,79,228,104"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="364,616,350,507,324,357,306,280,286,211,263,155,237,117,222,106,225,102,241,113,267,152,291,209,312,279,329,356,355,507,370,615"/>
+<area shape="rect" id="Node000004" href="$NsAllen_8cu.html#a5546789ca3c4c5758b8967319c56db08" title="Computes isotropic central difference gradient of phase field c." alt="" coords="36,152,208,177"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="368,616,366,533,361,478,350,418,334,356,311,295,279,239,237,191,207,174,210,169,240,187,283,236,315,293,339,354,356,416,366,477,371,532,374,616"/>
+<area shape="rect" id="Node000005" href="$Solver_8cu.html#ab311646a75605c814a6112f965b08f28" title="Enforces velocity inlet boundaries using equilibrium&#45;based reflection." alt="" coords="56,225,188,251"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="367,616,360,545,341,449,324,398,302,349,273,303,237,264,214,250,188,242,189,237,216,245,240,260,277,300,307,346,329,396,346,448,365,544,372,615"/>
+<area shape="rect" id="Node000006" href="$NsAllen_8cu.html#aedad68d26df71048d527a28ddff8d870" title="Applies MRT collision operator for momentum distribution f, including force correction." alt="" coords="31,299,213,324"/>
+<area shape="poly" id="edge8_Node000001_Node000006" title=" " alt="" coords="364,616,353,558,331,482,314,442,293,403,268,368,237,337,212,323,215,319,240,333,272,364,298,400,319,440,336,480,359,556,370,615"/>
+<area shape="rect" id="Node000007" href="$NsAllen_8cu.html#ab1715d7bdc80b87a920ae9087c026f76" title="Applies MRT collision operator for phase field distribution g." alt="" coords="29,372,215,397"/>
+<area shape="poly" id="edge10_Node000001_Node000007" title=" " alt="" coords="360,616,345,571,320,515,284,458,262,433,237,411,213,398,216,393,240,406,266,429,289,455,325,512,350,569,366,615"/>
+<area shape="rect" id="Node000008" href="$Solver_8cu.html#ad085f7f00f151a309263f19341385e5b" title="Implements free&#45;convective outlet boundary (do&#45;nothing)." alt="" coords="35,445,209,471"/>
+<area shape="poly" id="edge12_Node000001_Node000008" title=" " alt="" coords="355,619,336,587,309,551,276,514,237,484,209,472,211,467,240,480,280,510,313,547,340,584,359,616"/>
+<area shape="rect" id="Node000009" href="$Solver_8cu.html#a6962e3a0a004a09790daddd08ae7658f" title="Applies full bounce&#45;back for walls (legacy implementation)." alt="" coords="28,519,216,544"/>
+<area shape="poly" id="edge14_Node000001_Node000009" title=" " alt="" coords="343,623,296,589,238,558,203,547,205,541,240,553,298,585,346,619"/>
+<area shape="rect" id="Node000010" href="$Solver_8cu.html#a6248cdec673b75e10b3a664ec2c54a54" title="Applies half&#45;way bounce&#45;back for wall and slip boundaries." alt="" coords="22,592,222,617"/>
+<area shape="poly" id="edge16_Node000001_Node000010" title=" " alt="" coords="273,630,207,620,208,615,273,625"/>
+<area shape="rect" id="Node000011" href="$NsAllen_8cu.html#ad1d2ac4e591cb614c31cb6ef292bab8b" title="Initializes device&#45;side distributions, density, pressure, velocity, and normals." alt="" coords="5,665,239,691"/>
+<area shape="poly" id="edge18_Node000001_Node000011" title=" " alt="" coords="273,659,211,668,210,663,273,654"/>
+<area shape="rect" id="Node000012" href="$NsAllen_8cu.html#aa10e41daef6dce572416e72c28c8c79e" title="Computes macroscopic velocity and pressure from f_post, including body forces." alt="" coords="33,739,211,764"/>
+<area shape="poly" id="edge20_Node000001_Node000012" title=" " alt="" coords="331,663,240,704,155,741,153,736,238,700,329,658"/>
+<area shape="rect" id="Node000013" href="$NsAllen_8cu.html#a06808fca5cf4f4ceaf738a5c2060eb2a" title="Computes phase field c and density rho from g_post." alt="" coords="31,812,213,837"/>
+<area shape="poly" id="edge22_Node000001_Node000013" title=" " alt="" coords="354,668,305,722,274,751,240,778,202,799,164,814,162,810,200,794,237,773,271,747,302,718,350,664"/>
+<area shape="rect" id="Node000014" href="$Solver_8cu.html#ad8daf35d0201707359499f0f350e2f3b" title="Applies mirror boundary for scalar fields (copies inner value to ghost)." alt="" coords="25,885,219,911"/>
+<area shape="poly" id="edge24_Node000001_Node000014" title=" " alt="" coords="362,669,344,708,317,756,283,806,240,851,207,873,171,888,169,883,204,868,237,847,278,803,313,754,339,706,357,667"/>
+<area shape="rect" id="Node000015" href="$Solver_8cu.html#abcd55b8677d3f06dc1d5f03220485354" title="Applies zero&#45;gradient Neumann boundary conditions." alt="" coords="44,959,200,984"/>
+<area shape="poly" id="edge26_Node000001_Node000015" title=" " alt="" coords="367,669,353,721,328,789,291,860,267,894,240,924,209,946,175,961,173,956,207,942,237,920,263,891,286,858,323,787,347,720,362,667"/>
+<area shape="rect" id="Node000016" href="$Solver_8cu.html#a12a43b64ed599d8a4243232662ab021c" title="Applies periodic boundary conditions in X, Y (and Z if 3D)." alt="" coords="19,1032,225,1057"/>
+<area shape="poly" id="edge28_Node000001_Node000016" title=" " alt="" coords="370,669,359,733,337,820,320,867,299,914,272,958,241,997,211,1020,177,1034,175,1030,208,1015,237,993,268,955,294,911,315,865,332,819,354,732,365,668"/>
+<area shape="rect" id="Node000017" href="$NsAllen_8cu.html#a14d1249e96c913f2cb859cd166e72b67" title="Streams lattice values from neighboring nodes to current node for f or g." alt="" coords="42,1105,202,1131"/>
+<area shape="poly" id="edge30_Node000001_Node000017" title=" " alt="" coords="372,669,365,745,346,852,329,909,307,967,277,1021,241,1071,212,1093,180,1108,178,1103,209,1088,237,1067,273,1019,302,965,324,908,341,850,360,745,367,668"/>
+<area shape="rect" id="Node000018" href="$NsAllen_8cu.html#af6165f4be8fc7f72e36315f84d938026" title="Computes normalized interface normals using finite difference of c." alt="" coords="60,1179,184,1204"/>
+<area shape="poly" id="edge32_Node000001_Node000018" title=" " alt="" coords="373,669,371,757,365,817,354,882,338,951,314,1020,282,1085,241,1144,213,1166,181,1181,178,1176,210,1162,237,1140,278,1082,309,1018,333,950,349,881,359,816,365,756,368,669"/>
+<area shape="rect" id="Node000019" href="$Reporter_8cu.html#ac2b96b9e65eff713340612465fcdbc2a" title="CUDA kernel for parallel sum reduction over a scalar field." alt="" coords="29,1252,215,1277"/>
+<area shape="poly" id="edge34_Node000001_Node000019" title=" " alt="" coords="370,668,355,784,328,948,311,1031,290,1108,267,1172,241,1217,213,1240,182,1254,179,1250,211,1235,237,1214,262,1170,285,1107,305,1030,323,947,350,784,365,668"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="166,20,163,15,156,12,122,8,95,10,81,15,78,20,86,27,82,31,73,21,78,11,94,5,122,3,157,7,167,11,171,17"/>
+<area shape="poly" id="edge5_Node000004_Node000004" title=" " alt="" coords="166,143,163,138,156,134,122,131,95,133,81,138,78,143,86,150,82,154,73,144,78,134,94,128,122,125,157,129,167,134,171,140"/>
+<area shape="poly" id="edge7_Node000005_Node000005" title=" " alt="" coords="166,216,163,211,156,208,122,204,95,206,81,211,78,216,86,223,82,227,73,217,78,207,94,201,122,199,157,203,167,207,171,213"/>
+<area shape="poly" id="edge9_Node000006_Node000006" title=" " alt="" coords="166,289,163,285,156,281,122,277,95,279,81,284,78,290,86,297,82,300,73,290,78,280,94,274,122,272,157,276,167,281,171,286"/>
+<area shape="poly" id="edge11_Node000007_Node000007" title=" " alt="" coords="166,363,163,358,156,354,122,351,95,353,81,358,78,363,86,370,82,374,73,364,78,354,94,348,122,345,157,349,167,354,171,360"/>
+<area shape="poly" id="edge13_Node000008_Node000008" title=" " alt="" coords="166,436,163,431,156,428,122,424,95,426,81,431,78,436,86,443,82,447,73,437,78,427,94,421,122,419,157,423,167,427,171,433"/>
+<area shape="poly" id="edge15_Node000009_Node000009" title=" " alt="" coords="166,509,163,505,156,501,122,497,95,499,81,504,78,510,86,517,82,520,73,510,78,500,94,494,122,492,157,496,167,501,171,506"/>
+<area shape="poly" id="edge17_Node000010_Node000010" title=" " alt="" coords="166,583,163,578,156,574,122,571,95,573,81,578,78,583,86,590,82,594,73,584,78,574,94,568,122,565,157,569,167,574,171,580"/>
+<area shape="poly" id="edge19_Node000011_Node000011" title=" " alt="" coords="166,656,163,651,156,648,122,644,95,646,81,651,78,656,86,663,82,667,73,657,78,647,94,641,122,639,157,643,167,647,171,653"/>
+<area shape="poly" id="edge21_Node000012_Node000012" title=" " alt="" coords="166,729,163,725,156,721,122,717,95,719,81,724,78,730,86,737,82,740,73,730,78,720,94,714,122,712,157,716,167,721,171,726"/>
+<area shape="poly" id="edge23_Node000013_Node000013" title=" " alt="" coords="166,803,163,798,156,794,122,791,95,793,81,798,78,803,86,810,82,814,73,804,78,794,94,788,122,785,157,789,167,794,171,800"/>
+<area shape="poly" id="edge25_Node000014_Node000014" title=" " alt="" coords="166,876,163,871,156,868,122,864,95,866,81,871,78,876,86,883,82,887,73,877,78,867,94,861,122,859,157,863,167,867,171,873"/>
+<area shape="poly" id="edge27_Node000015_Node000015" title=" " alt="" coords="166,949,163,945,156,941,122,937,95,939,81,944,78,950,86,957,82,960,73,950,78,940,94,934,122,932,157,936,167,941,171,946"/>
+<area shape="poly" id="edge29_Node000016_Node000016" title=" " alt="" coords="166,1023,163,1018,156,1014,122,1011,95,1013,81,1018,78,1023,86,1030,82,1034,73,1024,78,1014,94,1008,122,1005,157,1009,167,1014,171,1020"/>
+<area shape="poly" id="edge31_Node000017_Node000017" title=" " alt="" coords="166,1096,163,1091,156,1088,122,1084,95,1086,81,1091,78,1096,86,1103,82,1107,73,1097,78,1087,94,1081,122,1079,157,1083,167,1087,171,1093"/>
+<area shape="poly" id="edge33_Node000018_Node000018" title=" " alt="" coords="166,1169,163,1165,156,1161,122,1157,95,1159,81,1164,78,1170,86,1177,82,1180,73,1170,78,1160,94,1154,122,1152,157,1156,167,1161,171,1166"/>
+<area shape="poly" id="edge35_Node000019_Node000019" title=" " alt="" coords="166,1243,163,1238,156,1234,122,1231,95,1233,81,1238,78,1243,86,1250,82,1254,73,1244,78,1234,94,1228,122,1225,157,1229,167,1234,171,1240"/>
+</map>

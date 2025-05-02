@@ -1,0 +1,5 @@
+<map id="clip::Geometry::print" name="clip::Geometry::print">
+<area shape="rect" id="Node000001" title="Prints all geometry entries for debug or verification." alt="" coords="244,5,399,31"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Geometry.html#ab35d3f3713aa7001eff031b00cf11e05" title="Constructs the Geometry manager using simulation input parameters." alt="" coords="5,5,196,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="230,21,196,21,196,15,230,15"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="clip::WMRT::convertD3Q19Weighted" name="clip::WMRT::convertD3Q19Weighted">
+<area shape="rect" id="Node000001" title="Converts a D3Q19 distribution function to weighted moment space." alt="" coords="236,59,431,99"/>
+<area shape="rect" id="Node000002" href="$NsAllen_8cu.html#aedad68d26df71048d527a28ddff8d870" title="Applies MRT collision operator for momentum distribution f, including force correction." alt="" coords="5,29,188,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="222,64,177,57,178,52,223,59"/>
+<area shape="rect" id="Node000003" href="$NsAllen_8cu.html#aa10e41daef6dce572416e72c28c8c79e" title="Computes macroscopic velocity and pressure from f_post, including body forces." alt="" coords="7,103,186,128"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="223,99,181,105,180,100,222,94"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="139,20,128,11,97,8,72,10,58,15,55,20,62,27,59,31,50,21,55,11,70,5,97,3,130,7,142,16"/>
+<area shape="poly" id="edge4_Node000003_Node000003" title=" " alt="" coords="139,94,128,85,97,81,72,83,58,88,55,94,62,101,59,104,50,94,55,84,70,78,97,76,130,80,142,89"/>
+</map>

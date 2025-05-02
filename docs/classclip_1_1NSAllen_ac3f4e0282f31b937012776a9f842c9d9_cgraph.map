@@ -1,0 +1,7 @@
+<map id="clip::NSAllen::solve" name="clip::NSAllen::solve">
+<area shape="rect" id="Node000001" title="(Optional) Placeholder or user&#45;defined inlet structure" alt="" coords="5,31,153,56"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1NSAllen.html#a1449fd91ceb04d44e9106dd819712e2d" title="Computes macroscopic quantities (rho, u) from distribution functions." alt="" coords="212,5,407,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="154,33,198,28,198,33,154,38"/>
+<area shape="rect" id="Node000003" href="$classclip_1_1Solver.html#a4c77935ce2f6f9b313763b043e3b4805" title="Applies prescribed velocity boundary conditions on inlet/outlet surfaces." alt="" coords="201,55,417,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="154,48,188,52,187,57,154,54"/>
+</map>

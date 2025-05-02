@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classclip_1_1Solver.html" title="Base class providing reusable boundary condition and solver infrastructure for CLIP." alt="" coords="5,5,100,31"/>
+<area shape="rect" id="Node000001" href="$classclip_1_1NSAllen.html" title="Implements the Allen–Cahn&#45;based Navier–Stokes solver using LBM." alt="" coords="148,5,253,31"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="114,15,148,15,148,21,114,21"/>
+</map>

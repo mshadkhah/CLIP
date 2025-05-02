@@ -1,0 +1,6 @@
+<map id="clip::kernelMacroscopicg" name="clip::kernelMacroscopicg">
+<area shape="rect" id="Node000001" title="Computes phase field c and density rho from g_post." alt="" coords="5,29,188,55"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="60,31,52,21,56,11,72,5,97,3,128,7,140,16,137,20,126,11,97,8,73,10,60,15,57,20,64,27"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Domain.html#aefd93098e1eb64eab548417bdb281ebf" title="Computes a flattened 1D index for multi&#45;DOF data." alt="" coords="236,29,405,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="188,39,222,39,222,45,188,45"/>
+</map>

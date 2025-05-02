@@ -1,0 +1,22 @@
+<map id="/home/runner/work/CLIP/CLIP/include/utils/TimeInfo.cuh" name="/home/runner/work/CLIP/CLIP/include/utils/TimeInfo.cuh">
+<area shape="rect" id="Node000001" title="Declares the TimeInfo class, which manages simulation time and step tracking in the CLIP LBM framewor..." alt="" coords="351,5,578,45"/>
+<area shape="rect" id="Node000002" href="$CheckPointer_8cuh.html" title="Defines the CheckPointer class for saving and restoring simulation state in the CLIP LBM framework." alt="" coords="45,93,282,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="386,52,230,96,229,91,384,47"/>
+<area shape="rect" id="Node000004" href="$main_8cu.html" title="Main entry point for CLIP: CUDA Lattice Boltzmann Solver for Interfacial Phenomena." alt="" coords="231,181,408,221"/>
+<area shape="poly" id="edge10_Node000001_Node000004" title=" " alt="" coords="399,54,371,72,347,95,335,116,328,139,322,181,317,181,322,138,330,114,343,92,367,67,396,49"/>
+<area shape="rect" id="Node000005" href="$VTSwriter_8cuh.html" title="Defines the VTSwriter class, which writes CLIP simulation output in VTK Structured Grid (...." alt="" coords="357,93,572,133"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="467,59,467,93,462,93,462,59"/>
+<area shape="rect" id="Node000007" href="$Reporter_8cuh_source.html" title=" " alt="" coords="596,93,819,133"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="532,47,655,91,653,96,530,52"/>
+<area shape="rect" id="Node000009" href="$TimeInfo_8cu.html" title="Handles simulation time tracking in CLIP." alt="" coords="843,93,1033,133"/>
+<area shape="poly" id="edge11_Node000001_Node000009" title=" " alt="" coords="582,45,843,92,842,97,581,50"/>
+<area shape="rect" id="Node000003" href="$CheckPointer_8cu.html" title="Handles checkpointing functionality for saving and restoring LBM simulation state." alt="" coords="5,181,207,221"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="145,146,121,183,116,180,141,144"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="211,138,286,179,284,184,208,142"/>
+<area shape="poly" id="edge6_Node000005_Node000004" title=" " alt="" coords="422,143,353,184,350,179,419,138"/>
+<area shape="rect" id="Node000006" href="$VTSwriter_8cu.html" title="Writes scalar and vector fields to .vts (VTK structured grid) files for ParaView visualization." alt="" coords="433,181,611,221"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="487,144,512,180,507,183,483,146"/>
+<area shape="poly" id="edge8_Node000007_Node000004" title=" " alt="" coords="610,139,405,184,404,179,608,134"/>
+<area shape="rect" id="Node000008" href="$Reporter_8cu.html" title="Reporting and diagnostics for CLIP simulations." alt="" coords="635,181,822,221"/>
+<area shape="poly" id="edge9_Node000007_Node000008" title=" " alt="" coords="718,146,727,180,721,182,713,148"/>
+</map>

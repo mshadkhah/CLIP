@@ -1,0 +1,6 @@
+<map id="clip::kernelPeriodicBoundary" name="clip::kernelPeriodicBoundary">
+<area shape="rect" id="Node000001" title="Applies periodic boundary conditions in X, Y (and Z if 3D)." alt="" coords="5,29,212,55"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="71,31,62,21,67,11,82,5,109,3,142,7,154,16,151,20,140,11,109,8,84,10,70,15,67,20,74,27"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Domain.html#aefd93098e1eb64eab548417bdb281ebf" title="Computes a flattened 1D index for multi&#45;DOF data." alt="" coords="260,29,429,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="212,39,246,39,246,45,212,45"/>
+</map>

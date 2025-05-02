@@ -1,0 +1,5 @@
+<map id="clip::Solver" name="clip::Solver">
+<area shape="rect" id="Node000001" title="Base class providing reusable boundary condition and solver infrastructure for CLIP." alt="" coords="11,5,105,31"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1NSAllen.html" title="Implements the Allen–Cahn&#45;based Navier–Stokes solver using LBM." alt="" coords="5,79,111,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="61,44,61,79,55,79,55,44"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="clip::CheckPointer::load" name="clip::CheckPointer::load">
+<area shape="rect" id="Node000001" title="Loads simulation state from the latest checkpoint folder." alt="" coords="5,5,144,45"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Logger.html#a5928f7a930aa27932050a05167ccfc68" title="Prints a success message to stdout in green." alt="" coords="192,13,349,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="144,23,178,23,178,28,144,28"/>
+</map>

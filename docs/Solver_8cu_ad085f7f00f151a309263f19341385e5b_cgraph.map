@@ -1,0 +1,6 @@
+<map id="clip::kernelFreeConvect" name="clip::kernelFreeConvect">
+<area shape="rect" id="Node000001" title="Implements free&#45;convective outlet boundary (do&#45;nothing)." alt="" coords="5,29,180,55"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="57,31,49,21,53,11,68,5,93,3,123,6,135,15,132,20,121,11,93,8,69,10,57,15,54,20,61,28"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Domain.html#aefd93098e1eb64eab548417bdb281ebf" title="Computes a flattened 1D index for multi&#45;DOF data." alt="" coords="228,29,397,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="181,39,214,39,214,45,181,45"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="clip::kernelFullBouncBack" name="clip::kernelFullBouncBack">
+<area shape="rect" id="Node000001" title="Applies full bounce&#45;back for walls (legacy implementation)." alt="" coords="5,29,193,55"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="62,31,54,21,59,11,74,5,99,3,131,7,143,16,140,20,129,11,99,8,75,10,62,15,60,20,66,27"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Domain.html#aefd93098e1eb64eab548417bdb281ebf" title="Computes a flattened 1D index for multi&#45;DOF data." alt="" coords="241,29,411,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="194,39,228,39,228,45,194,45"/>
+</map>

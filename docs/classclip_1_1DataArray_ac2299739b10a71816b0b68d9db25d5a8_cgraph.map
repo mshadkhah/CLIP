@@ -1,0 +1,5 @@
+<map id="clip::DataArray::updateDevice" name="clip::DataArray::updateDevice">
+<area shape="rect" id="Node000001" title="Copy all host&#45;side fields to device." alt="" coords="5,5,221,31"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1DataArray.html#adf8590129a7c42e79f8410446574d40a" title="Copies data from host to device." alt="" coords="269,5,485,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="221,15,256,15,256,21,221,21"/>
+</map>

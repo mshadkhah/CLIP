@@ -1,0 +1,5 @@
+<map id="clip::Solver::Solver" name="clip::Solver::Solver">
+<area shape="rect" id="Node000001" title="Constructs a Solver and links input, domain, and geometry data." alt="" coords="5,13,148,38"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Geometry.html#a30195543952df36ffb527b1e01565c3b" title="Returns the device&#45;side structure containing all geometry data." alt="" coords="196,5,387,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="148,23,182,23,182,28,148,28"/>
+</map>

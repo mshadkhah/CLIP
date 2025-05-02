@@ -1,0 +1,7 @@
+<map id="clip::CheckPointer::save" name="clip::CheckPointer::save">
+<area shape="rect" id="Node000001" title="Saves the current simulation state to a binary checkpoint folder." alt="" coords="5,23,144,63"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1TimeInfo.html#a5234fefe54a7e7cadde351dacc44c409" title="Returns the current time step index." alt="" coords="192,5,409,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="144,33,178,29,178,34,145,38"/>
+<area shape="rect" id="Node000003" href="$classclip_1_1Logger.html#a5928f7a930aa27932050a05167ccfc68" title="Prints a success message to stdout in green." alt="" coords="222,55,379,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="145,48,208,55,208,60,144,53"/>
+</map>

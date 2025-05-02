@@ -1,0 +1,16 @@
+<map id="clip::kernelCollisionMRTf" name="clip::kernelCollisionMRTf">
+<area shape="rect" id="Node000001" title="Applies MRT collision operator for momentum distribution f, including force correction." alt="" coords="5,145,188,171"/>
+<area shape="poly" id="edge5_Node000001_Node000001" title=" " alt="" coords="54,147,45,137,50,127,67,121,97,119,134,123,144,128,148,134,143,136,141,132,133,128,97,124,69,126,54,131,51,136,58,143"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1WMRT.html#a9df86c98becc466f03564b4a675c8668" title="Converts a D2Q9 distribution function to weighted moment space." alt="" coords="236,5,483,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,143,159,93,195,65,235,41,256,32,258,37,237,46,198,69,162,97,111,147"/>
+<area shape="rect" id="Node000003" href="$classclip_1_1WMRT.html#a725eddc3bbd8e551891c6414a26c118f" title="Converts a D3Q19 distribution function to weighted moment space." alt="" coords="262,55,457,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="129,143,235,105,263,96,265,102,237,110,131,148"/>
+<area shape="rect" id="Node000004" href="$classclip_1_1NSAllen.html#a7d6203503235ed233d07894a044a3373" title="Computes equilibrium distribution for a given velocity set." alt="" coords="249,120,470,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="188,147,234,142,235,147,188,152"/>
+<area shape="rect" id="Node000005" href="$classclip_1_1Domain.html#aefd93098e1eb64eab548417bdb281ebf" title="Computes a flattened 1D index for multi&#45;DOF data." alt="" coords="275,169,444,195"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="188,164,261,170,261,176,188,169"/>
+<area shape="rect" id="Node000006" href="$classclip_1_1WMRT.html#afddd1a7db9aa806852e3a5b224592504" title="Reconstructs the D2Q9 distribution function from weighted moments." alt="" coords="260,219,459,259"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="133,168,237,203,269,213,268,218,235,209,132,173"/>
+<area shape="rect" id="Node000007" href="$classclip_1_1WMRT.html#ad7a8e23b0b6d2515e717a86f5fe3b145" title="Reconstructs the D3Q19 distribution function from weighted moments." alt="" coords="256,283,463,323"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="112,169,163,218,199,245,237,269,253,276,251,281,235,274,196,250,160,222,108,173"/>
+</map>

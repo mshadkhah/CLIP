@@ -1,0 +1,7 @@
+<map id="/home/runner/work/CLIP/CLIP/include/io/VTSwriter.cuh" name="/home/runner/work/CLIP/CLIP/include/io/VTSwriter.cuh">
+<area shape="rect" id="Node000001" title="Defines the VTSwriter class, which writes CLIP simulation output in VTK Structured Grid (...." alt="" coords="89,5,303,45"/>
+<area shape="rect" id="Node000002" href="$VTSwriter_8cu.html" title="Writes scalar and vector fields to .vts (VTK structured grid) files for ParaView visualization." alt="" coords="5,93,184,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="165,56,119,95,115,91,161,52"/>
+<area shape="rect" id="Node000003" href="$main_8cu.html" title="Main entry point for CLIP: CUDA Lattice Boltzmann Solver for Interfacial Phenomena." alt="" coords="209,93,386,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="231,52,277,91,273,95,227,56"/>
+</map>

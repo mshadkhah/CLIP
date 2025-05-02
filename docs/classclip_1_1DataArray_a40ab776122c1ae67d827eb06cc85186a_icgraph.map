@@ -1,0 +1,5 @@
+<map id="clip::DataArray::updateHost" name="clip::DataArray::updateHost">
+<area shape="rect" id="Node000001" title="Copy all device&#45;side fields to host." alt="" coords="248,5,449,31"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1VTSwriter.html#a88d027af88244b82e7813026d39cf752" title="Writes the current state of the simulation to a .vts file." alt="" coords="5,5,200,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="234,21,200,21,200,15,234,15"/>
+</map>

@@ -1,0 +1,15 @@
+<map id="clip::NSAllen::Equilibrium_new" name="clip::NSAllen::Equilibrium_new">
+<area shape="rect" id="Node000001" title="Computes equilibrium distribution for a given velocity set." alt="" coords="287,140,508,165"/>
+<area shape="rect" id="Node000002" href="$NsAllen_8cu.html#aedad68d26df71048d527a28ddff8d870" title="Applies MRT collision operator for momentum distribution f, including force correction." alt="" coords="31,29,213,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="364,135,307,101,238,68,200,57,201,52,240,64,309,96,367,130"/>
+<area shape="rect" id="Node000003" href="$NsAllen_8cu.html#ab1715d7bdc80b87a920ae9087c026f76" title="Applies MRT collision operator for phase field distribution g." alt="" coords="29,103,215,128"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="290,141,214,131,215,125,290,136"/>
+<area shape="rect" id="Node000004" href="$NsAllen_8cu.html#ad1d2ac4e591cb614c31cb6ef292bab8b" title="Initializes device&#45;side distributions, density, pressure, velocity, and normals." alt="" coords="5,176,239,201"/>
+<area shape="poly" id="edge5_Node000001_Node000004" title=" " alt="" coords="287,170,220,179,219,173,286,165"/>
+<area shape="rect" id="Node000005" href="$NsAllen_8cu.html#aa10e41daef6dce572416e72c28c8c79e" title="Computes macroscopic velocity and pressure from f_post, including body forces." alt="" coords="33,249,211,275"/>
+<area shape="poly" id="edge7_Node000001_Node000005" title=" " alt="" coords="353,173,156,252,154,247,351,168"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="171,20,169,16,160,12,122,8,92,10,77,15,73,20,82,27,78,31,68,21,73,11,91,5,122,3,161,7,172,12,176,18"/>
+<area shape="poly" id="edge4_Node000003_Node000003" title=" " alt="" coords="171,94,169,89,160,85,122,81,92,83,77,88,73,94,82,101,78,104,68,94,73,84,91,78,122,76,161,80,172,85,176,91"/>
+<area shape="poly" id="edge6_Node000004_Node000004" title=" " alt="" coords="171,167,169,162,160,159,122,155,92,157,77,162,73,167,82,174,78,178,68,168,73,158,91,151,122,149,161,153,172,158,176,164"/>
+<area shape="poly" id="edge8_Node000005_Node000005" title=" " alt="" coords="171,240,169,236,160,232,122,228,92,230,77,235,73,240,82,247,78,251,68,241,73,231,91,225,122,223,161,227,172,232,176,238"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="clip::InputData::InputData" name="clip::InputData::InputData">
+<area shape="rect" id="Node000001" title="Constructs the InputData object and optionally sets the config file path." alt="" coords="5,63,195,88"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Logger.html#ab64c522dd5e3e1d7fd6aa235c00bcf9d" title="Prints an informational message to stdout." alt="" coords="256,5,387,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="149,60,258,32,259,37,151,65"/>
+<area shape="rect" id="Node000003" href="$classclip_1_1InputData.html#a25aaecdfb44c48b11785dacff0c949ac" title="Parses the configuration file and fills the SimParams structure." alt="" coords="244,55,399,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="195,73,230,73,230,78,195,78"/>
+<area shape="rect" id="Node000004" href="$classclip_1_1Logger.html#a5928f7a930aa27932050a05167ccfc68" title="Prints a success message to stdout in green." alt="" coords="243,120,400,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="151,85,259,114,258,119,149,91"/>
+</map>

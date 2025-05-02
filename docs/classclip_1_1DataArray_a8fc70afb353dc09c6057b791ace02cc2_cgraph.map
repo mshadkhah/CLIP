@@ -1,0 +1,9 @@
+<map id="clip::DataArray::createVectors" name="clip::DataArray::createVectors">
+<area shape="rect" id="Node000001" title="Allocate and initialize all host/device field arrays." alt="" coords="5,77,220,102"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1DataArray.html#a375e8c20df4f51f68cc217bcd01da287" title="Allocates device memory on GPU for a given pointer." alt="" coords="268,5,447,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="162,74,266,46,267,52,163,79"/>
+<area shape="rect" id="Node000003" href="$classclip_1_1DataArray.html#ad92bc0b32c737083b300cb7bbc029b32" title="Allocates host memory (CPU) for a given pointer." alt="" coords="268,69,447,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="220,87,254,87,254,92,220,92"/>
+<area shape="rect" id="Node000004" href="$classclip_1_1Logger.html#a5928f7a930aa27932050a05167ccfc68" title="Prints a success message to stdout in green." alt="" coords="279,134,436,159"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="168,99,290,128,289,133,167,105"/>
+</map>

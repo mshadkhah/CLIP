@@ -1,0 +1,81 @@
+<map id="/home/runner/work/CLIP/CLIP/include/input/InputData.cuh" name="/home/runner/work/CLIP/CLIP/include/input/InputData.cuh">
+<area shape="rect" id="Node000001" title="Defines the InputData class responsible for reading and storing simulation parameters in the CLIP LBM..." alt="" coords="1056,5,1293,45"/>
+<area shape="rect" id="Node000002" href="$Boundary_8cuh.html" title="Defines the Boundary class for handling physical and computational boundary conditions in the CLIP LB..." alt="" coords="805,181,982,236"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1122,54,1044,96,980,140,926,183,922,179,977,136,1041,91,1119,49"/>
+<area shape="rect" id="Node000003" href="$DataArray_8cuh.html" title="Defines the DataArray class for managing all host/device memory allocation, data transfer,..." alt="" coords="650,291,883,331"/>
+<area shape="poly" id="edge25_Node000001_Node000003" title=" " alt="" coords="1043,49,977,67,909,94,846,133,819,156,794,183,779,209,771,239,768,291,763,291,766,238,775,207,790,180,815,152,843,128,907,90,975,62,1042,43"/>
+<area shape="rect" id="Node000004" href="$NsAllen_8cuh.html" title="Defines the NSAllen class, a Navier–Stokes solver using the Allen–Cahn phase&#45;field approach within th..." alt="" coords="198,475,375,529"/>
+<area shape="poly" id="edge39_Node000001_Node000004" title=" " alt="" coords="1042,35,649,58,452,75,310,96,256,104,203,107,105,111,65,119,35,135,23,147,15,163,10,183,8,207,8,312,13,345,26,374,46,399,72,421,102,439,134,455,199,478,197,483,132,460,99,444,69,425,43,403,22,377,8,347,3,313,3,207,5,182,10,161,19,144,31,131,63,114,104,105,202,101,256,99,309,91,452,70,649,52,1042,30"/>
+<area shape="rect" id="Node000006" href="$main_8cu.html" title="Main entry point for CLIP: CUDA Lattice Boltzmann Solver for Interfacial Phenomena." alt="" coords="1221,577,1398,617"/>
+<area shape="poly" id="edge55_Node000001_Node000006" title=" " alt="" coords="1307,36,1541,62,1804,100,1922,123,2019,148,2056,162,2084,176,2103,191,2109,207,2109,408,2103,435,2087,459,2061,480,2026,499,1985,516,1938,531,1831,555,1714,572,1597,584,1398,596,1398,591,1596,579,1713,567,1830,549,1937,526,1983,511,2024,494,2058,476,2083,455,2099,433,2104,408,2104,208,2098,194,2081,180,2054,167,2017,153,1921,128,1803,105,1540,67,1307,41"/>
+<area shape="rect" id="Node000007" href="$CheckPointer_8cuh.html" title="Defines the CheckPointer class for saving and restoring simulation state in the CLIP LBM framework." alt="" coords="1080,387,1317,427"/>
+<area shape="poly" id="edge41_Node000001_Node000007" title=" " alt="" coords="1258,49,1287,67,1309,92,1330,124,1337,140,1338,160,1333,187,1319,224,1262,340,1244,367,1223,388,1219,385,1240,363,1258,337,1314,221,1327,185,1333,160,1332,142,1326,127,1305,95,1283,71,1255,53"/>
+<area shape="rect" id="Node000009" href="$VTSwriter_8cuh.html" title="Defines the VTSwriter class, which writes CLIP simulation output in VTK Structured Grid (...." alt="" coords="1587,387,1802,427"/>
+<area shape="poly" id="edge42_Node000001_Node000009" title=" " alt="" coords="1307,37,1410,57,1463,72,1513,91,1601,127,1671,160,1701,180,1729,206,1755,240,1780,283,1788,311,1780,340,1759,368,1732,389,1729,385,1755,364,1775,337,1783,311,1775,285,1750,243,1725,210,1698,184,1668,164,1599,132,1511,96,1461,77,1409,62,1306,42"/>
+<area shape="rect" id="Node000011" href="$Solver_8cuh.html" title="Declares the base Solver class that implements common boundary condition logic and field&#45;level utilit..." alt="" coords="451,387,671,427"/>
+<area shape="poly" id="edge43_Node000001_Node000011" title=" " alt="" coords="1042,35,866,48,768,59,670,75,579,94,499,118,437,148,414,165,397,183,385,211,386,240,399,269,419,297,446,323,475,347,530,384,527,389,472,351,442,327,415,300,394,271,381,241,380,210,392,180,410,161,434,143,497,113,578,89,670,69,767,54,866,43,1042,29"/>
+<area shape="rect" id="Node000013" href="$Reporter_8cuh_source.html" title=" " alt="" coords="1341,387,1563,427"/>
+<area shape="poly" id="edge47_Node000001_Node000013" title=" " alt="" coords="1270,48,1307,66,1339,91,1368,127,1392,167,1411,209,1426,252,1445,330,1453,386,1448,387,1439,331,1420,253,1406,211,1387,170,1364,130,1335,95,1304,70,1268,52"/>
+<area shape="rect" id="Node000017" href="$Domain_8cuh.html" title="Defines the Domain class for managing spatial extents, indexing, and boundary checks in the CLIP LBM ..." alt="" coords="1055,93,1295,133"/>
+<area shape="poly" id="edge26_Node000001_Node000017" title=" " alt="" coords="1177,59,1177,93,1172,93,1172,59"/>
+<area shape="rect" id="Node000018" href="$Geometry_8cuh.html" title="Defines the Geometry class for managing embedded objects and generating signed distance functions (SD..." alt="" coords="171,284,349,339"/>
+<area shape="poly" id="edge40_Node000001_Node000018" title=" " alt="" coords="1043,33,850,40,635,52,451,70,388,82,352,96,331,114,313,137,288,189,272,241,265,284,260,283,267,240,283,187,309,134,327,111,349,91,386,77,451,65,635,47,850,34,1042,27"/>
+<area shape="rect" id="Node000021" href="$WMRT_8cuh.html" title="Implements the Weighted Multiple Relaxation Time (WMRT) conversion and reconstruction operators for t..." alt="" coords="407,189,627,229"/>
+<area shape="poly" id="edge44_Node000001_Node000021" title=" " alt="" coords="1043,40,899,60,823,76,749,96,692,117,637,143,549,191,546,186,634,138,690,112,747,91,822,70,899,55,1042,34"/>
+<area shape="rect" id="Node000022" href="$TimeInfo_8cuh.html" title="Declares the TimeInfo class, which manages simulation time and step tracking in the CLIP LBM framewor..." alt="" coords="1539,291,1765,331"/>
+<area shape="poly" id="edge48_Node000001_Node000022" title=" " alt="" coords="1308,36,1391,56,1432,71,1471,91,1502,113,1530,138,1580,194,1619,248,1644,289,1639,292,1614,251,1576,197,1526,142,1498,117,1468,96,1430,76,1389,61,1306,41"/>
+<area shape="rect" id="Node000024" href="$InputData_8cu.html" title="Parses and stores simulation configuration parameters from a user&#45;defined config file." alt="" coords="2145,93,2346,133"/>
+<area shape="poly" id="edge54_Node000001_Node000024" title=" " alt="" coords="1307,30,1676,51,1901,69,2126,91,2145,93,2144,98,2125,96,1900,74,1676,57,1307,35"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="851,247,792,293,789,289,848,243"/>
+<area shape="poly" id="edge24_Node000002_Node000006" title=" " alt="" coords="996,235,1094,262,1146,282,1154,297,1157,311,1146,340,1128,358,1108,366,1088,372,1070,388,1049,426,1038,460,1040,493,1059,528,1084,545,1123,560,1221,581,1220,587,1121,565,1081,550,1055,531,1035,494,1033,459,1044,423,1066,385,1085,368,1106,361,1126,354,1142,337,1151,310,1149,299,1142,286,1092,268,994,240"/>
+<area shape="poly" id="edge21_Node000002_Node000007" title=" " alt="" coords="996,234,1056,240,1105,240,1127,243,1148,249,1169,262,1190,282,1204,307,1209,336,1206,387,1200,386,1204,336,1199,309,1186,286,1166,266,1146,254,1126,248,1104,245,1055,245,995,239"/>
+<area shape="poly" id="edge22_Node000002_Node000011" title=" " alt="" coords="792,225,713,247,674,264,639,286,615,309,596,336,571,387,566,385,591,334,611,306,636,282,672,259,711,242,790,220"/>
+<area shape="rect" id="Node000016" href="$Boundary_8cu.html" title="Implements the Boundary class methods responsible for reading, parsing, and managing boundary conditi..." alt="" coords="907,291,1133,331"/>
+<area shape="poly" id="edge23_Node000002_Node000016" title=" " alt="" coords="939,243,998,289,994,293,936,247"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="755,345,726,389,707,411,684,429,640,443,561,460,376,490,375,485,560,454,638,438,681,424,703,407,722,386,750,342"/>
+<area shape="poly" id="edge20_Node000003_Node000006" title=" " alt="" coords="870,333,917,354,958,385,973,403,981,422,986,459,992,494,1000,511,1015,527,1049,545,1101,560,1221,583,1220,588,1100,566,1047,550,1012,531,996,514,987,496,981,460,976,424,968,406,954,389,914,359,868,338"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="868,332,1112,384,1111,389,867,337"/>
+<area shape="poly" id="edge9_Node000003_Node000009" title=" " alt="" coords="865,331,896,336,1087,356,1236,362,1385,368,1576,384,1587,385,1586,391,1576,389,1385,373,1236,368,1086,361,896,341,864,336"/>
+<area shape="poly" id="edge12_Node000003_Node000011" title=" " alt="" coords="714,339,604,389,602,384,712,334"/>
+<area shape="poly" id="edge16_Node000003_Node000013" title=" " alt="" coords="868,331,896,336,1018,353,1113,362,1208,370,1330,384,1341,386,1340,391,1329,389,1207,375,1112,367,1017,358,896,341,867,336"/>
+<area shape="rect" id="Node000015" href="$DataArray_8cu.html" title="Implements the DataArray class, responsible for memory management and data synchronization between ho..." alt="" coords="747,387,944,427"/>
+<area shape="poly" id="edge19_Node000003_Node000015" title=" " alt="" coords="794,340,831,385,827,388,790,344"/>
+<area shape="rect" id="Node000005" href="$NsAllen_8cu.html" title="Implementation of a two&#45;phase Lattice Boltzmann Method (LBM) solver using the Allen–Cahn phase&#45;field ..." alt="" coords="271,577,481,617"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="323,537,360,575,356,579,319,541"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="389,526,395,527,628,556,859,575,1065,586,1221,592,1220,597,1064,592,859,580,627,561,394,532,388,531"/>
+<area shape="poly" id="edge8_Node000007_Node000006" title=" " alt="" coords="1246,432,1268,451,1286,473,1299,500,1306,528,1312,577,1307,578,1301,529,1294,502,1282,476,1264,454,1243,436"/>
+<area shape="rect" id="Node000008" href="$CheckPointer_8cu.html" title="Handles checkpointing functionality for saving and restoring LBM simulation state." alt="" coords="1070,482,1271,522"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="1192,441,1179,483,1174,481,1186,439"/>
+<area shape="poly" id="edge11_Node000009_Node000006" title=" " alt="" coords="1757,431,1782,449,1801,473,1812,503,1810,517,1801,531,1773,551,1733,567,1683,579,1627,588,1507,597,1398,600,1398,595,1507,592,1626,582,1682,574,1732,562,1771,547,1797,528,1805,515,1806,503,1796,476,1778,453,1754,435"/>
+<area shape="rect" id="Node000010" href="$VTSwriter_8cu.html" title="Writes scalar and vector fields to .vts (VTK structured grid) files for ParaView visualization." alt="" coords="1608,482,1787,522"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="1698,440,1699,482,1694,482,1693,440"/>
+<area shape="poly" id="edge13_Node000011_Node000004" title=" " alt="" coords="494,434,365,477,363,472,492,429"/>
+<area shape="poly" id="edge14_Node000011_Node000005" title=" " alt="" coords="532,438,491,477,395,579,391,575,487,473,528,434"/>
+<area shape="rect" id="Node000012" href="$Solver_8cu.html" title="Core LBM solver class with all CUDA boundary condition kernels." alt="" coords="501,482,685,522"/>
+<area shape="poly" id="edge15_Node000011_Node000012" title=" " alt="" coords="575,439,589,481,584,483,570,440"/>
+<area shape="poly" id="edge17_Node000013_Node000006" title=" " alt="" coords="1423,438,1387,476,1350,531,1322,578,1317,576,1345,528,1383,473,1419,434"/>
+<area shape="rect" id="Node000014" href="$Reporter_8cu.html" title="Reporting and diagnostics for CLIP simulations." alt="" coords="1397,482,1584,522"/>
+<area shape="poly" id="edge18_Node000013_Node000014" title=" " alt="" coords="1468,438,1485,481,1480,483,1463,440"/>
+<area shape="poly" id="edge27_Node000017_Node000002" title=" " alt="" coords="1105,140,973,184,972,179,1104,135"/>
+<area shape="poly" id="edge28_Node000017_Node000003" title=" " alt="" coords="1204,142,1219,164,1231,189,1235,214,1225,238,1199,256,1162,268,1118,275,1069,279,971,282,896,287,857,294,856,289,896,281,971,276,1068,273,1117,270,1161,263,1197,251,1221,234,1229,214,1226,191,1215,167,1199,145"/>
+<area shape="poly" id="edge34_Node000017_Node000007" title=" " alt="" coords="1217,140,1234,158,1248,180,1256,209,1259,238,1256,268,1250,297,1232,349,1212,388,1208,385,1227,347,1245,295,1251,267,1253,238,1251,210,1243,182,1230,162,1213,144"/>
+<area shape="poly" id="edge35_Node000017_Node000009" title=" " alt="" coords="1232,137,1313,179,1375,221,1420,259,1465,296,1528,336,1584,363,1638,384,1636,389,1582,368,1525,341,1462,301,1417,263,1372,226,1311,184,1230,141"/>
+<area shape="poly" id="edge36_Node000017_Node000011" title=" " alt="" coords="1041,130,919,151,855,165,793,184,762,196,740,208,688,238,658,250,633,256,611,266,590,286,576,310,568,337,563,387,558,386,563,336,571,308,586,282,609,261,631,251,656,245,686,234,737,204,760,191,791,179,854,160,918,145,1041,125"/>
+<area shape="poly" id="edge37_Node000017_Node000013" title=" " alt="" coords="1218,139,1270,179,1323,235,1372,293,1441,385,1437,388,1368,296,1320,238,1266,183,1215,143"/>
+<area shape="poly" id="edge29_Node000017_Node000018" title=" " alt="" coords="1041,127,847,149,760,165,699,184,681,196,670,210,659,225,640,238,567,268,490,289,415,302,349,309,348,304,414,297,489,284,565,263,637,234,655,221,666,207,677,192,696,179,758,159,846,144,1040,122"/>
+<area shape="rect" id="Node000020" href="$Domain_8cu.html" title="Implements the Domain class, which sets up spatial grid extents, indexing, and ghost region boundarie..." alt="" coords="1006,189,1210,229"/>
+<area shape="poly" id="edge38_Node000017_Node000020" title=" " alt="" coords="1155,146,1124,190,1119,187,1151,143"/>
+<area shape="poly" id="edge30_Node000018_Node000004" title=" " alt="" coords="183,347,157,364,137,383,128,404,129,414,134,425,147,441,163,455,199,476,197,480,159,459,143,445,130,428,124,415,123,403,133,380,153,360,180,343"/>
+<area shape="poly" id="edge33_Node000018_Node000006" title=" " alt="" coords="329,343,360,362,388,385,407,405,420,424,437,462,455,497,470,512,490,527,531,539,602,550,804,569,1031,582,1220,590,1220,596,1031,588,803,574,602,556,530,544,488,532,466,516,451,500,432,464,415,427,403,408,385,389,357,366,326,347"/>
+<area shape="poly" id="edge31_Node000018_Node000011" title=" " alt="" coords="359,340,501,384,500,389,357,345"/>
+<area shape="rect" id="Node000019" href="$Geometry_8cu.html" title="Reads, parses, and manages user&#45;defined geometries for use in LBM simulations." alt="" coords="145,387,375,427"/>
+<area shape="poly" id="edge32_Node000018_Node000019" title=" " alt="" coords="263,352,263,387,257,387,257,352"/>
+<area shape="poly" id="edge45_Node000021_Node000003" title=" " alt="" coords="578,231,721,289,719,294,576,236"/>
+<area shape="poly" id="edge46_Node000021_Node000004" title=" " alt="" coords="394,225,325,235,256,249,199,266,160,286,129,318,111,352,107,369,108,387,113,406,124,425,138,443,156,458,199,479,196,484,154,462,135,447,119,428,108,407,103,388,102,368,106,350,125,315,157,282,197,261,255,244,324,230,393,220"/>
+<area shape="poly" id="edge52_Node000022_Node000006" title=" " alt="" coords="1749,334,1786,355,1817,385,1839,423,1850,459,1850,477,1846,495,1823,531,1802,543,1764,553,1652,571,1519,584,1398,593,1398,588,1519,579,1651,566,1763,548,1800,538,1819,527,1841,493,1845,477,1845,460,1834,425,1813,388,1783,359,1746,339"/>
+<area shape="poly" id="edge49_Node000022_Node000007" title=" " alt="" coords="1548,337,1291,389,1290,384,1547,332"/>
+<area shape="poly" id="edge50_Node000022_Node000009" title=" " alt="" coords="1669,343,1688,385,1684,388,1664,345"/>
+<area shape="poly" id="edge51_Node000022_Node000013" title=" " alt="" coords="1600,340,1494,389,1491,384,1598,335"/>
+<area shape="rect" id="Node000023" href="$TimeInfo_8cu.html" title="Handles simulation time tracking in CLIP." alt="" coords="1878,387,2069,427"/>
+<area shape="poly" id="edge53_Node000022_Node000023" title=" " alt="" coords="1731,333,1909,384,1908,389,1729,338"/>
+</map>

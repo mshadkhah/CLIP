@@ -1,0 +1,7 @@
+<map id="clip::DataArray" name="clip::DataArray">
+<area shape="rect" id="Node000001" title="Manages all host and device memory allocations for the CLIP LBM solver." alt="" coords="154,108,273,133"/>
+<area shape="rect" id="Node000002" href="$structclip_1_1DataArray_1_1deviceDataArray.html" title="Struct holding all device&#45;side (GPU) pointers for LBM fields." alt="" coords="5,5,205,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="139,52,201,106,198,110,136,56"/>
+<area shape="rect" id="Node000003" href="$structclip_1_1DataArray_1_1hostDataArray.html" title="Struct holding all host&#45;side (CPU) pointers for LBM fields." alt="" coords="230,5,415,45"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="292,56,229,110,225,106,288,52"/>
+</map>

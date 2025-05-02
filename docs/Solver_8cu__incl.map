@@ -1,0 +1,70 @@
+<map id="/home/runner/work/CLIP/CLIP/src/solver/Solver.cu" name="/home/runner/work/CLIP/CLIP/src/solver/Solver.cu">
+<area shape="rect" id="Node000001" title="Core LBM solver class with all CUDA boundary condition kernels." alt="" coords="989,5,1173,45"/>
+<area shape="rect" id="Node000002" href="$Solver_8cuh.html" title="Declares the base Solver class that implements common boundary condition logic and field&#45;level utilit..." alt="" coords="1036,93,1125,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1083,46,1083,79,1078,79,1078,46"/>
+<area shape="rect" id="Node000003" href="$includes_8h.html" title="Common include header that provides core system libraries, CUDA headers, and project&#45;level dependenci..." alt="" coords="794,460,882,485"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1126,108,1245,122,1391,149,1458,167,1514,190,1536,203,1553,218,1564,234,1567,251,1567,328,1561,353,1545,375,1519,394,1485,410,1399,436,1295,454,1184,465,1073,472,896,475,896,469,1073,466,1183,460,1295,448,1398,431,1483,405,1516,389,1541,371,1557,350,1562,327,1562,252,1559,236,1549,221,1533,208,1512,195,1457,172,1390,154,1245,127,1125,114"/>
+<area shape="rect" id="Node000020" href="$InputData_8cuh.html" title="Defines the InputData class responsible for reading and storing simulation parameters in the CLIP LBM..." alt="" coords="852,387,965,412"/>
+<area shape="poly" id="edge22_Node000002_Node000020" title=" " alt="" coords="1036,115,979,128,915,151,883,167,855,188,830,212,811,241,805,260,806,279,812,298,823,316,852,350,882,376,879,380,848,354,818,319,807,300,801,280,800,259,806,239,826,209,851,184,881,163,913,146,978,123,1035,110"/>
+<area shape="rect" id="Node000021" href="$Boundary_8cuh.html" title="Defines the Boundary class for handling physical and computational boundary conditions in the CLIP LB..." alt="" coords="821,240,930,265"/>
+<area shape="poly" id="edge24_Node000002_Node000021" title=" " alt="" coords="1038,121,988,140,940,169,911,198,890,229,886,226,907,195,936,165,986,135,1036,116"/>
+<area shape="rect" id="Node000022" href="$Domain_8cuh.html" title="Defines the Domain class for managing spatial extents, indexing, and boundary checks in the CLIP LBM ..." alt="" coords="1072,313,1172,339"/>
+<area shape="poly" id="edge30_Node000002_Node000022" title=" " alt="" coords="1086,119,1120,299,1115,300,1080,120"/>
+<area shape="rect" id="Node000023" href="$DataArray_8cuh.html" title="Defines the DataArray class for managing all host/device memory allocation, data transfer,..." alt="" coords="949,167,1063,192"/>
+<area shape="poly" id="edge31_Node000002_Node000023" title=" " alt="" coords="1071,121,1030,159,1026,155,1067,117"/>
+<area shape="rect" id="Node000025" href="$Geometry_8cuh.html" title="Defines the Geometry class for managing embedded objects and generating signed distance functions (SD..." alt="" coords="1157,240,1269,265"/>
+<area shape="poly" id="edge39_Node000002_Node000025" title=" " alt="" coords="1094,117,1140,165,1196,228,1192,231,1136,168,1090,121"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="1605,607,1685,632"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="882,473,1049,478,1271,490,1475,507,1549,518,1591,531,1607,544,1620,559,1638,592,1634,595,1616,562,1604,547,1589,536,1548,523,1475,512,1270,495,1048,484,882,478"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,533,79,559"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="794,478,501,495,301,512,98,536,93,537,92,531,98,531,301,507,501,490,793,473"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="1502,607,1561,632"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="794,484,748,496,704,512,688,522,679,532,678,544,685,557,701,567,728,576,810,590,919,601,1045,608,1301,615,1488,616,1488,621,1301,620,1044,614,919,606,809,596,726,581,699,572,681,561,672,545,674,530,685,518,702,507,746,490,793,479"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="154,533,229,559"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="794,479,562,497,405,513,243,536,242,531,405,508,562,492,794,474"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="253,533,316,559"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="794,480,597,498,466,514,330,536,329,531,465,509,596,493,794,474"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="341,533,407,559"/>
+<area shape="poly" id="edge8_Node000003_Node000009" title=" " alt="" coords="794,481,634,501,421,536,421,531,633,496,793,476"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="431,533,506,559"/>
+<area shape="poly" id="edge9_Node000003_Node000010" title=" " alt="" coords="794,484,520,536,519,530,793,479"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="530,533,621,559"/>
+<area shape="poly" id="edge10_Node000003_Node000011" title=" " alt="" coords="796,488,632,532,630,527,795,483"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="732,607,819,632"/>
+<area shape="poly" id="edge11_Node000003_Node000012" title=" " alt="" coords="794,477,636,480,430,489,329,497,242,507,177,520,156,527,144,535,139,546,144,557,173,571,228,582,389,600,571,610,718,614,718,620,571,615,388,605,227,588,171,576,140,561,134,546,140,532,154,522,176,515,241,501,329,491,429,484,636,475,793,472"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="695,533,781,559"/>
+<area shape="poly" id="edge12_Node000003_Node000013" title=" " alt="" coords="823,488,767,527,764,523,820,483"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="805,533,871,559"/>
+<area shape="poly" id="edge13_Node000003_Node000014" title=" " alt="" coords="841,486,841,520,835,520,835,486"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="895,533,938,559"/>
+<area shape="poly" id="edge14_Node000003_Node000015" title=" " alt="" coords="852,483,896,522,892,526,849,487"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="962,533,1085,559"/>
+<area shape="poly" id="edge15_Node000003_Node000016" title=" " alt="" coords="869,483,981,526,980,531,867,488"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="1109,533,1319,559"/>
+<area shape="poly" id="edge16_Node000003_Node000017" title=" " alt="" coords="883,480,1140,528,1139,533,882,485"/>
+<area shape="rect" id="Node000018" href="$DataTypes_8cuh.html" title="Core type definitions and macros for precision control, dimensionality, and indexing in CLIP." alt="" coords="1343,533,1461,559"/>
+<area shape="poly" id="edge17_Node000003_Node000018" title=" " alt="" coords="883,476,1073,498,1330,530,1329,536,1072,503,882,481"/>
+<area shape="rect" id="Node000019" href="$Logger_8cuh.html" title="Defines the Logger class for standardized colored console output and error handling in the CLIP frame..." alt="" coords="1485,533,1577,559"/>
+<area shape="poly" id="edge18_Node000003_Node000019" title=" " alt="" coords="882,474,1129,493,1297,509,1472,531,1472,536,1297,514,1129,498,882,479"/>
+<area shape="poly" id="edge19_Node000019_Node000004" title=" " alt="" coords="1551,556,1616,597,1613,602,1548,561"/>
+<area shape="poly" id="edge20_Node000019_Node000006" title=" " alt="" coords="1534,559,1534,593,1529,593,1529,559"/>
+<area shape="poly" id="edge21_Node000019_Node000012" title=" " alt="" coords="1486,559,1473,561,1290,583,1109,600,832,618,832,613,1108,594,1289,578,1472,556,1485,554"/>
+<area shape="poly" id="edge23_Node000020_Node000003" title=" " alt="" coords="899,414,861,452,857,448,895,410"/>
+<area shape="poly" id="edge26_Node000021_Node000003" title=" " alt="" coords="874,266,858,318,843,387,840,446,835,446,838,386,853,317,869,265"/>
+<area shape="poly" id="edge25_Node000021_Node000020" title=" " alt="" coords="881,265,906,373,900,374,875,266"/>
+<area shape="poly" id="edge27_Node000021_Node000022" title=" " alt="" coords="916,263,1070,307,1068,312,914,268"/>
+<area shape="poly" id="edge28_Node000022_Node000003" title=" " alt="" coords="1110,341,1065,376,1005,414,948,440,893,458,892,453,946,435,1002,410,1062,372,1107,337"/>
+<area shape="poly" id="edge29_Node000022_Node000020" title=" " alt="" coords="1089,341,957,385,955,380,1087,336"/>
+<area shape="poly" id="edge32_Node000023_Node000003" title=" " alt="" coords="949,183,913,188,874,198,839,215,811,242,798,266,791,293,790,321,793,350,809,404,828,447,823,449,804,406,788,351,785,321,786,292,793,264,807,238,836,211,873,193,912,183,949,178"/>
+<area shape="poly" id="edge33_Node000023_Node000020" title=" " alt="" coords="1003,193,922,375,917,373,998,191"/>
+<area shape="poly" id="edge38_Node000023_Node000021" title=" " alt="" coords="986,194,910,236,907,231,984,190"/>
+<area shape="poly" id="edge34_Node000023_Node000022" title=" " alt="" coords="1018,191,1106,301,1102,304,1013,194"/>
+<area shape="rect" id="Node000024" href="$WMRT_8cuh.html" title="Implements the Weighted Multiple Relaxation Time (WMRT) conversion and reconstruction operators for t..." alt="" coords="959,313,1048,339"/>
+<area shape="poly" id="edge35_Node000023_Node000024" title=" " alt="" coords="1008,193,1006,300,1001,300,1003,192"/>
+<area shape="poly" id="edge36_Node000024_Node000003" title=" " alt="" coords="1006,339,1000,375,992,395,980,414,962,430,941,444,896,462,894,457,938,439,958,426,976,410,987,393,994,373,1000,338"/>
+<area shape="poly" id="edge37_Node000024_Node000020" title=" " alt="" coords="990,341,937,380,934,376,987,337"/>
+<area shape="poly" id="edge41_Node000025_Node000003" title=" " alt="" coords="1219,265,1224,300,1222,321,1214,340,1183,376,1146,405,1105,427,1061,444,973,465,897,473,896,468,972,460,1059,439,1103,422,1143,400,1180,372,1209,337,1216,320,1218,300,1213,266"/>
+<area shape="poly" id="edge43_Node000025_Node000006" title=" " alt="" coords="1245,263,1321,297,1419,353,1469,389,1517,431,1559,479,1592,532,1596,551,1589,570,1577,586,1562,600,1558,596,1573,583,1585,567,1591,551,1588,534,1555,482,1513,435,1466,393,1416,357,1318,302,1243,268"/>
+<area shape="poly" id="edge40_Node000025_Node000020" title=" " alt="" coords="1215,266,1209,303,1200,323,1186,341,1151,359,1098,374,980,393,979,388,1097,369,1149,354,1183,337,1195,321,1203,301,1210,265"/>
+<area shape="poly" id="edge42_Node000025_Node000022" title=" " alt="" coords="1200,267,1149,307,1146,302,1196,263"/>
+</map>

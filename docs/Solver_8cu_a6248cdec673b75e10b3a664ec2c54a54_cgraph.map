@@ -1,0 +1,6 @@
+<map id="clip::kernelHalfBounceBack" name="clip::kernelHalfBounceBack">
+<area shape="rect" id="Node000001" title="Applies half&#45;way bounce&#45;back for wall and slip boundaries." alt="" coords="5,29,205,55"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="68,31,59,21,64,11,79,5,105,3,138,7,150,16,147,20,136,11,105,8,80,10,67,15,65,20,72,27"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Domain.html#aefd93098e1eb64eab548417bdb281ebf" title="Computes a flattened 1D index for multi&#45;DOF data." alt="" coords="253,29,423,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="206,39,239,39,239,45,206,45"/>
+</map>

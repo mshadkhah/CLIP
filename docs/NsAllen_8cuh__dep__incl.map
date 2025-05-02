@@ -1,0 +1,7 @@
+<map id="/home/runner/work/CLIP/CLIP/include/equation/NsAllen.cuh" name="/home/runner/work/CLIP/CLIP/include/equation/NsAllen.cuh">
+<area shape="rect" id="Node000001" title="Defines the NSAllen class, a Navier–Stokes solver using the Allen–Cahn phase&#45;field approach within th..." alt="" coords="131,5,309,60"/>
+<area shape="rect" id="Node000002" href="$NsAllen_8cu.html" title="Implementation of a two&#45;phase Lattice Boltzmann Method (LBM) solver using the Allen–Cahn phase&#45;field ..." alt="" coords="5,108,216,148"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="180,71,134,110,131,106,177,67"/>
+<area shape="rect" id="Node000003" href="$main_8cu.html" title="Main entry point for CLIP: CUDA Lattice Boltzmann Solver for Interfacial Phenomena." alt="" coords="241,108,418,148"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="263,67,309,106,306,110,260,71"/>
+</map>

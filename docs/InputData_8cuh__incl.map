@@ -1,0 +1,40 @@
+<map id="/home/runner/work/CLIP/CLIP/include/input/InputData.cuh" name="/home/runner/work/CLIP/CLIP/include/input/InputData.cuh">
+<area shape="rect" id="Node000001" title="Defines the InputData class responsible for reading and storing simulation parameters in the CLIP LBM..." alt="" coords="535,5,772,45"/>
+<area shape="rect" id="Node000002" href="$includes_8h.html" title="Common include header that provides core system libraries, CUDA headers, and project&#45;level dependenci..." alt="" coords="609,93,697,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="656,46,656,79,651,79,651,46"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,240,85,265"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="609,111,473,117,299,128,142,145,88,156,59,169,50,181,46,195,44,226,39,226,40,194,46,178,56,165,86,151,141,140,299,122,473,112,609,106"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="289,167,362,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="609,119,376,169,375,164,608,114"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="116,240,175,265"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="609,109,539,111,449,120,350,138,301,152,254,169,206,198,168,232,164,228,203,194,252,164,300,147,349,133,448,115,539,106,609,104"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="387,167,461,192"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="617,121,475,165,474,160,616,116"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="486,167,549,192"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="633,121,553,163,550,158,630,116"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="573,167,640,192"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="648,120,624,157,620,154,643,118"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="664,167,739,192"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="663,118,688,154,684,157,659,121"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="763,167,853,192"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="679,116,771,158,769,163,677,121"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="203,240,290,265"/>
+<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="609,111,527,116,429,126,339,143,303,155,279,169,268,181,260,196,252,227,246,226,255,194,264,178,276,165,301,150,337,138,429,121,527,111,609,106"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="877,167,963,192"/>
+<area shape="poly" id="edge11_Node000002_Node000012" title=" " alt="" coords="697,116,864,161,863,166,695,121"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="987,167,1053,192"/>
+<area shape="poly" id="edge12_Node000002_Node000013" title=" " alt="" coords="698,112,818,133,974,164,973,169,817,138,697,117"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="1077,167,1120,192"/>
+<area shape="poly" id="edge13_Node000002_Node000014" title=" " alt="" coords="698,108,856,127,959,143,1065,164,1064,170,958,148,856,132,697,114"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="1144,167,1267,192"/>
+<area shape="poly" id="edge14_Node000002_Node000015" title=" " alt="" coords="698,110,1130,164,1130,169,697,115"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="1291,167,1501,192"/>
+<area shape="poly" id="edge15_Node000002_Node000016" title=" " alt="" coords="698,109,1278,164,1277,169,697,114"/>
+<area shape="rect" id="Node000017" href="$DataTypes_8cuh.html" title="Core type definitions and macros for precision control, dimensionality, and indexing in CLIP." alt="" coords="1525,167,1643,192"/>
+<area shape="poly" id="edge16_Node000002_Node000017" title=" " alt="" coords="698,106,1032,123,1268,140,1512,164,1512,169,1267,146,1032,129,698,112"/>
+<area shape="rect" id="Node000018" href="$Logger_8cuh.html" title="Defines the Logger class for standardized colored console output and error handling in the CLIP frame..." alt="" coords="70,167,162,192"/>
+<area shape="poly" id="edge17_Node000002_Node000018" title=" " alt="" coords="609,115,423,137,182,169,176,170,175,165,181,164,422,132,609,110"/>
+<area shape="poly" id="edge18_Node000018_Node000003" title=" " alt="" coords="106,194,68,232,64,228,102,190"/>
+<area shape="poly" id="edge19_Node000018_Node000005" title=" " alt="" coords="123,191,138,226,133,228,118,193"/>
+<area shape="poly" id="edge20_Node000018_Node000011" title=" " alt="" coords="138,190,215,231,212,236,136,194"/>
+</map>

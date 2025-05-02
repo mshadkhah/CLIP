@@ -1,0 +1,8 @@
+<map id="clip::Geometry::sdf" name="clip::Geometry::sdf">
+<area shape="rect" id="Node000001" title="Evaluates the signed distance function (SDF) to a given object at a spatial location." alt="" coords="265,43,411,68"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1NSAllen.html#aade5ed277f55de9d81fcdd5640e9d2d6" title="Sets the initial state of the simulation." alt="" coords="5,5,217,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="251,44,188,33,189,28,252,39"/>
+<area shape="rect" id="Node000003" href="$Solver_8cu.html#ab311646a75605c814a6112f965b08f28" title="Enforces velocity inlet boundaries using equilibrium&#45;based reflection." alt="" coords="45,79,177,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="252,72,178,84,177,78,251,66"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="152,69,141,61,111,57,87,59,74,64,72,70,78,77,74,80,66,70,71,60,86,54,111,52,143,56,155,65"/>
+</map>

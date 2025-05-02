@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['dataarray_0',['dataarray',['../classclip_1_1DataArray.html',1,'clip::DataArray'],['../classclip_1_1DataArray.html#a5090727bca4e5fd077fdbe40415ae186',1,'clip::DataArray::DataArray()']]],
+  ['dataarray_2ecu_1',['DataArray.cu',['../DataArray_8cu.html',1,'']]],
+  ['dataarray_2ecuh_2',['DataArray.cuh',['../DataArray_8cuh.html',1,'']]],
+  ['datatypes_2ecuh_3',['DataTypes.cuh',['../DataTypes_8cuh.html',1,'']]],
+  ['devicedataarray_4',['deviceDataArray',['../structclip_1_1DataArray_1_1deviceDataArray.html',1,'clip::DataArray']]],
+  ['deviceinitializer_5',['deviceInitializer',['../classclip_1_1NSAllen.html#a3317d2cf7b262033ad52f91c59cc549f',1,'clip::NSAllen']]],
+  ['dimblock_6',['dimblock',['../classclip_1_1DataArray.html#a7723cc3d526e3a0962abe7cbd3848b3a',1,'clip::DataArray::dimBlock'],['../classclip_1_1Solver.html#aa410658e0c2bff2efcd9cb68fd9faeb4',1,'clip::Solver::dimBlock']]],
+  ['dimgrid_7',['dimGrid',['../classclip_1_1Domain.html#ae84715da454efff20ad440dd8dc8c535',1,'clip::Domain']]],
+  ['domain_8',['domain',['../classclip_1_1Domain.html',1,'clip::Domain'],['../classclip_1_1Domain.html#ab796b8701d3ac0f558baab600016e4c1',1,'clip::Domain::Domain()']]],
+  ['domain_2ecu_9',['Domain.cu',['../Domain_8cu.html',1,'']]],
+  ['domain_2ecuh_10',['Domain.cuh',['../Domain_8cuh.html',1,'']]],
+  ['domaininfo_11',['DomainInfo',['../structclip_1_1Domain_1_1DomainInfo.html',1,'clip::Domain']]],
+  ['domainsize_12',['domainSize',['../classclip_1_1Domain.html#a1ad7fa552f3ae25669d1382339dc4e65',1,'clip::Domain']]],
+  ['drop_13',['Drop',['../classclip_1_1InputData.html#a79784ea5eed5b3982470446d57d7882caf9c4898767becd6861065ced817fe359',1,'clip::InputData']]],
+  ['dt_14',['dt',['../structclip_1_1TimeInfo_1_1simInfo.html#aac7854f31ff8474767724a30eb3bd767',1,'clip::TimeInfo::simInfo']]],
+  ['dtisset_15',['dtIsSet',['../structclip_1_1TimeInfo_1_1simInfo.html#a6b80ebc45b4e28aed33fe1c094a51326',1,'clip::TimeInfo::simInfo']]]
+];

@@ -1,0 +1,7 @@
+<map id="clip::DataArray::copyFromDevice" name="clip::DataArray::copyFromDevice">
+<area shape="rect" id="Node000001" title="Copies data from device to host." alt="" coords="497,5,688,45"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1DataArray.html#a40ab776122c1ae67d827eb06cc85186a" title="Copy all device&#45;side fields to host." alt="" coords="248,13,449,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="483,28,449,28,449,23,483,23"/>
+<area shape="rect" id="Node000003" href="$classclip_1_1VTSwriter.html#a88d027af88244b82e7813026d39cf752" title="Writes the current state of the simulation to a .vts file." alt="" coords="5,13,200,38"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="234,28,200,28,200,23,234,23"/>
+</map>

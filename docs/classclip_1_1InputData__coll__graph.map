@@ -1,0 +1,5 @@
+<map id="clip::InputData" name="clip::InputData">
+<area shape="rect" id="Node000001" title="Reads simulation parameters from a configuration file and stores them in a structured format." alt="" coords="46,93,163,119"/>
+<area shape="rect" id="Node000002" href="$structclip_1_1InputData_1_1SimParams.html" title="Struct holding all simulation parameters, parsed from input." alt="" coords="5,5,204,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,45,107,93,102,93,102,45"/>
+</map>

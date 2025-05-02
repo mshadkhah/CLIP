@@ -1,0 +1,6 @@
+<map id="clip::Boundary::isMirrorType" name="clip::Boundary::isMirrorType">
+<area shape="rect" id="Node000001" title="Determines whether the given boundary type is a mirror&#45;type condition." alt="" coords="248,29,451,55"/>
+<area shape="rect" id="Node000002" href="$Solver_8cu.html#ad8daf35d0201707359499f0f350e2f3b" title="Applies mirror boundary for scalar fields (copies inner value to ghost)." alt="" coords="5,29,200,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="234,45,200,45,200,39,234,39"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="146,20,144,15,136,12,103,8,76,10,62,15,60,20,67,27,63,31,54,21,59,11,75,5,103,3,137,7,147,11,151,17"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="clip::Isotropic_Gradient" name="clip::Isotropic_Gradient">
+<area shape="rect" id="Node000001" title="Computes isotropic central difference gradient of phase field c." alt="" coords="5,29,177,55"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="56,31,48,21,52,11,67,5,91,3,122,6,134,15,131,20,120,11,91,8,68,10,56,15,53,20,60,28"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Domain.html#aefd93098e1eb64eab548417bdb281ebf" title="Computes a flattened 1D index for multi&#45;DOF data." alt="" coords="225,29,395,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="177,39,212,39,212,45,177,45"/>
+</map>

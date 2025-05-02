@@ -1,0 +1,6 @@
+<map id="clip::Solver::Equilibrium_new" name="clip::Solver::Equilibrium_new">
+<area shape="rect" id="Node000001" title="Computes the equilibrium distribution function for WMRT&#45;based solvers." alt="" coords="185,29,396,55"/>
+<area shape="rect" id="Node000002" href="$Solver_8cu.html#ab311646a75605c814a6112f965b08f28" title="Enforces velocity inlet boundaries using equilibrium&#45;based reflection." alt="" coords="5,29,137,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="171,45,138,45,138,39,171,39"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="111,20,100,11,71,8,48,10,36,15,33,20,40,28,36,31,28,21,32,11,47,5,71,3,102,6,114,15"/>
+</map>

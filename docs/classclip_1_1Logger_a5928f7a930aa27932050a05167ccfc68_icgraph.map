@@ -1,0 +1,13 @@
+<map id="clip::Logger::Success" name="clip::Logger::Success">
+<area shape="rect" id="Node000001" title="Prints a success message to stdout in green." alt="" coords="268,104,425,129"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1DataArray.html#a8fc70afb353dc09c6057b791ace02cc2" title="Allocate and initialize all host/device field arrays." alt="" coords="5,5,220,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="316,98,271,70,219,44,184,33,185,28,221,40,274,66,318,94"/>
+<area shape="rect" id="Node000003" href="$classclip_1_1Geometry.html#ab35d3f3713aa7001eff031b00cf11e05" title="Constructs the Geometry manager using simulation input parameters." alt="" coords="17,55,208,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="272,104,173,83,174,77,273,99"/>
+<area shape="rect" id="Node000004" href="$classclip_1_1InputData.html#a76f672f8ebc161d1d1ff557007c44a7a" title="Constructs the InputData object and optionally sets the config file path." alt="" coords="18,104,207,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="254,119,208,119,208,114,254,114"/>
+<area shape="rect" id="Node000005" href="$classclip_1_1CheckPointer.html#a078b994634c304e83f1ba8cb24afaf34" title="Loads simulation state from the latest checkpoint folder." alt="" coords="43,154,182,194"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="281,135,183,160,182,154,280,130"/>
+<area shape="rect" id="Node000006" href="$classclip_1_1CheckPointer.html#a9a0e77ad279ce0cec65af1ff7abe8212" title="Saves the current simulation state to a binary checkpoint folder." alt="" coords="43,218,182,258"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="322,140,277,175,221,208,184,223,182,218,219,204,274,171,319,136"/>
+</map>

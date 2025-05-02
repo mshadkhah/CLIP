@@ -1,0 +1,8 @@
+<map id="clip::kernelMirrorBoundary" name="clip::kernelMirrorBoundary">
+<area shape="rect" id="Node000001" title="Applies mirror boundary for scalar fields (copies inner value to ghost)." alt="" coords="5,31,200,56"/>
+<area shape="poly" id="edge3_Node000001_Node000001" title=" " alt="" coords="63,32,54,22,59,12,75,6,103,4,137,8,147,13,151,18,146,21,144,17,136,13,103,9,76,11,62,16,60,22,67,29"/>
+<area shape="rect" id="Node000002" href="$classclip_1_1Domain.html#aefd93098e1eb64eab548417bdb281ebf" title="Computes a flattened 1D index for multi&#45;DOF data." alt="" coords="265,5,434,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="200,31,251,25,252,31,200,36"/>
+<area shape="rect" id="Node000003" href="$classclip_1_1Boundary.html#a7380c3dc97cb6b512b8b0c24eed280a8" title="Determines whether the given boundary type is a mirror&#45;type condition." alt="" coords="248,55,451,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="200,50,235,54,234,59,200,55"/>
+</map>
