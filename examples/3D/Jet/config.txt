@@ -2,28 +2,28 @@ case = jet
 
 finalStep = 100000
 outputInterval = 100
-reportInterval = 10
-checkpointInterval = 10000
+reportInterval = 50
+checkpointInterval = 1000
 checkpointCopy = 1
 
-N = [64, 32, 64]
-referenceLength = 14
+N = [128, 350, 128]
+referenceLength = 30
 referenceVelocity = 0.01
 
-We = 4
-Re = 20
-gravity = 1e-9
+We = 20000
+Re = 25000
+gravity = [0, -1e-7, 0]
 mobility = 0.02
-interfaceWidth = 6
-muRatio = 10
-rhoRatio = 100
+interfaceWidth = 7
+muRatio = 2
+rhoRatio = 4
 
 
 geometry = [
   {
     type = "sphere"
-    center = [32, 32, 32]
-    radius = 7
+    center = [64, 350, 64]
+    radius = 15
     id = 0
   }
 ]

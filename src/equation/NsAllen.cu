@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Part of CLIP: A CUDA-Accelerated LBM Framework for Interfacial Phenomena
 
-
 /**
  * @file NsAllen.cu
  * @brief Implementation of a two-phase Lattice Boltzmann Method (LBM) solver using the Allen–Cahn phase-field model.
@@ -32,21 +31,18 @@
  * Assumes usage of compile-time macros: `ENABLE_2D` or `ENABLE_3D`, and user-defined `InputData`, `Boundary`, `Geometry`, `Domain`, and `DataArray` classes.
  */
 
-
-
 #include <NsAllen.cuh>
 #include <Solver.cuh>
-
 
 namespace clip
 {
 
-/// Initializes fields and prepares velocity set, grid/block dimensions, and geometry pool.
-///  idata Simulation input data
-///  domain Computational domain
-///  DA Data storage object (host/device)
-///  boundary Boundary condition handler
-///  geom Geometry object defining physical shapes (via SDF)
+    /// Initializes fields and prepares velocity set, grid/block dimensions, and geometry pool.
+    ///  idata Simulation input data
+    ///  domain Computational domain
+    ///  DA Data storage object (host/device)
+    ///  boundary Boundary condition handler
+    ///  geom Geometry object defining physical shapes (via SDF)
 
     NSAllen::NSAllen(const InputData &idata, const Domain &domain, DataArray &DA, const Boundary &boundary, const Geometry &geom)
         : Solver(idata, domain, DA, boundary, geom), m_boundary(&boundary), m_geom(&geom)
@@ -70,13 +66,13 @@ namespace clip
     {
     }
 
-/// Computes equilibrium distribution for a given direction and velocity.
-///  velSet Lattice velocity set
-///  q Direction index
-///  Ux Local velocity in x-direction
-///  Uy Local velocity in y-direction
-///  Uz Local velocity in z-direction
-///  Equilibrium value for direction q
+    /// Computes equilibrium distribution for a given direction and velocity.
+    ///  velSet Lattice velocity set
+    ///  q Direction index
+    ///  Ux Local velocity in x-direction
+    ///  Uy Local velocity in y-direction
+    ///  Uz Local velocity in z-direction
+    ///  Equilibrium value for direction q
 
     __device__ __forceinline__ CLIP_REAL NSAllen::Equilibrium_new(const WMRT::WMRTvelSet velSet, CLIP_UINT q, CLIP_REAL Ux, CLIP_REAL Uy, CLIP_REAL Uz)
     {
@@ -97,11 +93,11 @@ namespace clip
         return waq * (3.0 * eU + 4.5 * eU * eU - 1.5 * U2);
     }
 
-/// Calculates body force contributions from non-equilibrium parts of `f`.
-///  q Number of directions
-///  dim Spatial dimension
-///  gneq Non-equilibrium components
-///  fv Output force vector
+    /// Calculates body force contributions from non-equilibrium parts of `f`.
+    ///  q Number of directions
+    ///  dim Spatial dimension
+    ///  gneq Non-equilibrium components
+    ///  fv Output force vector
 
     template <CLIP_UINT q, size_t dim>
     __device__ __forceinline__ void NSAllen::calculateVF(const WMRT::WMRTvelSet velSet, const InputData::SimParams params, CLIP_REAL gneq[q], CLIP_REAL fv[dim], CLIP_REAL tau, CLIP_REAL dcdx, CLIP_REAL dcdy, CLIP_REAL dcdz)
@@ -168,9 +164,8 @@ namespace clip
             }
             else
             {
-                dev_p[idx_SCALAR] = 0;           
+                dev_p[idx_SCALAR] = 0;
             }
-
 
             dev_vel[idx_X] = 0;
             dev_vel[idx_Y] = 0;
@@ -376,7 +371,7 @@ namespace clip
     {
 
         constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
-        CLIP_REAL gneq[Q], tmp[Q], fv[DIM], tau;
+        CLIP_REAL gneq[Q], tmp[Q], fv[DIM], fg[DIM], tau;
         const CLIP_REAL drho3 = (params.RhoH - params.RhoL) / 3.0;
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
@@ -462,30 +457,34 @@ namespace clip
 
 #endif
 
-            CLIP_REAL Fgy = 0.0;
-            if (params.caseType == InputData::CaseType::RTI)
+            for (CLIP_UINT dim = 0; dim < DIM; dim++)
             {
-                Fgy = (dev_rho[idx_SCALAR]) * params.gravity[IDX_Y];
-            }
-            else if (params.caseType == InputData::CaseType::Bubble)
-            {
-                Fgy = (dev_rho[idx_SCALAR] - params.RhoH) * params.gravity[IDX_Y];
-            }
-            else if (params.caseType == InputData::CaseType::Drop)
-            {
-                Fgy = (dev_rho[idx_SCALAR] - params.RhoL) * params.gravity[IDX_Y];
+                if (params.caseType == InputData::CaseType::RTI)
+                {
+                    fg[dim] = (dev_rho[idx_SCALAR]) * params.gravity[dim];
+                }
+                else if (params.caseType == InputData::CaseType::Bubble)
+                {
+                    fg[dim] = (dev_rho[idx_SCALAR] - params.RhoH) * params.gravity[dim];
+                }
+                else if (params.caseType == InputData::CaseType::Drop)
+                {
+                    fg[dim] = (dev_rho[idx_SCALAR] - params.RhoL) * params.gravity[dim];
+                }
             }
 
             const CLIP_REAL Fpx = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_X];
             const CLIP_REAL Fpy = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_Y];
 
-            const CLIP_REAL Fx = dev_mu[idx_SCALAR] * dev_dc[idx_X] + Fpx + fv[0];
-            const CLIP_REAL Fy = dev_mu[idx_SCALAR] * dev_dc[idx_Y] + Fpy + Fgy + fv[1];
+            const CLIP_REAL Fx = dev_mu[idx_SCALAR] * dev_dc[idx_X] + Fpx + fv[IDX_X] + fg[IDX_X];
+            const CLIP_REAL Fy = dev_mu[idx_SCALAR] * dev_dc[idx_Y] + Fpy + fv[IDX_Y] + fg[IDX_Y];
 
 #ifdef ENABLE_3D
             const CLIP_REAL Fpz = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_Z];
-            const CLIP_REAL Fz = dev_mu[idx_SCALAR] * dev_dc[idx_Z] + Fpz + fv[2];
+            const CLIP_REAL Fz = dev_mu[idx_SCALAR] * dev_dc[idx_Z] + Fpz + fv[IDX_Z] + fg[IDX_Z];
 #endif
+
+
 
             dev_vel[idx_X] = 0;
             dev_vel[idx_Y] = 0;
@@ -593,7 +592,7 @@ namespace clip
     {
 
         constexpr CLIP_UINT Q = WMRT::WMRTvelSet::Q;
-        CLIP_REAL gneq[Q], tmp[Q], ga_wa[Q], hlp[Q], fv[DIM], tau, s9;
+        CLIP_REAL gneq[Q], tmp[Q], ga_wa[Q], hlp[Q], fv[DIM], fg[DIM], tau, s9;
         const CLIP_REAL drho3 = (params.RhoH - params.RhoL) / 3.0;
         const CLIP_UINT i = THREAD_IDX_X;
         const CLIP_UINT j = THREAD_IDX_Y;
@@ -670,29 +669,31 @@ namespace clip
 
 #endif
 
-            CLIP_REAL Fgy = 0.0;
-            if (params.caseType == InputData::CaseType::RTI)
+            for (CLIP_UINT dim = 0; dim < DIM; dim++)
             {
-                Fgy = (dev_rho[idx_SCALAR]) * params.gravity[IDX_Y];
+                if (params.caseType == InputData::CaseType::RTI)
+                {
+                    fg[dim] = (dev_rho[idx_SCALAR]) * params.gravity[dim];
+                }
+                else if (params.caseType == InputData::CaseType::Bubble)
+                {
+                    fg[dim] = (dev_rho[idx_SCALAR] - params.RhoH) * params.gravity[dim];
+                }
+                else if (params.caseType == InputData::CaseType::Drop)
+                {
+                    fg[dim] = (dev_rho[idx_SCALAR] - params.RhoL) * params.gravity[dim];
+                }
             }
-            else if (params.caseType == InputData::CaseType::Bubble)
-            {
-                Fgy = (dev_rho[idx_SCALAR] - params.RhoH) * params.gravity[IDX_Y];
-            }
-            else if (params.caseType == InputData::CaseType::Drop)
-            {
-                Fgy = (dev_rho[idx_SCALAR] - params.RhoL) * params.gravity[IDX_Y];
-            }
-
+            
             const CLIP_REAL Fpx = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_X];
             const CLIP_REAL Fpy = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_Y];
 
-            const CLIP_REAL Fx = dev_mu[idx_SCALAR] * dev_dc[idx_X] + Fpx + fv[0];
-            const CLIP_REAL Fy = dev_mu[idx_SCALAR] * dev_dc[idx_Y] + Fpy + Fgy + fv[1];
+            const CLIP_REAL Fx = dev_mu[idx_SCALAR] * dev_dc[idx_X] + Fpx + fv[IDX_X] + fg[IDX_X];
+            const CLIP_REAL Fy = dev_mu[idx_SCALAR] * dev_dc[idx_Y] + Fpy + fv[IDX_Y] + fg[IDX_Y];
 
 #ifdef ENABLE_3D
             const CLIP_REAL Fpz = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_Z];
-            const CLIP_REAL Fz = dev_mu[idx_SCALAR] * dev_dc[idx_Z] + Fpz + fv[2];
+            const CLIP_REAL Fz = dev_mu[idx_SCALAR] * dev_dc[idx_Z] + Fpz + fv[IDX_Z] + fg[IDX_Z];
 #endif
 
 #pragma unroll
