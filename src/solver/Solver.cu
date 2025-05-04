@@ -577,7 +577,10 @@ namespace clip
 
                 if (Geometry::sdf(geom, 0, x, y, z) <= 0)
                 {
-                    CLIP_REAL My = 0, Mz = 0, N = 0;
+                    CLIP_REAL My = 0, N = 0;
+                    #ifdef ENABLE_3D
+                    CLIP_REAL Mz = 0;
+                    #endif
 #pragma unroll
                     for (int q = 1; q < Q; q++)
                     {
@@ -634,7 +637,10 @@ namespace clip
 
                 if (Geometry::sdf(geom, 0, x, y, z) <= 0)
                 {
-                    CLIP_REAL My = 0, Mz = 0, N = 0;
+                    CLIP_REAL My = 0, N = 0;
+                    #ifdef ENABLE_3D
+                    CLIP_REAL Mz = 0;
+                    #endif
 #pragma unroll
                     for (int q = 1; q < Q; q++)
                     {
@@ -691,7 +697,10 @@ namespace clip
 
                 if (Geometry::sdf(geom, 0, x, y, z) <= 0)
                 {
-                    CLIP_REAL Mx = 0, Mz = 0, N = 0;
+                    CLIP_REAL Mx = 0, N = 0;
+                    #ifdef ENABLE_3D
+                    CLIP_REAL Mz = 0;
+                    #endif
 #pragma unroll
                     for (int q = 1; q < Q; q++)
                     {
@@ -748,7 +757,10 @@ namespace clip
 
                 if (Geometry::sdf(geom, 0, x, y, z) <= 0)
                 {
-                    CLIP_REAL Mx = 0, Mz = 0, N = 0;
+                    CLIP_REAL Mx = 0, N = 0;
+                    #ifdef ENABLE_3D
+                    CLIP_REAL Mz = 0;
+                    #endif
 #pragma unroll
                     for (int q = 1; q < Q; q++)
                     {

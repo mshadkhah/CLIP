@@ -82,8 +82,8 @@ namespace clip
             read("Re", params.Re);
 
             // params.sigma = (params.gravity * (params.RhoH - params.RhoL) * params.D * params.D) / params.Bo;
-            params.sigma = (params.RhoH * params.gravity[IDX_Y] * params.referenceLength * params.referenceLength) / params.We;
-            params.muH = sqrt(params.gravity[IDX_Y] * params.RhoH * (params.RhoH - params.RhoL) * params.referenceLength * params.referenceLength * params.referenceLength) / params.Re;
+            params.sigma = (params.RhoH * fabs(params.gravity[IDX_Y]) * params.referenceLength * params.referenceLength) / params.We;
+            params.muH = sqrt(fabs(params.gravity[IDX_Y]) * params.RhoH * (params.RhoH - params.RhoL) * params.referenceLength * params.referenceLength * params.referenceLength) / params.Re;
         }
 
         else if (params.caseType == CaseType::RTI)
@@ -92,9 +92,9 @@ namespace clip
             read("Pe", params.Pe);
             read("Re", params.Re);
 
-            params.muH = (params.RhoH * sqrt(params.gravity[IDX_Y] * params.referenceLength) * params.referenceLength) / params.Re;
-            params.sigma = (params.muH * sqrt(params.gravity[IDX_Y] * params.referenceLength)) / params.Ca;
-            params.mobility = (sqrt(params.gravity[IDX_Y] * params.referenceLength) * params.referenceLength) / params.Pe;
+            params.muH = (params.RhoH * sqrt(fabs(params.gravity[IDX_Y]) * params.referenceLength) * params.referenceLength) / params.Re;
+            params.sigma = (params.muH * sqrt(fabs(params.gravity[IDX_Y]) * params.referenceLength)) / params.Ca;
+            params.mobility = (sqrt(fabs(params.gravity[IDX_Y]) * params.referenceLength) * params.referenceLength) / params.Pe;
         }
         else if (params.caseType == CaseType::Jet)
         {

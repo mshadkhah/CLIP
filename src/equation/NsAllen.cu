@@ -168,9 +168,10 @@ namespace clip
             }
             else
             {
-                dev_p[idx_SCALAR] = 0;
+                dev_p[idx_SCALAR] = 0;           
             }
-            // dev_p[index] = 0;
+
+
             dev_vel[idx_X] = 0;
             dev_vel[idx_Y] = 0;
 
@@ -464,15 +465,15 @@ namespace clip
             CLIP_REAL Fgy = 0.0;
             if (params.caseType == InputData::CaseType::RTI)
             {
-                Fgy = -(dev_rho[idx_SCALAR]) * params.gravity[IDX_Y];
+                Fgy = (dev_rho[idx_SCALAR]) * params.gravity[IDX_Y];
             }
             else if (params.caseType == InputData::CaseType::Bubble)
             {
-                Fgy = -(dev_rho[idx_SCALAR] - params.RhoH) * params.gravity[IDX_Y];
+                Fgy = (dev_rho[idx_SCALAR] - params.RhoH) * params.gravity[IDX_Y];
             }
             else if (params.caseType == InputData::CaseType::Drop)
             {
-                Fgy = -(dev_rho[idx_SCALAR] - params.RhoL) * params.gravity[IDX_Y];
+                Fgy = (dev_rho[idx_SCALAR] - params.RhoL) * params.gravity[IDX_Y];
             }
 
             const CLIP_REAL Fpx = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_X];
@@ -672,15 +673,15 @@ namespace clip
             CLIP_REAL Fgy = 0.0;
             if (params.caseType == InputData::CaseType::RTI)
             {
-                Fgy = -(dev_rho[idx_SCALAR]) * params.gravity[IDX_Y];
+                Fgy = (dev_rho[idx_SCALAR]) * params.gravity[IDX_Y];
             }
             else if (params.caseType == InputData::CaseType::Bubble)
             {
-                Fgy = -(dev_rho[idx_SCALAR] - params.RhoH) * params.gravity[IDX_Y];
+                Fgy = (dev_rho[idx_SCALAR] - params.RhoH) * params.gravity[IDX_Y];
             }
             else if (params.caseType == InputData::CaseType::Drop)
             {
-                Fgy = -(dev_rho[idx_SCALAR] - params.RhoL) * params.gravity[IDX_Y];
+                Fgy = (dev_rho[idx_SCALAR] - params.RhoL) * params.gravity[IDX_Y];
             }
 
             const CLIP_REAL Fpx = -dev_p[idx_SCALAR] * drho3 * dev_dc[idx_X];

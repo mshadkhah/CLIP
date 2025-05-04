@@ -1,4 +1,4 @@
-case = drop
+case = bubble
 
 finalStep = 100000
 outputInterval = 1000
@@ -6,22 +6,22 @@ reportInterval = 1000
 checkpointInterval = 1000
 checkpointCopy = 0
 
-N = [64, 128, 1]
-referenceLength = 25
+N = [64, 256, 1]
+referenceLength = 20
 
-We = 5
+We = 10
 Re = 100
-gravity = 1e-6
-mobility = 0.02
+gravity = [0, -1e-6, 0]
+mobility = 0.05
 interfaceWidth = 4
-muRatio = 50
-rhoRatio = 1000
+muRatio = 10
+rhoRatio = 100
 
 
 geometry = [
   {
-    type = "sphere"
-    center = [32, 20, 0]
+    type = "circle"
+    center = [32, 64, 0]
     radius = 10
     id = 0
   }

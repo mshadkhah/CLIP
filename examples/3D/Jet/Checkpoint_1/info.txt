@@ -1,4 +1,0 @@
-# Summary Info
-CurrentTime: 0
-CurrentStep: 20000
-DomainSize (N): 64, 32, 64

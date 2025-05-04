@@ -25,7 +25,7 @@
  * @date 2025
  */
 
-#include "InputData.cuh>
+#include "InputData.cuh"
 #include "includes.h"
 #include "TimeInfo.cuh"
 #include "NsAllen.cuh"

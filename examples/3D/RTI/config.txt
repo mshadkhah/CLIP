@@ -1,0 +1,60 @@
+case = RTI
+
+finalStep = 100000
+outputInterval = 500
+reportInterval = 500
+checkpointInterval = 2000
+checkpointCopy = 1
+
+N = [64, 256, 64]
+referenceLength = 64
+
+
+Re = 3000
+Pe = 1000
+Ca = 0.26
+gravity = [0, 1e-6, 0]
+interfaceWidth = 4
+muRatio = 1
+rhoRatio = 3
+
+
+geometry = [
+  {
+    type = "perturbation"
+    center = [0, 128, 0]  
+    amplitude = 0.1
+	length = [64, 0, 0]        
+    id = 0
+  }
+]
+
+
+
+
+boundary = [
+  {
+    side = "x-"
+    type = "periodic"
+  },
+    {
+    side = "x+"
+    type = "periodic"
+  },
+    {
+    side = "y-"
+    type = "wall"
+  },
+  {
+    side = "y+"
+    type = "wall"
+  },
+  {
+    side = "z-"
+    type = "periodic"
+  },
+    {
+    side = "z+"
+    type = "periodic"
+  },
+]
