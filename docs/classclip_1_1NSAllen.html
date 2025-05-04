@@ -297,7 +297,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <p>idata Simulation input data domain Computational domain DA Data storage object (host/device) boundary <a class="el" href="classclip_1_1Boundary.html" title="Class for handling boundary condition definitions and utilities in a simulation domain.">Boundary</a> condition handler geom <a class="el" href="classclip_1_1Geometry.html" title="Represents one or more geometric objects for level-set-based boundary embedding.">Geometry</a> object defining physical shapes (via SDF) </p>
 
-<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00051">51</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00047">47</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
 
 <p class="reference">References <a class="el" href="DataArray_8cuh_source.html#l00229">clip::DataArray::dimBlock</a>, <a class="el" href="Geometry_8cuh_source.html#l00166">clip::Geometry::getDeviceStruct()</a>, <a class="el" href="Domain_8cuh_source.html#l00103">clip::Domain::info</a>, <a class="el" href="Solver_8cuh_source.html#l00149">clip::Solver::m_DA</a>, <a class="el" href="Solver_8cuh_source.html#l00139">clip::Solver::m_domain</a>, <a class="el" href="Solver_8cuh_source.html#l00140">clip::Solver::m_idata</a>, and <a class="el" href="InputData_8cuh_source.html#l00119">clip::InputData::params</a>.</p>
 <div class="dynheader">
@@ -325,7 +325,7 @@ Here is the call graph for this function:</div>
 
 <p>Destructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00069">69</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00065">65</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
 
 </div>
 </div>
@@ -397,7 +397,7 @@ template&lt;<a class="el" href="DataTypes_8cuh.html#ad33ea26638ff8dc85ee267fa664
 <p>Calculates body force contributions from non-equilibrium parts of <code>f</code>. </p>
 <p>q Number of directions dim Spatial dimension gneq Non-equilibrium components fv Output force vector </p>
 
-<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00107">107</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00103">103</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
 
 <p class="reference">References <a class="el" href="DataTypes_8cuh_source.html#l00049">IDX_X</a>, <a class="el" href="DataTypes_8cuh_source.html#l00050">IDX_Y</a>, and <a class="el" href="DataTypes_8cuh_source.html#l00051">IDX_Z</a>.</p>
 
@@ -517,7 +517,7 @@ template&lt;<a class="el" href="DataTypes_8cuh.html#ad33ea26638ff8dc85ee267fa664
 <p>Initializes device memory and data structures. </p>
 <p>Initializes device-side fields including <code>rho</code>, <code>p</code>, <code>c</code>, <code>f</code>, <code>g</code>, and gradients. </p>
 
-<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00896">896</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00897">897</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
 
 <p class="reference">References <a class="el" href="Solver_8cuh_source.html#l00149">clip::Solver::m_DA</a>.</p>
 
@@ -590,9 +590,9 @@ template&lt;<a class="el" href="DataTypes_8cuh.html#ad33ea26638ff8dc85ee267fa664
 <dl class="section return"><dt>Returns</dt><dd>Equilibrium distribution value</dd></dl>
 <p>velSet Lattice velocity set q Direction index Ux Local velocity in x-direction Uy Local velocity in y-direction Uz Local velocity in z-direction Equilibrium value for direction q </p>
 
-<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00081">81</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00077">77</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="NsAllen_8cu_source.html#l00590">clip::kernelCollisionMRTf()</a>, <a class="el" href="NsAllen_8cu_source.html#l00546">clip::kernelCollisionMRTg()</a>, <a class="el" href="NsAllen_8cu_source.html#l00141">clip::KernelInitializeDistributions()</a>, and <a class="el" href="NsAllen_8cu_source.html#l00374">clip::kernelMacroscopicf()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="NsAllen_8cu_source.html#l00589">clip::kernelCollisionMRTf()</a>, <a class="el" href="NsAllen_8cu_source.html#l00545">clip::kernelCollisionMRTg()</a>, <a class="el" href="NsAllen_8cu_source.html#l00137">clip::KernelInitializeDistributions()</a>, and <a class="el" href="NsAllen_8cu_source.html#l00369">clip::kernelMacroscopicf()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -619,7 +619,7 @@ Here is the caller graph for this function:</div>
 <p>Sets the initial state of the simulation. </p>
 <p>Initializes host-side phase field variable <code>c</code> based on geometry and case type. </p>
 
-<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00767">767</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00768">768</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
 
 <p class="reference">References <a class="el" href="InputData_8cuh_source.html#l00058">clip::InputData::Bubble</a>, <a class="el" href="InputData_8cuh_source.html#l00059">clip::InputData::Drop</a>, <a class="el" href="Domain_8cuh_source.html#l00064">clip::Domain::getIndex()</a>, <a class="el" href="DataTypes_8cuh_source.html#l00049">IDX_X</a>, <a class="el" href="DataTypes_8cuh_source.html#l00050">IDX_Y</a>, <a class="el" href="DataTypes_8cuh_source.html#l00051">IDX_Z</a>, <a class="el" href="InputData_8cuh_source.html#l00061">clip::InputData::Jet</a>, <a class="el" href="Solver_8cuh_source.html#l00149">clip::Solver::m_DA</a>, <a class="el" href="InputData_8cuh_source.html#l00060">clip::InputData::RTI</a>, and <a class="el" href="Geometry_8cuh_source.html#l00102">clip::Geometry::sdf()</a>.</p>
 <div class="dynheader">
@@ -648,11 +648,11 @@ Here is the call graph for this function:</div>
 <p>Computes macroscopic quantities (rho, u) from distribution functions. </p>
 <p>Updates macroscopic fields: density, pressure, velocity, chemical potential, and gradients. </p>
 
-<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00864">864</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00865">865</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
 
 <p class="reference">References <a class="el" href="Solver_8cuh_source.html#l00149">clip::Solver::m_DA</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="NsAllen_8cu_source.html#l00880">solve()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="NsAllen_8cu_source.html#l00881">solve()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -680,9 +680,9 @@ Here is the caller graph for this function:</div>
 <p>Runs one full LBM timestep: collision, boundary conditions, streaming, and macroscopic update.</p>
 <p>Main time loop or solution iteration </p>
 
-<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00880">880</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NsAllen_8cu_source.html#l00881">881</a> of file <a class="el" href="NsAllen_8cu_source.html">NsAllen.cu</a>.</p>
 
-<p class="reference">References <a class="el" href="Solver_8cuh_source.html#l00149">clip::Solver::m_DA</a>, <a class="el" href="NsAllen_8cu_source.html#l00864">macroscopic()</a>, and <a class="el" href="Solver_8cu_source.html#l01058">clip::Solver::velocityBoundary()</a>.</p>
+<p class="reference">References <a class="el" href="Solver_8cuh_source.html#l00149">clip::Solver::m_DA</a>, <a class="el" href="NsAllen_8cu_source.html#l00865">macroscopic()</a>, and <a class="el" href="Solver_8cu_source.html#l01058">clip::Solver::velocityBoundary()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
