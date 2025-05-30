@@ -27,7 +27,7 @@ Moreover, **CLIP is highly optimized**, allowing users to run many simulations â
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [Contact](#contact)
-<!-- - [Citation](#citation) -->
+- [Citation](#citation)
 
 
 
@@ -149,10 +149,6 @@ make -j
 <!-- \anchor running -->
 ## Running a Case
 
-```bash
-./clip examples/2D/Bubble/config.txt
-```
-
 Visit the `examples/` folder for examples including:
 
 - Bubble dynamics
@@ -267,28 +263,30 @@ We welcome contributions of all kinds â€” from bug reports and feature suggestio
 
 ---
 
-<!-- \anchor citation -->
-<!-- ## Citation
+<!-- \anchor citation --> 
+## Citation
 
-If you use **CLIP** in your work, please cite:
+If you use **CLIP** in your work, please cite the following:
 
 ```bibtex
-@software{clip2025,
-  author  = {Mehdi Shadkhah},
-  title   = {CLIP: A CUDA-Accelerated Lattice Boltzmann Framework for Interfacial Phenomena},
+@article{shadkhah2025clip,
+  title   = {CLIP: A CUDA-Accelerated Lattice Boltzmann Framework for Interfacial Phenomena with Application to Liquid Jet Simulations},
+  author  = {Mehdi Shadkhah and Mohammad Rahni and ...},
+  journal = {arXiv preprint arXiv:2505.12205},
   year    = {2025},
-  url     = {https://github.com/your-org/culbm}
+  url     = {https://arxiv.org/abs/2505.12205}
 }
 ```
 ```bibtex
-@paper{culbm2024,
-  author  = {M.Shadkhah, M. Rahni, ....},
-  title   = {CLIP: A CUDA-Accelerated Lattice Boltzmann Framework for Interfacial Phenomena},
+@software{shadkhah2025clip,
+  author  = {Mehdi Shadkhah},
+  title   = {{CLIP}: A CUDA-Accelerated Lattice Boltzmann Framework for Interfacial Phenomena},
   year    = {2025},
-  url     = {https://github.com/your-org/culbm}
+  url     = {https://github.com/your-org/culbm},
+  note    = {Version 1.0}
 }
-``` -->
-
+```
+---
 
 ## Contact
 
