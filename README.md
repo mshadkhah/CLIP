@@ -282,7 +282,7 @@ If you use **CLIP** in your work, please cite the following:
   author  = {Mehdi Shadkhah},
   title   = {{CLIP}: A CUDA-Accelerated Lattice Boltzmann Framework for Interfacial Phenomena},
   year    = {2025},
-  url     = {https://github.com/your-org/culbm},
+  url     = {https://github.com/mshadkhah/CLIP},
   note    = {Version 1.0}
 }
 ```
